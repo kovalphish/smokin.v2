@@ -155,7 +155,7 @@
         <div id="paymentButtons">
             <button class="btn-full" style="background: #0088cc; color: #fff;" onclick="startSpin()">КУПИТЬ СПИН 10 ⭐</button>
         </div>
-        <button class="btn-full" id="spinBtn" style="display: none;" onclick="runSpinAnimation()">КРУТИТЬ БЕСПЛАТНО</button>
+        <button class="btn-full" id="spinBtn" style="display: none;" onclick="runSpinAnimation()">КРУТИТЬ</button>
         <div id="spinResult" style="margin-top:20px; font-weight:900; height: 1.2em; color: var(--neon-green);"></div>
     </div>
 </div>
@@ -451,7 +451,7 @@
         document.getElementById('paymentButtons').style.display = canSpin ? 'none' : 'block';
         document.getElementById('spinBtn').style.display = canSpin ? 'block' : 'none';
         const txt = document.getElementById('spinStatusText');
-        txt.innerText = canSpin ? "ОПЛАЧЕНО! ЖМИ КРУТИТЬ" : "СПИН СТОИТ 10⭐";
+        txt.innerText = canSpin ? "ОПЛАЧЕНО! ЖМИ КРУТИТЬ";
         txt.style.color = canSpin ? "var(--neon-green)" : "rgba(255,255,255,0.5)";
     });
 
@@ -510,3 +510,4 @@
 </script>
 </body>
 </html>
+
