@@ -146,8 +146,8 @@
         </div>
 
         <div id="paymentButtons" style="display: flex; gap: 10px;">
-            <button class="btn-full" style="background: #0088cc; color: #fff;" onclick="startSpin('stars')">10 ⭐ ЗВЁЗД</button>
-            <button class="btn-full" onclick="startSpin('money')">10 ₽ РУБЛИ</button>
+            <button class="btn-full" style="background: #0088cc; color: #fff; padding: 15px;" onclick="startSpin('stars')">10 ⭐ ЗВЁЗД</button>
+            <button class="btn-full" style="padding: 15px;" onclick="startSpin('money')">10 ₽ РУБЛИ</button>
         </div>
 
         <button class="btn-full" id="spinBtn" style="display: none;" onclick="runSpinAnimation()">КРУТИТЬ БЕСПЛАТНО</button>
@@ -194,9 +194,6 @@
     tg.ready();
     tg.expand();
 
-    // СЮДА НУЖНО БУДЕТ ВСТАВИТЬ ССЫЛКУ НА ТВОЙ СЕРВЕР ПОТОМ
-    const BACKEND_URL = "https://smokin-v2.vercel.app"; 
-
     const firebaseConfig = {
         apiKey: "AIzaSyD3wDw2ZTTXn2gY467grDOVi9E5vcusilc",
         authDomain: "alexsmok-1dc1c.firebaseapp.com",
@@ -212,7 +209,7 @@
 
     let products = [], cart = [], curCat = 'all';
 
-    // Слушатель статуса оплаты из базы
+    // Слушатель статуса спина
     userSpinRef.on('value', (snapshot) => {
         const canSpin = snapshot.val();
         const payBlock = document.getElementById('paymentButtons');
@@ -232,31 +229,39 @@
         }
     });
 
-    // Функция запроса счета (Инвойса)
-async function startSpin(type) {
-    const result = document.getElementById('spinResult');
-    if (type === 'stars') {
-        result.innerText = "ГЕНЕРАЦИЯ ЧЕКА...";
-        try {
-            // Запрашиваем ссылку у твоего API на Vercel
-            const response = await fetch(`/api/getInvoice?userId=${userId}`);
-            const data = await response.json();
+    // ОПЛАТА ЗВЕЗДАМИ
+    async function startSpin(type) {
+        const result = document.getElementById('spinResult');
+        
+        if (type === 'stars') {
+            result.innerText = "ГЕНЕРАЦИЯ ЧЕКА ⭐...";
+            try {
+                // Прямой вызов API на Vercel
+                const response = await fetch(`/api/getInvoice?userId=${userId}`);
+                const data = await response.json();
 
-            if (data.link) {
-                tg.openInvoice(data.link, function(status) {
-                    if (status === 'paid') {
-                        result.innerText = "ГОТОВО! ПРОВЕРЯЕМ...";
-                        // База обновится сама через 1-2 секунды
-                    }
-                });
+                if (data.link) {
+                    tg.openInvoice(data.link, function(status) {
+                        if (status === 'paid') {
+                            result.innerText = "УСПЕШНО! ПРОВЕРЯЕМ БАЗУ...";
+                        } else {
+                            result.innerText = "ОПЛАТА НЕ ЗАВЕРШЕНА";
+                        }
+                    });
+                } else {
+                    result.innerText = "ОШИБКА: " + (data.error || "Нет ответа");
+                }
+            } catch (e) {
+                result.innerText = "ОШИБКА СЕРВЕРА";
+                console.error(e);
             }
-        } catch (e) {
-            result.innerText = "ОШИБКА";
+        } else if (type === 'money') {
+            window.open("https://www.tbank.ru/rm/vash_nomer", '_blank');
+            result.innerText = "ПОДТВЕРЖДЕНИЕ В ТЕЧЕНИИ 5 МИН";
         }
     }
-}
 
-    // Вся остальная твоя логика магазина...
+    // ЛОГИКА РУЛЕТКИ
     const visualPrizes = ["IPHONE 16", "СКИДКА 50%", "FREE LIQUID", "BONUS 1000", "СКИДКА 30%", "GIFT BOX", "FREE VAPE"];
     
     function openWheel() {
@@ -290,11 +295,12 @@ async function startSpin(type) {
         track.style.transform = `translateY(-${winIndex * itemHeight}px)`;
         setTimeout(() => {
             result.innerText = finalPrize === "ПУСТО" ? "НЕ ПОВЕЗЛО" : "ВЫИГРЫШ: " + finalPrize;
-            userSpinRef.set(false);
+            userSpinRef.set(false); // Снимаем доступ к спину после прокрутки
             btn.disabled = false;
         }, 5200);
     }
 
+    // МАГАЗИН
     function load() {
         db.ref('products').on('value', snap => {
             const val = snap.val();
@@ -349,6 +355,7 @@ async function startSpin(type) {
         window.open(`https://t.me/SmokinShop174?text=${encodeURIComponent(msg)}`, '_blank');
         cart=[]; updateCartUI(); closeModal('cartOverlay');
     };
+
     window.openModal = (id) => { document.getElementById(id).style.display='flex'; setTimeout(()=>document.getElementById(id).classList.add('active'),10); };
     window.closeModal = (id) => { document.getElementById(id).classList.remove('active'); setTimeout(()=>document.getElementById(id).style.display='none',400); };
     window.tryLogin = () => { if(document.getElementById('pass').value === 'smkn00') alert('Admin'); };
