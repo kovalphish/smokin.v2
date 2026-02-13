@@ -12,7 +12,6 @@
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
-
         :root {
             --bg-black: #000000;
             --neon-green: #2bff00;
@@ -20,14 +19,28 @@
             --glass-border: rgba(255, 255, 255, 0.12);
             --transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; letter-spacing: -0.5px; min-height: 100vh; }
-
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, #0a1a05 0%, #000 100%); }
-        .fog { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, rgba(43, 255, 0, 0.05), transparent 70%); z-index: -1; pointer-events: none; }
-
-        header { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid var(--glass-border); padding: 1.2rem 0; position: sticky; top: 0; z-index: 1000; }
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #0a1a05 0%, #000 100%);
+        }
+        .fog {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(43, 255, 0, 0.05), transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        header { 
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--glass-border); padding: 1.2rem 0; position: sticky; top: 0; z-index: 1000; 
+        }
         .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
         .logo-text { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; color: #fff; }
         .nav-right { display: flex; align-items: center; gap: 15px; }
@@ -37,51 +50,49 @@
         .gift-icon:hover { transform: scale(1.2); filter: drop-shadow(0 0 8px var(--neon-green)); }
         .admin-icon { opacity: 0.3; cursor: pointer; transition: 0.3s; color: #fff; }
         .admin-icon.active { opacity: 1; color: var(--neon-green); }
-
         .cat-bar { padding: 20px 0; overflow-x: auto; scrollbar-width: none; position: relative; z-index: 10; }
         .cat-bar::-webkit-scrollbar { display: none; }
         .cat-container { display: flex; gap: 12px; padding: 0 20px; max-width: 1400px; margin: 0 auto; }
-        .cat-link { padding: 12px 26px; border-radius: 50px; background: var(--glass); border: 1px solid var(--glass-border); color: #fff; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: var(--transition); white-space: nowrap; }
+        .cat-link { 
+            padding: 12px 26px; border-radius: 50px; background: var(--glass); border: 1px solid var(--glass-border);
+            color: #fff; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: var(--transition);
+            white-space: nowrap;
+        }
         .cat-link.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 0 0 20px rgba(43, 255, 0, 0.3); }
-
         .main { max-width: 1400px; margin: 0 auto; padding: 0 15px 120px; position: relative; z-index: 5; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-
-        .card { background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; display: flex; flex-direction: column; opacity: 0; transform: translateY(20px); animation: appear 0.6s forwards; transition: transform 0.3s; position: relative; }
+        .card { 
+            background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; 
+            display: flex; flex-direction: column; opacity: 0; transform: translateY(20px);
+            animation: appear 0.6s forwards; transition: transform 0.3s; position: relative;
+        }
         @keyframes appear { to { opacity: 1; transform: translateY(0); } }
-
         .card-img-wrapper { width: 100%; height: 130px; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-img { width: 100%; height: 100%; object-fit: cover; }
         .card-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
         .card-name { font-weight: 900; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; min-height: 2.2em; line-height: 1.2; }
         .card-price { font-weight: 900; font-size: 1.2rem; color: var(--neon-green); }
         .btn-variants { background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; padding: 12px; border-radius: 50px; font-weight: 900; font-size: 0.7rem; cursor: pointer; width: 100%; margin-top: 10px; text-transform: uppercase; border: none; }
-
         .slot-window { position: relative; width: 100%; height: 160px; background: #0a0a0a; border-radius: 25px; border: 2px solid var(--glass-border); overflow: hidden; margin: 20px 0; }
         .slot-track { position: absolute; top: 0; left: 0; width: 100%; transition: none; }
         .slot-item { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #fff; text-transform: uppercase; text-align: center; padding: 0 10px; }
-
         .slot-indicators { position: absolute; top: 50%; left: 0; width: 100%; height: 40px; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
         .arrow { width: 0; height: 0; border-top: 15px solid transparent; border-bottom: 15px solid transparent; filter: drop-shadow(0 0 8px var(--neon-green)); }
         .arrow-left { border-left: 20px solid var(--neon-green); margin-left: 5px; }
         .arrow-right { border-right: 20px solid var(--neon-green); margin-right: 5px; }
-
         .btn-full { background: var(--neon-green); color: #000; border: none; padding: 22px; border-radius: 50px; width: 100%; font-weight: 900; font-size: 1rem; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.3s; }
         .btn-full:disabled { opacity: 0.5; filter: grayscale(1); }
-
         .cart-fab { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--neon-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(43, 255, 0, 0.4); transform: scale(0); transition: var(--transition); cursor: pointer; }
         .cart-fab.visible { transform: scale(1); }
         .cart-count { position: absolute; top: 0; right: 0; background: #000; color: #fff; width: 24px; height: 24px; border-radius: 50%; font-weight: 900; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; border: 2px solid var(--neon-green); }
-
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; z-index: 2000; opacity: 0; transition: opacity 0.4s; }
         .overlay.active { display: flex; opacity: 1; }
         .modal { background: rgba(15, 15, 15, 0.98); border-radius: 40px; padding: 30px; width: 95%; max-width: 500px; border: 1px solid var(--glass-border); transform: scale(0.9); transition: 0.4s; text-align: center; }
         .overlay.active .modal { transform: scale(1); }
-
         .inp { width: 100%; padding: 18px; border-radius: 20px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 12px; outline: none; }
         .inp:focus { border-color: var(--neon-green); }
-
         .admin-btns { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; gap: 8px; }
         .btn-mini { width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; }
         
@@ -89,10 +100,8 @@
     </style>
 </head>
 <body>
-
 <canvas id="bg-canvas"></canvas>
 <div class="fog"></div>
-
 <header>
     <div class="header-content">
         <div class="logo-text">ПРАЙС</div>
@@ -103,15 +112,11 @@
         </div>
     </div>
 </header>
-
 <div class="cat-bar"><div class="cat-container" id="cats"></div></div>
-
 <main class="main">
     <div class="grid" id="productGrid"></div>
 </main>
-
 <div id="addBtn" onclick="openAddModal()"><i class="fas fa-plus fa-xl"></i></div>
-
 <div class="overlay" id="wheelOverlay" onclick="closeModal('wheelOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
         <h2 style="font-weight:900; text-transform:uppercase; margin-bottom:10px;">LUCKY SMOKIN</h2>
@@ -130,12 +135,10 @@
         <div id="spinResult" style="margin-top:20px; font-weight:900; height: 1.2em; color: var(--neon-green);"></div>
     </div>
 </div>
-
 <div class="cart-fab" id="cartFab" onclick="openModal('cartOverlay')">
     <i class="fas fa-shopping-bag fa-xl"></i>
     <div class="cart-count" id="cartCount">0</div>
 </div>
-
 <div class="overlay" id="cartOverlay" onclick="closeModal('cartOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
         <h2 style="margin-bottom:20px; font-weight:900; text-transform:uppercase; color:var(--neon-green);">КОРЗИНА</h2>
@@ -148,7 +151,6 @@
         <button class="btn-full" style="background:#ff3b30; color:#fff; margin-top:10px; padding:15px; font-size:0.8rem;" onclick="clearCart()">ОЧИСТИТЬ</button>
     </div>
 </div>
-
 <div class="overlay" id="vOverlay" onclick="closeModal('vOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
         <h2 id="vTitle" style="margin-bottom:25px; font-weight:900; text-transform:uppercase;">ВКУСЫ</h2>
@@ -156,7 +158,6 @@
         <button class="btn-full" style="background:#222; color:#fff;" onclick="closeModal('vOverlay')">ЗАКРЫТЬ</button>
     </div>
 </div>
-
 <div class="overlay" id="loginOverlay" onclick="closeModal('loginOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
         <h2 style="margin-bottom:20px; font-weight:900;">АДМИН-ДОСТУП</h2>
@@ -164,7 +165,6 @@
         <button onclick="tryLogin()" class="btn-full">ПОДТВЕРДИТЬ</button>
     </div>
 </div>
-
 <div class="overlay" id="adminOverlay" onclick="closeModal('adminOverlay')">
     <div class="modal" onclick="event.stopPropagation()" style="text-align: left;">
         <h2 id="adminModalTitle" style="margin-bottom:20px; font-weight:900; text-align: center;">ТОВАР</h2>
@@ -174,13 +174,16 @@
             <input type="number" id="pPrice" placeholder="Цена" class="inp" required>
             <input type="text" id="pCat" placeholder="Категория" class="inp" required>
             <input type="text" id="pBtnName" placeholder="Текст кнопки (Вкусы)" class="inp">
+            
             <div style="display:flex; gap:10px; margin-bottom:10px;">
                 <input type="text" id="vInp" class="inp" placeholder="Добавить вкус" style="margin-bottom:0">
                 <button type="button" onclick="addFlavorToList()" class="btn-full" style="margin-top:0; padding:0 20px; width:auto;">+</button>
             </div>
             <div id="adminVList" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:15px;"></div>
+            
             <input type="file" id="fInp" class="inp" accept="image/*">
             <input type="hidden" id="pImg">
+            
             <button type="submit" class="btn-full">СОХРАНИТЬ</button>
         </form>
     </div>
@@ -190,8 +193,6 @@
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
-
-    // Firebase (конфиг из твоего кода)
     const firebaseConfig = {
         apiKey: "AIzaSyD3wDw2ZTTXn2gY467grDOVi9E5vcusilc",
         authDomain: "alexsmok-1dc1c.firebaseapp.com",
@@ -201,17 +202,18 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
     const userId = tg.initDataUnsafe?.user?.id || "test_user";
     const userSpinRef = db.ref('users/' + userId + '/can_spin');
-
     let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
 
-    // --- Анимация фона ---
+    // --- ЛОГИКА АНИМИРОВАННОГО КАНВАСА ---
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
     class Particle {
         constructor() { this.reset(); }
         reset() {
@@ -221,7 +223,10 @@
             this.speedY = Math.random() * 1 + 0.2;
             this.alpha = Math.random() * 0.5;
         }
-        update() { this.y -= this.speedY; if (this.y < -10) this.reset(); }
+        update() {
+            this.y -= this.speedY;
+            if (this.y < -10) this.reset();
+        }
         draw() {
             ctx.fillStyle = `rgba(43, 255, 0, ${this.alpha})`;
             ctx.beginPath();
@@ -229,12 +234,21 @@
             ctx.fill();
         }
     }
-    function initParticles() { particles = []; for (let i = 0; i < 100; i++) particles.push(new Particle()); }
-    function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
+    function initParticles() {
+        particles = [];
+        for (let i = 0; i < 100; i++) particles.push(new Particle());
+    }
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animate);
+    }
     window.addEventListener('resize', resize);
-    resize(); initParticles(); animate();
+    resize();
+    initParticles();
+    animate();
 
-    // --- Логика магазина ---
+    // --- ФУНКЦИИ ПРИЛОЖЕНИЯ ---
     function load() {
         db.ref('products').on('value', snap => {
             const val = snap.val();
@@ -248,15 +262,18 @@
         document.getElementById('cats').innerHTML = cats.map(c => `
             <div class="cat-link ${curCat === c ? 'active' : ''}" onclick="curCat='${c}';render()">${c === 'all' ? 'ВСЁ' : c}</div>
         `).join('');
-
         const filtered = curCat === 'all' ? products : products.filter(p => p.category === curCat);
         document.getElementById('productGrid').innerHTML = filtered.map(p => `
             <div class="card">
-                ${isAdmin ? `<div class="admin-btns">
-                    <button class="btn-mini" style="background:var(--neon-green);" onclick="editProduct('${p.id}')"><i class="fas fa-pen"></i></button>
-                    <button class="btn-mini" style="background:#ff4444; color:#fff;" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
-                </div>` : ''}
-                <div class="card-img-wrapper"><img src="${p.imageData || ''}" class="card-img" onerror="this.src='https://via.placeholder.com/400/111/fff?text=SMOKIN'"></div>
+                ${isAdmin ? `
+                    <div class="admin-btns">
+                        <button class="btn-mini" style="background:var(--neon-green);" onclick="editProduct('${p.id}')"><i class="fas fa-pen"></i></button>
+                        <button class="btn-mini" style="background:#ff4444; color:#fff;" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                ` : ''}
+                <div class="card-img-wrapper">
+                    <img src="${p.imageData || ''}" class="card-img" onerror="this.src='https://via.placeholder.com/400/111/fff?text=SMOKIN'">
+                </div>
                 <div class="card-info">
                     <div class="card-name">${p.name}</div>
                     <div class="card-price">${p.price} ₽</div>
@@ -268,7 +285,6 @@
             </div>`).join('');
     }
 
-    // --- Админка ---
     window.tryLogin = () => {
         if(document.getElementById('pass').value === 'smkn00') {
             isAdmin = true;
@@ -340,7 +356,6 @@
         if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
     };
 
-    // --- Корзина ---
     window.showFlavors = (id) => {
         const p = products.find(x => x.id === id);
         document.getElementById('vTitle').innerText = p.variantButtonName || 'ВКУСЫ';
@@ -379,58 +394,46 @@
     window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
     window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
 
-        // --- ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ ОТПРАВКА ---
+    // ────────────────────────────────────────────────
+    // ИСПРАВЛЕННАЯ ФУНКЦИЯ ОТПРАВКИ ЗАКАЗА (самый надёжный способ 2026)
     window.sendToManager = () => {
-        if(cart.length === 0) return;
-    
-        // 1. Формируем текст сообщения
-        let msg = `🛍 НОВЫЙ ЗАКАЗ\n──────────────\n`;
+        if (cart.length === 0) return;
+
+        let msg = `🛍 НОВЫЙ ЗАКАЗ\n`;
+        msg += `──────────────\n`;
+        
         cart.forEach((item, i) => {
-            msg += `${i + 1}. ${item.name}\n   └ Вкус: ${item.flavor}\n   └ Цена: ${item.price} ₽\n`;
+            msg += `${i + 1}. ${item.name}\n`;
+            msg += `   └ Вкус: ${item.flavor}\n`;
+            msg += `   └ Цена: ${item.price} ₽\n`;
         });
-        msg += `──────────────\n💰 ИТОГО: ${document.getElementById('cartTotal').innerText}`;
-    
-        // 2. Кодируем сообщение
-        const username = "smokinshop174";
-        const encodedMsg = encodeURIComponent(msg);
         
-        // Используем ПРЯМУЮ ссылку для внешнего открытия
-        const fullLink = `https://t.me/${username}?text=${encodedMsg}`;
-    
-        // 3. Пытаемся открыть через специальный метод Telegram
-        // Это заставляет приложение переключиться на чат, не закрывая WebApp принудительно
-        try {
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.openTelegramLink(fullLink);
-            } else {
-                window.open(fullLink, '_blank');
+        const totalValue = document.getElementById('cartTotal').innerText;
+        msg += `──────────────\n`;
+        msg += `💰 ИТОГО: ${totalValue}`;
+
+        const username = "smokinshop174";  // без @
+
+        // Самый стабильный способ в 2025–2026
+        const shareUrl = `https://t.me/share/url?url=@${username}&text=${encodeURIComponent(msg)}`;
+
+        if (window.Telegram?.WebApp) {
+            try {
+                Telegram.WebApp.openLink(shareUrl, { try_instant_view: false });
+            } catch (e) {
+                window.open(shareUrl, '_blank');
             }
-        } catch (e) {
-            window.location.href = fullLink;
+        } else {
+            window.open(shareUrl, '_blank');
         }
-    
-        // 4. Очистка корзины (чтобы при возврате в приложение она была пустой)
-        cart = [];
-        updateCartUI();
-        closeModal('cartOverlay');
-        
-        // ВНИМАНИЕ: Мы НЕ вызываем tg.close()! 
-        // На многих телефонах закрытие приложения убивает процесс перехода по ссылке.
-        // Пользователь сам нажмет "X" или вернется назад, когда отправит сообщение.
-    };
 
-        // Автоматически закрываем Mini App через 500мс, чтобы пользователь увидел чат
-        setTimeout(() => {
-            tg.close();
-        }, 500);
-
-        // Очистка
+        // Очистка корзины после отправки
         cart = [];
         updateCartUI();
         closeModal('cartOverlay');
     };
+    // ────────────────────────────────────────────────
 
-    // --- Колесо ---
     userSpinRef.on('value', (snap) => {
         const canSpin = snap.val();
         document.getElementById('paymentButtons').style.display = canSpin ? 'none' : 'block';
@@ -480,12 +483,12 @@
         openModal('wheelOverlay');
     }
 
-    // --- Утилиты модалок ---
     window.openModal = (id) => { 
         const el = document.getElementById(id);
         el.style.display = 'flex'; 
         setTimeout(() => el.classList.add('active'), 10); 
     };
+
     window.closeModal = (id) => { 
         const el = document.getElementById(id);
         el.classList.remove('active'); 
@@ -496,4 +499,3 @@
 </script>
 </body>
 </html>
-
