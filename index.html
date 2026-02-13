@@ -398,7 +398,7 @@
     // ИСПРАВЛЕННАЯ ФУНКЦИЯ ОТПРАВКИ ЗАКАЗА (самый надёжный способ 2026)
     window.sendToManager = () => {
         if (cart.length === 0) return;
-
+    
         let msg = `🛍 НОВЫЙ ЗАКАЗ\n`;
         msg += `──────────────\n`;
         
@@ -411,28 +411,35 @@
         const totalValue = document.getElementById('cartTotal').innerText;
         msg += `──────────────\n`;
         msg += `💰 ИТОГО: ${totalValue}`;
-
+    
         const username = "smokinshop174";  // без @
-
-        // Самый стабильный способ в 2025–2026
-        const shareUrl = `https://t.me/share/url?url=@${username}&text=${encodeURIComponent(msg)}`;
-
+    
+        // Прямой чат + предзаполненный текст (самый желаемый вариант)
+        let directLink = `https://t.me/${username}?text=${encodeURIComponent(msg)}`;
+    
         if (window.Telegram?.WebApp) {
             try {
-                Telegram.WebApp.openLink(shareUrl, { try_instant_view: false });
+                // Основной способ: openLink должен открыть сразу в чат
+                Telegram.WebApp.openLink(directLink, { try_instant_view: false });
             } catch (e) {
-                window.open(shareUrl, '_blank');
+                console.error('openLink failed:', e);
+                // Fallback 1: tg:// протокол (иногда срабатывает лучше на Android)
+                try {
+                    window.location.href = `tg://resolve?domain=${username}&text=${encodeURIComponent(msg)}`;
+                } catch (e2) {
+                    // Fallback 2: обычное открытие
+                    window.open(directLink, '_blank');
+                }
             }
         } else {
-            window.open(shareUrl, '_blank');
+            window.open(directLink, '_blank');
         }
-
-        // Очистка корзины после отправки
+    
+        // Очистка после попытки (даже если не отправлено — пользователь может вернуться)
         cart = [];
         updateCartUI();
         closeModal('cartOverlay');
     };
-    // ────────────────────────────────────────────────
 
     userSpinRef.on('value', (snap) => {
         const canSpin = snap.val();
@@ -499,3 +506,4 @@
 </script>
 </body>
 </html>
+
