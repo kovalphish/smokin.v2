@@ -430,10 +430,10 @@
     window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
     window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
 
-    // --- ОБНОВЛЕННАЯ ФУНКЦИЯ ОТПРАВКИ ---
+    // --- ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ ФУНКЦИЯ ДЛЯ MINI APP ---
     window.sendToManager = () => {
         if(cart.length === 0) return;
-    
+
         let msg = `🛍 НОВЫЙ ЗАКАЗ\n`;
         msg += `──────────────\n`;
         
@@ -442,29 +442,38 @@
             msg += `   └ Вкус: ${item.flavor}\n`;
             msg += `   └ Цена: ${item.price} ₽\n`;
         });
-    
-        const total = document.getElementById('cartTotal').innerText;
+
+        const totalValue = document.getElementById('cartTotal').innerText;
         msg += `──────────────\n`;
-        msg += `💰 ИТОГО: ${total}`;
-    
-        // Формируем прямую ссылку на твой личный аккаунт
-        const link = `https://t.me/smokinshop174?text=${encodeURIComponent(msg)}`;
-    
-        // ПРОВЕРКА: Если мы внутри Telegram Mini App
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData !== "") {
-            // Метод openTelegramLink — единственный способ заставить Mini App 
-            // открыть чат с пользователем и подставить текст.
-            window.Telegram.WebApp.openTelegramLink(link);
+        msg += `💰 ИТОГО: ${totalValue}`;
+
+        const username = "smokinshop174";
+        const encodedMsg = encodeURIComponent(msg);
+        
+        // Универсальная глубокая ссылка для Telegram
+        const tgDeepLink = `tg://msg_url?url=https://t.me/${username}&text=${encodedMsg}`;
+        const tgWebLink = `https://t.me/${username}?text=${encodedMsg}`;
+
+        // Приоритет отдаем нативному методу Mini App
+        if (window.Telegram && window.Telegram.WebApp) {
+            try {
+                // Пытаемся открыть через встроенный метод
+                window.Telegram.WebApp.openTelegramLink(tgWebLink);
+            } catch (e) {
+                // Если не вышло — перенаправляем через протокол
+                window.location.href = tgDeepLink;
+            }
         } else {
-            // Если открыли просто в браузере (через домен)
-            window.open(link, '_blank');
+            // Обычный браузер
+            window.open(tgWebLink, '_blank');
         }
-    
+
         // Очистка
         cart = [];
         updateCartUI();
         closeModal('cartOverlay');
     };
+
     userSpinRef.on('value', (snap) => {
         const canSpin = snap.val();
         document.getElementById('paymentButtons').style.display = canSpin ? 'none' : 'block';
@@ -529,5 +538,3 @@
 </script>
 </body>
 </html>
-
-
