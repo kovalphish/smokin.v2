@@ -24,28 +24,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; letter-spacing: -0.5px; min-height: 100vh; }
 
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at center, #0a1a05 0%, #000 100%);
-        }
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, #0a1a05 0%, #000 100%); }
+        .fog { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, rgba(43, 255, 0, 0.05), transparent 70%); z-index: -1; pointer-events: none; }
 
-        .fog {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(43, 255, 0, 0.05), transparent 70%);
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        header { 
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border-bottom: 1px solid var(--glass-border); padding: 1.2rem 0; position: sticky; top: 0; z-index: 1000; 
-        }
+        header { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid var(--glass-border); padding: 1.2rem 0; position: sticky; top: 0; z-index: 1000; }
         .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
         .logo-text { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; color: #fff; }
         .nav-right { display: flex; align-items: center; gap: 15px; }
@@ -59,23 +41,14 @@
         .cat-bar { padding: 20px 0; overflow-x: auto; scrollbar-width: none; position: relative; z-index: 10; }
         .cat-bar::-webkit-scrollbar { display: none; }
         .cat-container { display: flex; gap: 12px; padding: 0 20px; max-width: 1400px; margin: 0 auto; }
-        .cat-link { 
-            padding: 12px 26px; border-radius: 50px; background: var(--glass); border: 1px solid var(--glass-border);
-            color: #fff; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: var(--transition);
-            white-space: nowrap;
-        }
+        .cat-link { padding: 12px 26px; border-radius: 50px; background: var(--glass); border: 1px solid var(--glass-border); color: #fff; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: var(--transition); white-space: nowrap; }
         .cat-link.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 0 0 20px rgba(43, 255, 0, 0.3); }
 
         .main { max-width: 1400px; margin: 0 auto; padding: 0 15px 120px; position: relative; z-index: 5; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 
-        .card { 
-            background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; 
-            display: flex; flex-direction: column; opacity: 0; transform: translateY(20px);
-            animation: appear 0.6s forwards; transition: transform 0.3s; position: relative;
-        }
+        .card { background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; display: flex; flex-direction: column; opacity: 0; transform: translateY(20px); animation: appear 0.6s forwards; transition: transform 0.3s; position: relative; }
         @keyframes appear { to { opacity: 1; transform: translateY(0); } }
 
         .card-img-wrapper { width: 100%; height: 130px; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -111,7 +84,6 @@
 
         .admin-btns { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; gap: 8px; }
         .btn-mini { width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; }
-        
         #addBtn { position: fixed; bottom: 30px; left: 30px; width: 70px; height: 70px; background: #fff; color: #000; border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(255,255,255,0.2); cursor: pointer; }
     </style>
 </head>
@@ -171,7 +143,7 @@
             <span style="opacity:0.6;">ИТОГО</span>
             <span style="font-weight:900; font-size:1.8rem;" id="cartTotal">0 ₽</span>
         </div>
-        <button class="btn-full" onclick="sendToManager()">ОФОРМИТЬ В TG</button>
+        <button class="btn-full" id="checkoutBtn" onclick="sendToManager()">ОФОРМИТЬ В TG</button>
         <button class="btn-full" style="background:#ff3b30; color:#fff; margin-top:10px; padding:15px; font-size:0.8rem;" onclick="clearCart()">ОЧИСТИТЬ</button>
     </div>
 </div>
@@ -201,16 +173,13 @@
             <input type="number" id="pPrice" placeholder="Цена" class="inp" required>
             <input type="text" id="pCat" placeholder="Категория" class="inp" required>
             <input type="text" id="pBtnName" placeholder="Текст кнопки (Вкусы)" class="inp">
-            
             <div style="display:flex; gap:10px; margin-bottom:10px;">
                 <input type="text" id="vInp" class="inp" placeholder="Добавить вкус" style="margin-bottom:0">
                 <button type="button" onclick="addFlavorToList()" class="btn-full" style="margin-top:0; padding:0 20px; width:auto;">+</button>
             </div>
             <div id="adminVList" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:15px;"></div>
-            
             <input type="file" id="fInp" class="inp" accept="image/*">
             <input type="hidden" id="pImg">
-            
             <button type="submit" class="btn-full">СОХРАНИТЬ</button>
         </form>
     </div>
@@ -240,12 +209,7 @@
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
-
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     class Particle {
         constructor() { this.reset(); }
         reset() {
@@ -255,10 +219,7 @@
             this.speedY = Math.random() * 1 + 0.2;
             this.alpha = Math.random() * 0.5;
         }
-        update() {
-            this.y -= this.speedY;
-            if (this.y < -10) this.reset();
-        }
+        update() { this.y -= this.speedY; if (this.y < -10) this.reset(); }
         draw() {
             ctx.fillStyle = `rgba(43, 255, 0, ${this.alpha})`;
             ctx.beginPath();
@@ -266,22 +227,10 @@
             ctx.fill();
         }
     }
-
-    function initParticles() {
-        particles = [];
-        for (let i = 0; i < 100; i++) particles.push(new Particle());
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(animate);
-    }
-
+    function initParticles() { particles = []; for (let i = 0; i < 100; i++) particles.push(new Particle()); }
+    function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
     window.addEventListener('resize', resize);
-    resize();
-    initParticles();
-    animate();
+    resize(); initParticles(); animate();
 
     // --- ФУНКЦИИ ПРИЛОЖЕНИЯ ---
     function load() {
@@ -294,22 +243,15 @@
 
     function render() {
         const cats = ['all', ...new Set(products.map(p => p.category))];
-        document.getElementById('cats').innerHTML = cats.map(c => `
-            <div class="cat-link ${curCat === c ? 'active' : ''}" onclick="curCat='${c}';render()">${c === 'all' ? 'ВСЁ' : c}</div>
-        `).join('');
-
+        document.getElementById('cats').innerHTML = cats.map(c => `<div class="cat-link ${curCat === c ? 'active' : ''}" onclick="curCat='${c}';render()">${c === 'all' ? 'ВСЁ' : c}</div>`).join('');
         const filtered = curCat === 'all' ? products : products.filter(p => p.category === curCat);
         document.getElementById('productGrid').innerHTML = filtered.map(p => `
             <div class="card">
-                ${isAdmin ? `
-                    <div class="admin-btns">
-                        <button class="btn-mini" style="background:var(--neon-green);" onclick="editProduct('${p.id}')"><i class="fas fa-pen"></i></button>
-                        <button class="btn-mini" style="background:#ff4444; color:#fff;" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
-                    </div>
-                ` : ''}
-                <div class="card-img-wrapper">
-                    <img src="${p.imageData || ''}" class="card-img" onerror="this.src='https://via.placeholder.com/400/111/fff?text=SMOKIN'">
-                </div>
+                ${isAdmin ? `<div class="admin-btns">
+                    <button class="btn-mini" style="background:var(--neon-green);" onclick="editProduct('${p.id}')"><i class="fas fa-pen"></i></button>
+                    <button class="btn-mini" style="background:#ff4444; color:#fff;" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
+                </div>` : ''}
+                <div class="card-img-wrapper"><img src="${p.imageData || ''}" class="card-img" onerror="this.src='https://via.placeholder.com/400/111/fff?text=SMOKIN'"></div>
                 <div class="card-info">
                     <div class="card-name">${p.name}</div>
                     <div class="card-price">${p.price} ₽</div>
@@ -420,7 +362,7 @@
                 <div style="text-align: left;">${item.name} <br><small style="opacity:0.5">${item.flavor}</small></div>
                 <div style="display:flex; align-items:center; gap:15px;">
                     <span>${item.price}₽</span>
-                    <i class="fas fa-trash" style="color:#ff4444" onclick="removeItem(${i})"></i>
+                    <i class="fas fa-trash" style="color:#ff4444; cursor:pointer;" onclick="removeItem(${i})"></i>
                 </div>
             </div>`; 
         }).join('');
@@ -430,48 +372,33 @@
     window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
     window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
 
-    // --- ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ ФУНКЦИЯ ДЛЯ MINI APP ---
+    // --- ИСПРАВЛЕННАЯ ФУНКЦИЯ ОТПРАВКИ ---
     window.sendToManager = () => {
         if(cart.length === 0) return;
 
-        let msg = `🛍 НОВЫЙ ЗАКАЗ\n`;
-        msg += `──────────────\n`;
-        
+        let msg = `🛍 НОВЫЙ ЗАКАЗ\n──────────────\n`;
         cart.forEach((item, i) => {
-            msg += `${i + 1}. ${item.name}\n`;
-            msg += `   └ Вкус: ${item.flavor}\n`;
-            msg += `   └ Цена: ${item.price} ₽\n`;
+            msg += `${i + 1}. ${item.name} (${item.flavor}) — ${item.price} ₽\n`;
         });
-
-        const totalValue = document.getElementById('cartTotal').innerText;
-        msg += `──────────────\n`;
-        msg += `💰 ИТОГО: ${totalValue}`;
+        msg += `──────────────\n💰 ИТОГО: ${document.getElementById('cartTotal').innerText}`;
 
         const username = "smokinshop174";
         const encodedMsg = encodeURIComponent(msg);
-        
-        // Универсальная глубокая ссылка для Telegram
-        const tgDeepLink = `tg://msg_url?url=https://t.me/${username}&text=${encodedMsg}`;
-        const tgWebLink = `https://t.me/${username}?text=${encodedMsg}`;
+        const link = `https://t.me/${username}?text=${encodedMsg}`;
 
-        // Приоритет отдаем нативному методу Mini App
-        if (window.Telegram && window.Telegram.WebApp) {
-            try {
-                // Пытаемся открыть через встроенный метод
-                window.Telegram.WebApp.openTelegramLink(tgWebLink);
-            } catch (e) {
-                // Если не вышло — перенаправляем через протокол
-                window.location.href = tgDeepLink;
-            }
+        // Важное изменение: закрываем модалку перед переходом, чтобы не "висла"
+        closeModal('cartOverlay');
+
+        // Используем метод Telegram WebApp, который разрешен везде
+        if (tg.openTelegramLink) {
+            tg.openTelegramLink(link);
         } else {
-            // Обычный браузер
-            window.open(tgWebLink, '_blank');
+            window.open(link, '_blank');
         }
-
-        // Очистка
+        
+        // Очищаем корзину после клика
         cart = [];
         updateCartUI();
-        closeModal('cartOverlay');
     };
 
     userSpinRef.on('value', (snap) => {
