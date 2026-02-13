@@ -229,31 +229,40 @@
         }
     });
 
-    // ОПЛАТА ЗВЕЗДАМИ
+// ОПЛАТА ЗВЕЗДАМИ
     async function startSpin(type) {
         const result = document.getElementById('spinResult');
         
         if (type === 'stars') {
             result.innerText = "ГЕНЕРАЦИЯ ЧЕКА ⭐...";
             try {
-                // Прямой вызов API на Vercel
-                const response = await fetch(`/api/getInvoice?userId=${userId}`);
+                // ИСПОЛЬЗУЕМ ПОЛНЫЙ URL ПРОЕКТА
+                const response = await fetch(`https://smokin-v2.vercel.app/api/getInvoice?userId=${userId}`);
+                
+                // Проверяем, что сервер вообще ответил
+                if (!response.ok) {
+                    throw new Error('Ошибка сети или сервера');
+                }
+
                 const data = await response.json();
 
                 if (data.link) {
                     tg.openInvoice(data.link, function(status) {
                         if (status === 'paid') {
-                            result.innerText = "УСПЕШНО! ПРОВЕРЯЕМ БАЗУ...";
+                            result.innerText = "УСПЕШНО! ЖДЕМ ОБНОВЛЕНИЯ...";
+                            // Здесь можно добавить проверку базы через пару секунд
+                        } else if (status === 'cancelled') {
+                            result.innerText = "ОПЛАТА ОТМЕНЕНА";
                         } else {
-                            result.innerText = "ОПЛАТА НЕ ЗАВЕРШЕНА";
+                            result.innerText = "СТАТУС: " + status;
                         }
                     });
                 } else {
-                    result.innerText = "ОШИБКА: " + (data.error || "Нет ответа");
+                    result.innerText = "ОШИБКА: " + (data.error || "Нет ссылки");
                 }
             } catch (e) {
-                result.innerText = "ОШИБКА СЕРВЕРА";
-                console.error(e);
+                result.innerText = "ОШИБКА СОЕДИНЕНИЯ";
+                console.error("Fetch Error:", e);
             }
         } else if (type === 'money') {
             window.open("https://www.tbank.ru/rm/vash_nomer", '_blank');
@@ -364,3 +373,4 @@
 </script>
 </body>
 </html>
+
