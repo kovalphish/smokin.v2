@@ -3,7 +3,7 @@ const axios = require('axios');
 
 export default async function handler(req, res) {
     const { userId } = req.query;
-    const BOT_TOKEN = "8470694002:AAGYITMQ3yNIuoP3w7MqQmnmWmRF66kzUd0"; // <--- ВСТАВЬ ТОКЕН ОТ @BotFather
+    const BOT_TOKEN = "8470694002:AAFht8GbM5QJEItnociSjtOgaYf0jQEstIo"; // <--- ВСТАВЬ ТОКЕН ОТ @BotFather
 
     try {
         const response = await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`, {
@@ -18,3 +18,4 @@ export default async function handler(req, res) {
         res.status(500).json({ error: e.message });
     }
 }
+
