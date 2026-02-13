@@ -234,20 +234,25 @@ async function startSpin(type) {
     if (type === 'stars') {
         result.innerText = "ГЕНЕРАЦИЯ ЧЕКА ⭐...";
         try {
-            // ИСПОЛЬЗУЕМ ПОЛНЫЙ URL
             const resp = await fetch(`https://smokin-v2.vercel.app/api/getInvoice?userId=${userId}`);
+            
+            // Если сервер вернул ошибку (400 или 500)
+            if (!resp.ok) {
+                const errorData = await resp.json();
+                result.innerText = "ОШИБКА: " + (errorData.error || "Неизвестно");
+                return;
+            }
+
             const data = await resp.json();
 
             if (data.link) {
                 tg.openInvoice(data.link, (status) => {
-                    if (status === 'paid') result.innerText = "ОПЛАЧЕНО!";
-                    else result.innerText = "ОТМЕНЕНО";
+                    if (status === 'paid') result.innerText = "ОПЛАЧЕНО! КРУТИТЕ!";
+                    else result.innerText = "ОПЛАТА: " + status;
                 });
-            } else {
-                result.innerText = "ОШИБКА: " + (data.error || "Нет ссылки");
             }
         } catch (e) {
-            result.innerText = "ОШИБКА СОЕДИНЕНИЯ";
+            result.innerText = "ОШИБКА СЕТИ";
             console.error(e);
         }
     } else if (type === 'money') {
@@ -358,5 +363,6 @@ async function startSpin(type) {
 </script>
 </body>
 </html>
+
 
 
