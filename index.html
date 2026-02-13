@@ -18,113 +18,110 @@
             --neon-green: #2bff00;
             --glass: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.12);
+            --transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
+        /* Убираем черточки везде принудительно */
         * { 
             margin: 0; padding: 0; box-sizing: border-box; 
             font-family: 'Inter', sans-serif; 
-            -webkit-tap-highlight-color: transparent;
-            text-decoration: none !important;
+            -webkit-tap-highlight-color: transparent; 
+            text-decoration: none !important; 
         }
         
-        body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; }
+        body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; letter-spacing: -0.5px; min-height: 100vh; }
 
-        /* ЭФФЕКТ ОГНЯ НА ФОНЕ */
-        .fire-wrapper {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; background: #000; overflow: hidden;
+        /* ОГНЕННЫЙ ФОН */
+        .bg-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: #000; }
+        .circle { 
+            position: absolute; border-radius: 50%; background: var(--neon-green); 
+            filter: blur(80px); opacity: 0.15; animation: float 15s infinite alternate ease-in-out; 
         }
-        .fire-blob {
-            position: absolute; bottom: -20%; width: 70vw; height: 70vw;
-            background: radial-gradient(circle, rgba(43,255,0,0.15) 0%, rgba(0,0,0,0) 70%);
-            filter: blur(80px); animation: flame Move 12s infinite alternate ease-in-out;
-        }
-        @keyframes flameMove {
-            0% { transform: translate(-10%, 10%) scale(1); }
-            100% { transform: translate(30%, -10%) scale(1.3); }
+        @keyframes float { 
+            0% { transform: translate(-15%, -15%) scale(1); opacity: 0.1; } 
+            100% { transform: translate(30%, 20%) scale(1.4); opacity: 0.2; } 
         }
 
         header { 
-            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border-bottom: 1px solid var(--glass-border); padding: 1.2rem 0; position: sticky; top: 0; z-index: 1000; 
         }
         .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
-        .logo-text { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; }
-
-        .cat-bar { padding: 20px 0; overflow-x: auto; scrollbar-width: none; }
-        .cat-container { display: flex; gap: 12px; padding: 0 20px; max-width: 1400px; margin: 0 auto; }
-        .cat-link { 
-            padding: 12px 26px; border-radius: 50px; background: var(--glass); border: 1px solid var(--glass-border);
-            color: #fff; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: 0.4s;
-        }
-        .cat-link.active { background: var(--neon-green); color: #000 !important; transform: scale(1.1); }
-
-        /* КАРТОЧКИ И АНИМАЦИЯ ПОДГРУЗКИ */
-        .main { max-width: 1400px; margin: 0 auto; padding: 0 15px 120px; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-
-        .card { 
-            background: var(--glass); border-radius: 35px; border: 1px solid var(--glass-border); 
-            overflow: hidden; display: flex; flex-direction: column; position: relative;
-            opacity: 0; transform: translateY(50px); transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        .card.visible { opacity: 1; transform: translateY(0); }
-
-        .card-img-wrapper { width: 100%; height: 180px; background: #0a0a0a; overflow: hidden; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .card:hover .card-img { transform: scale(1.1); }
+        .logo-text { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; color: #fff; }
+        .nav-right { display: flex; align-items: center; gap: 15px; }
         
-        .card-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .card-name { font-weight: 900; font-size: 1rem; text-transform: uppercase; margin-bottom: 8px; }
-        .card-price { font-weight: 900; font-size: 1.4rem; color: var(--neon-green); margin-bottom: 12px; }
-
-        .btn-action { 
-            background: var(--neon-green); color: #000 !important; border: none; padding: 15px; 
-            border-radius: 50px; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; 
+        /* Кнопка КАНАЛ без черточек */
+        .btn-channel { 
+            background: #fff; color: #000 !important; padding: 10px 22px; border-radius: 50px; 
+            font-weight: 900; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s;
+            display: inline-block; border: none;
         }
 
-        /* ПК СТИЛИ */
-        @media (min-width: 1024px) {
-            .grid { grid-template-columns: repeat(4, 1fr); gap: 25px; }
-            .card-img-wrapper { height: 260px; }
-            .main { transition: margin-right 0.5s; }
-        }
+        .gift-icon { color: var(--neon-green); cursor: pointer; transition: 0.3s; }
+        .admin-icon { opacity: 0.3; cursor: pointer; transition: 0.3s; color: #fff; }
+        .admin-icon.active { opacity: 1; color: var(--neon-green); }
 
-        /* ПК АДМИНКА СПРАВА */
-        #adminSidebar {
-            position: fixed; right: -450px; top: 0; width: 450px; height: 100vh;
-            background: #080808; border-left: 2px solid var(--neon-green); z-index: 2500;
-            padding: 40px; transition: 0.5s; overflow-y: auto;
+        .cat-bar { padding: 15px 0; overflow-x: auto; scrollbar-width: none; }
+        .cat-container { display: flex; gap: 10px; padding: 0 20px; max-width: 1400px; margin: 0 auto; }
+        .cat-link { 
+            padding: 10px 22px; border-radius: 50px; background: var(--glass); border: 1px solid var(--glass-border);
+            color: #fff; font-weight: 900; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; transition: 0.3s;
+            white-space: nowrap;
         }
-        body.admin-open #adminSidebar { right: 0; }
-        body.admin-open .main { margin-right: 450px; }
+        .cat-link.active { background: var(--neon-green); color: #000 !important; border-color: var(--neon-green); }
 
+        .main { max-width: 1400px; margin: 0 auto; padding: 0 15px 100px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        @media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 20px; } }
+
+        /* КАРТОЧКА: Исправлено растягивание */
+        .card { 
+            background: var(--glass); backdrop-filter: blur(15px); border-radius: 25px; 
+            border: 1px solid var(--glass-border); overflow: hidden; display: flex; flex-direction: column;
+            opacity: 0; transform: translateY(20px); animation: appear 0.5s forwards;
+        }
+        @keyframes appear { to { opacity: 1; transform: translateY(0); } }
+
+        .card-img-wrapper { width: 100%; height: 150px; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        @media (max-width: 480px) { .card-img-wrapper { height: 130px; } }
+        .card-img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .card-info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-name { font-weight: 900; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 6px; min-height: 2.4em; overflow: hidden; }
+        .card-price { font-weight: 900; font-size: 1.1rem; color: var(--neon-green); }
+        .btn-variants { background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; padding: 10px; border-radius: 50px; font-weight: 900; font-size: 0.65rem; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
+
+        /* РУЛЕТКА */
+        .slot-window { position: relative; width: 100%; height: 140px; background: #080808; border-radius: 20px; border: 1px solid #222; overflow: hidden; margin: 15px 0; }
+        .slot-track { position: absolute; top: 0; left: 0; width: 100%; }
+        .slot-item { height: 140px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 900; text-transform: uppercase; color: #fff; }
+
+        .btn-full { background: var(--neon-green); color: #000 !important; border: none; padding: 20px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
+        
         /* МОДАЛКИ */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; z-index: 2000; }
-        .modal { background: #0a0a0a; border-radius: 40px; padding: 35px; width: 95%; max-width: 500px; border: 1px solid var(--glass-border); text-align: center; }
+        .overlay.active { display: flex; }
+        .modal { background: #0f0f0f; border-radius: 35px; padding: 25px; width: 92%; max-width: 450px; border: 1px solid var(--glass-border); text-align: center; }
 
-        .admin-controls { position: absolute; top: 15px; right: 15px; z-index: 10; display: flex; gap: 8px; }
-        .btn-mini { width: 35px; height: 35px; border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-
-        #addBtn { position: fixed; bottom: 35px; left: 35px; width: 75px; height: 75px; background: #fff !important; color: #000 !important; border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 1500; }
-        .cart-fab { position: fixed; bottom: 35px; right: 35px; width: 80px; height: 80px; background: var(--neon-green); border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 1500; }
+        #addBtn { position: fixed; bottom: 25px; left: 25px; width: 65px; height: 65px; background: #fff; color: #000; border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 1500; }
+        .cart-fab { position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; background: var(--neon-green); border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 1500; }
         .cart-fab.visible { display: flex; }
     </style>
 </head>
 <body>
 
-<div class="fire-wrapper">
-    <div class="fire-blob" style="left: -10%;"></div>
-    <div class="fire-blob" style="right: -10%; animation-delay: -6s;"></div>
+<div class="bg-fixed">
+    <div class="circle" style="width: 40vw; height: 40vw; left: -10%; top: 10%;"></div>
+    <div class="circle" style="width: 50vw; height: 50vw; right: -10%; bottom: 5%; background: #004400;"></div>
 </div>
 
 <header>
     <div class="header-content">
         <div class="logo-text">ПРАЙС</div>
-        <div class="nav-right" style="display:flex; align-items:center; gap:20px;">
-            <i class="fas fa-gift fa-2xl" style="color:var(--neon-green)!important; cursor:pointer;" onclick="openWheel()"></i>
-            <a href="https://t.me/smokin174" target="_blank" style="background:#fff; color:#000!important; padding:12px 25px; border-radius:50px; font-weight:900;">КАНАЛ</a>
-            <i class="fas fa-fingerprint fa-2xl" id="adminLock" style="opacity:0.2; cursor:pointer; color:#fff!important;" onclick="openModal('loginOverlay')"></i>
+        <div class="nav-right">
+            <i class="fas fa-gift fa-2xl gift-icon" onclick="openWheel()"></i>
+            <a href="https://t.me/smokin174" target="_blank" class="btn-channel">КАНАЛ</a>
+            <i class="fas fa-fingerprint fa-2xl admin-icon" id="adminLock" onclick="openModal('loginOverlay')"></i>
         </div>
     </div>
 </header>
@@ -135,54 +132,59 @@
     <div class="grid" id="productGrid"></div>
 </main>
 
-<div id="addBtn" onclick="openEditor()"><i class="fas fa-plus fa-2xl"></i></div>
+<div id="addBtn" onclick="openAddModal()"><i class="fas fa-plus fa-xl"></i></div>
 
-<div id="adminSidebar">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-        <h2 style="font-weight:900;">РЕДАКТОР</h2>
-        <i class="fas fa-times fa-2xl" onclick="closeEditor()" style="cursor:pointer;"></i>
-    </div>
-    <form id="pForm">
-        <input type="hidden" id="pId">
-        <input type="file" id="fInp" class="inp" style="background: #111; width: 100%; padding: 15px; border-radius: 15px; margin-bottom: 10px;" accept="image/*">
-        <input type="hidden" id="pImg">
-        <input type="text" id="pName" placeholder="Название" style="width: 100%; padding: 18px; border-radius: 20px; background: #111; border: 1px solid #333; color: #fff; margin-bottom: 15px;" required>
-        <input type="number" id="pPrice" placeholder="Цена" style="width: 100%; padding: 18px; border-radius: 20px; background: #111; border: 1px solid #333; color: #fff; margin-bottom: 15px;" required>
-        <input type="text" id="pCat" placeholder="Категория" style="width: 100%; padding: 18px; border-radius: 20px; background: #111; border: 1px solid #333; color: #fff; margin-bottom: 15px;" required>
-        <button type="submit" style="width: 100%; padding: 20px; border-radius: 50px; background: var(--neon-green); color: #000; border: none; font-weight: 900; cursor: pointer;">СОХРАНИТЬ</button>
-    </form>
-</div>
-
-<div class="overlay" id="loginOverlay" onclick="closeModal('loginOverlay')">
+<div class="overlay" id="wheelOverlay" onclick="closeModal('wheelOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
-        <h2 style="margin-bottom:20px; font-weight:900;">ADMIN LOGIN</h2>
-        <input type="password" id="pass" style="width: 100%; padding: 18px; border-radius: 20px; background: #111; border: 1px solid #333; color: #fff; margin-bottom: 15px; text-align: center;" placeholder="ПАРОЛЬ">
-        <button onclick="tryLogin()" style="width: 100%; padding: 20px; border-radius: 50px; background: var(--neon-green); color: #000; border: none; font-weight: 900;">ВОЙТИ</button>
-    </div>
-</div>
-
-<div class="overlay" id="vOverlay" onclick="closeModal('vOverlay')">
-    <div class="modal" onclick="event.stopPropagation()">
-        <h2 id="vTitle" style="margin-bottom:20px; font-weight:900;"></h2>
-        <div id="vList" style="max-height:50vh; overflow-y:auto;"></div>
-        <button class="btn-action" style="margin-top:20px; width:100%;" onclick="closeModal('vOverlay')">ЗАКРЫТЬ</button>
+        <h2 style="font-weight:900; margin-bottom:5px;">LUCKY SMOKIN</h2>
+        <p id="spinStatusText" style="font-size:0.7rem; opacity:0.6; margin-bottom:10px;">ЗАГРУЗКА...</p>
+        <div class="slot-window">
+            <div id="slotTrack" class="slot-track"></div>
+        </div>
+        <div id="paymentButtons">
+            <button class="btn-full" style="background:#0088cc; color:#fff!important" onclick="startSpin()">КУПИТЬ СПИН 10 ⭐</button>
+        </div>
+        <button class="btn-full" id="spinBtn" style="display:none" onclick="runSpinAnimation()">КРУТИТЬ</button>
+        <div id="spinResult" style="margin-top:15px; font-weight:900; color:var(--neon-green); min-height:1.2em;"></div>
     </div>
 </div>
 
 <div class="cart-fab" id="cartFab" onclick="openModal('cartOverlay')">
-    <i class="fas fa-shopping-bag fa-2xl" style="color:#000!important"></i>
-    <div style="position:absolute; top:-5px; right:-5px; background:#000; color:var(--neon-green); width:28px; height:28px; border-radius:50%; font-weight:900; display:flex; align-items:center; justify-content:center; border:2px solid var(--neon-green);" id="cartCount">0</div>
+    <i class="fas fa-shopping-bag fa-xl" style="color:#000!important"></i>
+    <div style="position:absolute; top:0; right:0; background:#000; color:#fff; width:22px; height:22px; border-radius:50%; font-size:0.7rem; display:flex; align-items:center; justify-content:center; border:2px solid var(--neon-green);" id="cartCount">0</div>
 </div>
 
 <div class="overlay" id="cartOverlay" onclick="closeModal('cartOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
-        <h2 style="margin-bottom:20px; font-weight:900; color:var(--neon-green);">КОРЗИНА</h2>
-        <div id="cartItems" style="max-height:40vh; overflow-y:auto; margin-bottom:15px; text-align:left;"></div>
-        <div style="display:flex; justify-content:space-between; font-weight:900; font-size:1.6rem; padding-top:15px; border-top:1px solid #333;">
-            <span>ИТОГО:</span>
-            <span id="cartTotal">0 ₽</span>
+        <h2 style="margin-bottom:15px; font-weight:900; color:var(--neon-green);">КОРЗИНА</h2>
+        <div id="cartItems" style="max-height:40vh; overflow-y:auto; text-align:left;"></div>
+        <div style="display:flex; justify-content:space-between; padding:15px 0; border-top:1px solid #222; margin-top:10px;">
+            <span style="font-weight:900;">ИТОГО:</span>
+            <span style="font-weight:900; font-size:1.5rem;" id="cartTotal">0 ₽</span>
         </div>
-        <button class="btn-action" style="margin-top:25px; width:100%;" onclick="sendOrder()">ЗАКАЗАТЬ</button>
+        <button class="btn-full" onclick="sendToManager()">ОФОРМИТЬ</button>
+    </div>
+</div>
+
+<div class="overlay" id="adminOverlay" onclick="closeModal('adminOverlay')">
+    <div class="modal" onclick="event.stopPropagation()" style="text-align:left;">
+        <h2 id="adminModalTitle" style="text-align:center; margin-bottom:20px;">ТОВАР</h2>
+        <form id="pForm">
+            <input type="hidden" id="pId">
+            <input type="text" id="pName" placeholder="Название" class="inp" required style="width:100%; padding:15px; background:#000; border:1px solid #333; color:#fff; border-radius:15px; margin-bottom:10px;">
+            <input type="number" id="pPrice" placeholder="Цена" class="inp" required style="width:100%; padding:15px; background:#000; border:1px solid #333; color:#fff; border-radius:15px; margin-bottom:10px;">
+            <input type="text" id="pCat" placeholder="Категория" class="inp" required style="width:100%; padding:15px; background:#000; border:1px solid #333; color:#fff; border-radius:15px; margin-bottom:10px;">
+            <input type="file" id="fInp" style="margin-bottom:15px;">
+            <input type="hidden" id="pImg">
+            <button type="submit" class="btn-full">СОХРАНИТЬ</button>
+        </form>
+    </div>
+</div>
+
+<div class="overlay" id="loginOverlay" onclick="closeModal('loginOverlay')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <input type="password" id="pass" class="inp" placeholder="ПАРОЛЬ" style="width:100%; padding:15px; text-align:center; background:#000; border:1px solid #333; color:#fff; border-radius:15px;">
+        <button onclick="tryLogin()" class="btn-full">ВОЙТИ</button>
     </div>
 </div>
 
@@ -190,7 +192,6 @@
     const tg = window.Telegram.WebApp;
     tg.ready(); tg.expand();
 
-    // Firebase (конфиг тот же)
     const firebaseConfig = {
         apiKey: "AIzaSyD3wDw2ZTTXn2gY467grDOVi9E5vcusilc",
         authDomain: "alexsmok-1dc1c.firebaseapp.com",
@@ -201,13 +202,10 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    let products = [], cart = [], curCat = 'all', isAdmin = false;
+    const userId = tg.initDataUnsafe?.user?.id || "test_user";
+    const userSpinRef = db.ref('users/' + userId + '/can_spin');
 
-    // РУЛЕТКА
-    window.openWheel = () => {
-        alert("Рулетка Lucky Smokin запускается...");
-        // Тут вызывай свою функцию или ссылку на рулетку
-    };
+    let products = [], cart = [], curCat = 'all', isAdmin = false;
 
     function load() {
         db.ref('products').on('value', snap => {
@@ -218,73 +216,102 @@
     }
 
     function render() {
-        // Категории
         const cats = ['all', ...new Set(products.map(p => p.category))];
         document.getElementById('cats').innerHTML = cats.map(c => `
             <div class="cat-link ${curCat === c ? 'active' : ''}" onclick="curCat='${c}';render()">${c === 'all' ? 'ВСЁ' : c.toUpperCase()}</div>
         `).join('');
 
-        // Товары
         const filtered = curCat === 'all' ? products : products.filter(p => p.category === curCat);
-        document.getElementById('productGrid').innerHTML = filtered.map((p, i) => `
-            <div class="card" data-index="${i}">
-                ${isAdmin ? `
-                    <div class="admin-controls">
-                        <button class="btn-mini" style="background:var(--neon-green);" onclick="editP('${p.id}')"><i class="fas fa-pen"></i></button>
-                        <button class="btn-mini" style="background:#ff3b30;" onclick="delP('${p.id}')"><i class="fas fa-trash"></i></button>
-                    </div>
-                ` : ''}
-                <div class="card-img-wrapper"><img src="${p.imageData}" class="card-img"></div>
+        document.getElementById('productGrid').innerHTML = filtered.map(p => `
+            <div class="card">
+                <div class="card-img-wrapper"><img src="${p.imageData}" class="card-img" onerror="this.src='https://via.placeholder.com/200/111/fff?text=SMOKIN'"></div>
                 <div class="card-info">
                     <div class="card-name">${p.name}</div>
                     <div class="card-price">${p.price} ₽</div>
-                    <button class="btn-action" onclick="addToCart('${p.id}')">В КОРЗИНУ</button>
+                    <button class="btn-variants" style="background:var(--neon-green); color:#000!important; border:none;" onclick="addToCart('${p.id}')">В КОРЗИНУ</button>
                 </div>
             </div>`).join('');
-        
-        // Запуск анимации появления
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.card').forEach(card => observer.observe(card));
     }
 
-    // Логика Админа
-    window.tryLogin = () => {
-        if(document.getElementById('pass').value === 'smkn00') {
-            isAdmin = true;
-            document.getElementById('adminLock').style.opacity = '1';
-            document.getElementById('adminLock').style.color = 'var(--neon-green)';
-            document.getElementById('addBtn').style.display = 'flex';
-            closeModal('loginOverlay'); render();
-        }
+    // РУЛЕТКА ЛОГИКА
+    userSpinRef.on('value', snap => {
+        const can = snap.val();
+        document.getElementById('paymentButtons').style.display = can ? 'none' : 'block';
+        document.getElementById('spinBtn').style.display = can ? 'block' : 'none';
+        document.getElementById('spinStatusText').innerText = can ? "ОПЛАЧЕНО!" : "СПИН СТОИТ 10⭐";
+    });
+
+    window.openWheel = () => {
+        const track = document.getElementById('slotTrack');
+        let h = '';
+        for(let i=0; i<60; i++) h += `<div class="slot-item">${['GIFT','ПУСТО','5%','ПУСТО','10%'][i%5]}</div>`;
+        track.innerHTML = h;
+        track.style.transition = 'none';
+        track.style.transform = 'translateY(0)';
+        document.getElementById('spinResult').innerText = '';
+        openModal('wheelOverlay');
     };
 
-    window.openEditor = () => { document.body.classList.add('admin-open'); };
-    window.closeEditor = () => { document.body.classList.remove('admin-open'); };
+    window.runSpinAnimation = () => {
+        const track = document.getElementById('slotTrack');
+        const btn = document.getElementById('spinBtn');
+        btn.disabled = true;
+        const winIdx = 45;
+        track.style.transition = 'transform 4s cubic-bezier(0.1, 0, 0.1, 1)';
+        track.style.transform = `translateY(-${winIdx * 140}px)`;
+        setTimeout(() => {
+            document.getElementById('spinResult').innerText = "ПОПРОБУЙТЕ ЕЩЕ РАЗ!";
+            userSpinRef.set(false);
+            btn.disabled = false;
+        }, 4200);
+    };
 
+    async function startSpin() {
+        try {
+            const resp = await fetch(`https://smokin-v2.vercel.app/api/getInvoice?userId=${userId}`);
+            const data = await resp.json();
+            if(data.link) tg.openInvoice(data.link, (s) => { if(s==='paid') console.log('Оплачено'); });
+        } catch(e) { alert('Ошибка счета'); }
+    }
+
+    // КОРЗИНА
     window.addToCart = (id) => {
         const p = products.find(x => x.id === id);
         cart.push(p);
-        updateCart();
-        tg.HapticFeedback.impactOccurred('medium');
+        updateCartUI();
+        tg.HapticFeedback.impactOccurred('light');
     };
 
-    function updateCart() {
+    function updateCartUI() {
         document.getElementById('cartCount').innerText = cart.length;
         document.getElementById('cartFab').classList.toggle('visible', cart.length > 0);
         let t = 0;
-        document.getElementById('cartItems').innerHTML = cart.map((item, i) => { t += parseInt(item.price); return `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #222;"><span>${item.name}</span><i class="fas fa-trash" style="color:#ff3b30" onclick="cart.splice(${i},1);updateCart()"></i></div>`; }).join('');
+        document.getElementById('cartItems').innerHTML = cart.map((it, i) => { 
+            t += parseInt(it.price); 
+            return `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #222;">
+                <span>${it.name}</span>
+                <i class="fas fa-trash" onclick="cart.splice(${i},1);updateCartUI();" style="color:#ff4444"></i>
+            </div>`;
+        }).join('');
         document.getElementById('cartTotal').innerText = t + ' ₽';
     }
 
-    window.openModal = (id) => { document.getElementById(id).style.display='flex'; };
-    window.closeModal = (id) => { document.getElementById(id).style.display='none'; };
+    window.sendToManager = () => {
+        let m = "🛍 ЗАКАЗ:\n" + cart.map(it => `- ${it.name}`).join('\n');
+        window.open(`https://t.me/SmokinShop174?text=${encodeURIComponent(m)}`, '_blank');
+    };
+
+    // АДМИН
+    window.tryLogin = () => {
+        if(document.getElementById('pass').value === 'smkn00') {
+            isAdmin = true;
+            document.getElementById('addBtn').style.display='flex';
+            closeModal('loginOverlay');
+        }
+    };
+
+    window.openModal = (id) => { document.getElementById(id).style.display='flex'; setTimeout(()=>document.getElementById(id).classList.add('active'),10); };
+    window.closeModal = (id) => { document.getElementById(id).classList.remove('active'); setTimeout(()=>document.getElementById(id).style.display='none',400); };
 
     load();
 </script>
