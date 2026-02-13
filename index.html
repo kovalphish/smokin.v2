@@ -24,15 +24,34 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; letter-spacing: -0.5px; min-height: 100vh; }
 
-        .bg-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: #000; }
-        .circle { 
-            position: absolute; border-radius: 50%; background: var(--neon-green); 
-            filter: blur(80px); opacity: 0.2; animation: float 20s infinite alternate ease-in-out; 
+        /* --- ФОН С ЗЕЛЕНЫМ ОГНЕМ --- */
+        .bg-fixed { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: -1; 
+            background: #000; 
+            overflow: hidden;
+            filter: blur(15px) contrast(20); /* Эффект органического пламени */
         }
-        @keyframes float { 
-            0% { transform: translate(-10%, -10%) scale(1); } 
-            100% { transform: translate(40%, 30%) scale(1.3); } 
+
+        .fire-particle {
+            position: absolute;
+            bottom: -100px;
+            background: var(--neon-green);
+            border-radius: 45%;
+            opacity: 0.5;
+            animation: rise infinite ease-in;
         }
+
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0.5; }
+            50% { opacity: 0.7; }
+            100% { transform: translateY(-120vh) scale(0.3) rotate(360deg); opacity: 0; }
+        }
+        /* --------------------------- */
 
         header { 
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
@@ -110,10 +129,7 @@
 </head>
 <body>
 
-<div class="bg-fixed">
-    <div class="circle" style="width: 30vw; height: 30vw; left: -10%; top: 10%;"></div>
-    <div class="circle" style="width: 40vw; height: 40vw; right: -10%; bottom: 10%; background: #004400;"></div>
-</div>
+<div class="bg-fixed" id="fireBg"></div>
 
 <header>
     <div class="header-content">
@@ -230,6 +246,24 @@
     const userSpinRef = db.ref('users/' + userId + '/can_spin');
 
     let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
+
+    // --- ФУНКЦИЯ ГЕНЕРАЦИИ ОГНЯ ---
+    function initFire() {
+        const bg = document.getElementById('fireBg');
+        const count = 35; 
+        for (let i = 0; i < count; i++) {
+            const p = document.createElement('div');
+            p.className = 'fire-particle';
+            const size = Math.random() * 150 + 100;
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            p.style.animationDelay = (Math.random() * 5) + 's';
+            bg.appendChild(p);
+        }
+    }
+    initFire();
 
     // Загрузка данных
     function load() {
