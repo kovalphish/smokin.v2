@@ -2,7 +2,7 @@ const axios = require('axios');
 
 export default async function handler(req, res) {
     const update = req.body;
-    const BOT_TOKEN = "ТВОЙ_ТОКЕН_БОТА";
+    const BOT_TOKEN = "8470694002:AAGYITMQ3yNIuoP3w7MqQmnmWmRF66kzUd0";
     const FIREBASE_DB_URL = "https://alexsmok-1dc1c-default-rtdb.firebaseio.com";
 
     // 1. Подтверждаем платеж для Telegram
