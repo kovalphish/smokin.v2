@@ -18,110 +18,115 @@
             --neon-green: #2bff00;
             --glass: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.12);
-            --transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            --transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Inter', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+            outline: none !important;
+        }
+
+        /* Убираем синие иконки и стандартные стили кнопок на iOS/Android */
+        button, i, a {
+            -webkit-appearance: none;
+            color: inherit;
+        }
+
         body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; letter-spacing: -0.5px; min-height: 100vh; }
 
         .bg-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: #000; }
-        .circle { 
-            position: absolute; border-radius: 50%; background: var(--neon-green); 
-            filter: blur(80px); opacity: 0.2; animation: float 20s infinite alternate ease-in-out; 
-        }
-        @keyframes float { 
-            0% { transform: translate(-10%, -10%) scale(1); } 
-            100% { transform: translate(40%, 30%) scale(1.3); } 
-        }
+        .circle { position: absolute; border-radius: 50%; background: var(--neon-green); filter: blur(80px); opacity: 0.15; }
 
         header { 
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--glass-border); padding: 1.2rem 0; position: sticky; top: 0; z-index: 1000; 
         }
         .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
         .logo-text { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; color: #fff; }
         .nav-right { display: flex; align-items: center; gap: 15px; }
-        .btn-channel { background: #fff; color: #000; padding: 10px 25px; border-radius: 50px; font-weight: 900; font-size: 0.85rem; text-decoration: none; text-transform: uppercase; transition: 0.3s; }
-        .btn-channel:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
-        .gift-icon { color: var(--neon-green); cursor: pointer; transition: 0.3s; }
-        .gift-icon:hover { transform: scale(1.2); filter: drop-shadow(0 0 8px var(--neon-green)); }
-        .admin-icon { opacity: 0.3; cursor: pointer; transition: 0.3s; color: #fff; }
-        .admin-icon.active { opacity: 1; color: var(--neon-green); }
-
-        .cat-bar { padding: 20px 0; overflow-x: auto; scrollbar-width: none; }
-        .cat-bar::-webkit-scrollbar { display: none; }
-        .cat-container { display: flex; gap: 12px; padding: 0 20px; max-width: 1400px; margin: 0 auto; }
-        .cat-link { 
-            padding: 12px 26px; border-radius: 50px; background: var(--glass); border: 1px solid var(--glass-border);
-            color: #fff; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: var(--transition);
-            white-space: nowrap;
+        
+        .btn-channel { 
+            background: #fff; color: #000 !important; padding: 10px 25px; border-radius: 50px; 
+            font-weight: 900; font-size: 0.85rem; text-decoration: none; text-transform: uppercase; 
         }
-        .cat-link.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 0 0 20px rgba(43, 255, 0, 0.3); }
 
-        .main { max-width: 1400px; margin: 0 auto; padding: 0 15px 120px; }
+        .admin-icon { opacity: 0.3; cursor: pointer; transition: 0.3s; color: #fff !important; }
+        .admin-icon.active { opacity: 1; color: var(--neon-green) !important; }
+
+        /* Grid System */
+        .main { max-width: 1400px; margin: 0 auto; padding: 0 15px 120px; transition: margin-right 0.5s; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1100px) { .grid { grid-template-columns: repeat(4, 1fr); } }
 
         .card { 
-            background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; 
-            display: flex; flex-direction: column; opacity: 0; transform: translateY(20px);
-            animation: appear 0.6s forwards; transition: transform 0.3s; position: relative;
+            background: var(--glass); border-radius: 25px; border: 1px solid var(--glass-border); 
+            overflow: hidden; position: relative; animation: appear 0.6s forwards;
         }
-        @keyframes appear { to { opacity: 1; transform: translateY(0); } }
 
-        .card-img-wrapper { width: 100%; height: 130px; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; }
-        .card-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .card-name { font-weight: 900; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; min-height: 2.2em; line-height: 1.2; }
-        .card-price { font-weight: 900; font-size: 1.2rem; color: var(--neon-green); }
-        .btn-variants { background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; padding: 12px; border-radius: 50px; font-weight: 900; font-size: 0.7rem; cursor: pointer; width: 100%; margin-top: 10px; text-transform: uppercase; }
+        /* Кнопки админа на карточке */
+        .admin-card-controls {
+            position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; gap: 8px;
+        }
+        .btn-edit { background: var(--neon-green) !important; color: #000 !important; width: 35px; height: 35px; border-radius: 12px; border: none; cursor: pointer; }
+        .btn-del { background: #ff3b30 !important; color: #fff !important; width: 35px; height: 35px; border-radius: 12px; border: none; cursor: pointer; }
 
-        .slot-window { position: relative; width: 100%; height: 160px; background: #0a0a0a; border-radius: 25px; border: 2px solid var(--glass-border); overflow: hidden; margin: 20px 0; }
-        .slot-track { position: absolute; top: 0; left: 0; width: 100%; transition: none; }
-        .slot-item { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #fff; text-transform: uppercase; text-align: center; padding: 0 10px; }
+        /* PC ADMIN SIDEBAR */
+        #pcAdminSidebar {
+            position: fixed; right: -400px; top: 0; width: 400px; height: 100vh;
+            background: #0a0a0a; border-left: 1px solid var(--neon-green);
+            z-index: 2100; padding: 30px; transition: var(--transition);
+            overflow-y: auto; box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+        }
+        body.admin-open .main { margin-right: 400px; }
+        body.admin-open #pcAdminSidebar { right: 0; }
 
-        .slot-indicators { position: absolute; top: 50%; left: 0; width: 100%; height: 40px; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
-        .arrow { width: 0; height: 0; border-top: 15px solid transparent; border-bottom: 15px solid transparent; filter: drop-shadow(0 0 8px var(--neon-green)); }
-        .arrow-left { border-left: 20px solid var(--neon-green); margin-left: 5px; }
-        .arrow-right { border-right: 20px solid var(--neon-green); margin-right: 5px; }
-
-        .btn-full { background: var(--neon-green); color: #000; border: none; padding: 22px; border-radius: 50px; width: 100%; font-weight: 900; font-size: 1rem; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.3s; }
-        .btn-full:disabled { opacity: 0.5; filter: grayscale(1); }
-
-        .cart-fab { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--neon-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(43, 255, 0, 0.4); transform: scale(0); transition: var(--transition); cursor: pointer; }
-        .cart-fab.visible { transform: scale(1); }
-        .cart-count { position: absolute; top: 0; right: 0; background: #000; color: #fff; width: 24px; height: 24px; border-radius: 50%; font-weight: 900; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; border: 2px solid var(--neon-green); }
-
-        /* MODALS */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; z-index: 2000; }
-        .overlay.active { display: flex; }
-        .modal { background: rgba(15, 15, 15, 0.98); border-radius: 40px; padding: 30px; width: 95%; max-width: 500px; border: 1px solid var(--glass-border); transform: scale(0.9); opacity: 0; transition: 0.4s; text-align: center; }
-        .overlay.active .modal { transform: scale(1); opacity: 1; }
-
-        .inp { width: 100%; padding: 18px; border-radius: 20px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 12px; outline: none; }
+        /* Inputs */
+        .inp { 
+            width: 100%; padding: 15px; border-radius: 15px; background: #151515; 
+            border: 1px solid #333; color: #fff; margin-bottom: 15px; font-size: 0.9rem;
+        }
         .inp:focus { border-color: var(--neon-green); }
 
-        .admin-btns { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; gap: 8px; }
-        .btn-mini { width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; }
-        
-        #addBtn { position: fixed; bottom: 30px; left: 30px; width: 70px; height: 70px; background: #fff; color: #000; border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(255,255,255,0.2); cursor: pointer; }
+        .btn-full { 
+            background: var(--neon-green); color: #000 !important; border: none; padding: 20px; 
+            border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer;
+        }
+
+        /* Floating Add Button */
+        #addBtn { 
+            position: fixed; bottom: 30px; left: 30px; width: 65px; height: 65px; 
+            background: #fff !important; color: #000 !important; border-radius: 50%; 
+            display: none; align-items: center; justify-content: center; z-index: 1500; 
+            box-shadow: 0 10px 30px rgba(255,255,255,0.2); cursor: pointer;
+        }
+
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .modal { background: #0f0f0f; border-radius: 35px; padding: 25px; width: 90%; max-width: 450px; border: 1px solid var(--glass-border); }
+        .active { display: flex !important; }
+
+        @media (max-width: 1000px) {
+            body.admin-open .main { margin-right: 0; }
+            #pcAdminSidebar { width: 100%; right: -100%; }
+        }
     </style>
 </head>
 <body>
 
 <div class="bg-fixed">
-    <div class="circle" style="width: 30vw; height: 30vw; left: -10%; top: 10%;"></div>
-    <div class="circle" style="width: 40vw; height: 40vw; right: -10%; bottom: 10%; background: #004400;"></div>
+    <div class="circle" style="width: 40vw; height: 40vw; left: -10%; top: -10%;"></div>
+    <div class="circle" style="width: 50vw; height: 50vw; right: -10%; bottom: -10%; background: #003300;"></div>
 </div>
 
 <header>
     <div class="header-content">
-        <div class="logo-text">ПРАЙС</div>
+        <div class="logo-text">SMOKIN</div>
         <div class="nav-right">
-            <i class="fas fa-gift fa-2xl gift-icon" onclick="openWheel()"></i>
+            <i class="fas fa-gift fa-2xl gift-icon" style="color:var(--neon-green) !important" onclick="openWheel()"></i>
             <a href="https://t.me/smokin174" target="_blank" class="btn-channel">КАНАЛ</a>
-            <i class="fas fa-fingerprint fa-2xl admin-icon" id="adminLock" onclick="openModal('loginOverlay')"></i>
+            <i class="fas fa-fingerprint fa-2xl admin-icon" id="adminLock" onclick="openLogin()"></i>
         </div>
     </div>
 </header>
@@ -132,24 +137,49 @@
     <div class="grid" id="productGrid"></div>
 </main>
 
-<div id="addBtn" onclick="openAddModal()"><i class="fas fa-plus fa-xl"></i></div>
+<div id="addBtn" onclick="openEditor()"><i class="fas fa-plus fa-xl"></i></div>
 
-<div class="overlay" id="wheelOverlay" onclick="closeModal('wheelOverlay')">
+<div id="pcAdminSidebar">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+        <h2 style="font-weight:900;">РЕДАКТОР</h2>
+        <i class="fas fa-times fa-xl" onclick="closeEditor()" style="cursor:pointer;"></i>
+    </div>
+    
+    <form id="pForm">
+        <input type="hidden" id="pId">
+        <p style="font-size:0.7rem; color:var(--neon-green); margin-bottom:5px;">ФОТО ТОВАРА</p>
+        <input type="file" id="fInp" class="inp" accept="image/*">
+        <input type="hidden" id="pImg">
+        
+        <input type="text" id="pName" placeholder="Название товара" class="inp" required>
+        <input type="number" id="pPrice" placeholder="Цена (руб)" class="inp" required>
+        <input type="text" id="pCat" placeholder="Категория (напр. Жижа)" class="inp" required>
+        <input type="text" id="pBtnName" placeholder="Текст на кнопке (напр. Вкусы)" class="inp">
+        
+        <p style="font-size:0.7rem; color:var(--neon-green); margin-bottom:5px;">СПИСОК ВКУСОВ / ВАРИАНТОВ</p>
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
+            <input type="text" id="vInp" class="inp" placeholder="Лимонад..." style="margin-bottom:0">
+            <button type="button" onclick="addV()" class="btn-full" style="width:60px; padding:0">+</button>
+        </div>
+        <div id="adminVList" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;"></div>
+        
+        <button type="submit" class="btn-full">СОХРАНИТЬ В БАЗУ</button>
+    </form>
+</div>
+
+<div class="overlay" id="loginOverlay" onclick="closeModal('loginOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
-        <h2 style="font-weight:900; text-transform:uppercase; margin-bottom:10px;">LUCKY SMOKIN</h2>
-        <p id="spinStatusText" style="font-size: 0.7rem; opacity: 0.5; margin-bottom: 10px;">ЗАГРУЗКА...</p>
-        <div class="slot-window">
-            <div class="slot-indicators">
-                <div class="arrow arrow-left"></div>
-                <div class="arrow arrow-right"></div>
-            </div>
-            <div class="slot-track" id="slotTrack"></div>
-        </div>
-        <div id="paymentButtons">
-            <button class="btn-full" style="background: #0088cc; color: #fff;" onclick="startSpin()">КУПИТЬ СПИН 10 ⭐</button>
-        </div>
-        <button class="btn-full" id="spinBtn" style="display: none;" onclick="runSpinAnimation()">КРУТИТЬ БЕСПЛАТНО</button>
-        <div id="spinResult" style="margin-top:20px; font-weight:900; height: 1.2em; color: var(--neon-green);"></div>
+        <h2 style="margin-bottom:20px; font-weight:900; text-align:center;">ADMIN MODE</h2>
+        <input type="password" id="pass" class="inp" style="text-align:center;" placeholder="ПАРОЛЬ">
+        <button onclick="tryLogin()" class="btn-full">ВОЙТИ</button>
+    </div>
+</div>
+
+<div class="overlay" id="vOverlay" onclick="closeModal('vOverlay')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <h2 id="vTitle" style="margin-bottom:20px; font-weight:900; text-transform:uppercase;"></h2>
+        <div id="vList" style="max-height:60vh; overflow-y:auto;"></div>
+        <button class="btn-full" style="background:#222; color:#fff !important; margin-top:15px;" onclick="closeModal('vOverlay')">ЗАКРЫТЬ</button>
     </div>
 </div>
 
@@ -160,54 +190,13 @@
 
 <div class="overlay" id="cartOverlay" onclick="closeModal('cartOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
-        <h2 style="margin-bottom:20px; font-weight:900; text-transform:uppercase; color:var(--neon-green);">КОРЗИНА</h2>
+        <h2 style="margin-bottom:20px; font-weight:900; color:var(--neon-green);">КОРЗИНА</h2>
         <div id="cartItems" style="max-height:40vh; overflow-y:auto; margin-bottom:20px;"></div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <span style="opacity:0.6;">ИТОГО</span>
-            <span style="font-weight:900; font-size:1.8rem;" id="cartTotal">0 ₽</span>
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-weight:900; font-size:1.4rem;">
+            <span>ИТОГО:</span>
+            <span id="cartTotal">0 ₽</span>
         </div>
-        <button class="btn-full" onclick="sendToManager()">ОФОРМИТЬ В TG</button>
-        <button class="btn-full" style="background:#ff3b30; color:#fff; margin-top:10px; padding:15px; font-size:0.8rem;" onclick="clearCart()">ОЧИСТИТЬ</button>
-    </div>
-</div>
-
-<div class="overlay" id="vOverlay" onclick="closeModal('vOverlay')">
-    <div class="modal" onclick="event.stopPropagation()">
-        <h2 id="vTitle" style="margin-bottom:25px; font-weight:900; text-transform:uppercase;">ВКУСЫ</h2>
-        <div id="vList" style="max-height:50vh; overflow-y:auto;"></div>
-        <button class="btn-full" style="background:#222; color:#fff;" onclick="closeModal('vOverlay')">ЗАКРЫТЬ</button>
-    </div>
-</div>
-
-<div class="overlay" id="loginOverlay" onclick="closeModal('loginOverlay')">
-    <div class="modal" onclick="event.stopPropagation()">
-        <h2 style="margin-bottom:20px; font-weight:900;">АДМИН-ДОСТУП</h2>
-        <input type="password" id="pass" class="inp" style="text-align:center;" placeholder="ПАРОЛЬ">
-        <button onclick="tryLogin()" class="btn-full">ПОДТВЕРДИТЬ</button>
-    </div>
-</div>
-
-<div class="overlay" id="adminOverlay" onclick="closeModal('adminOverlay')">
-    <div class="modal" onclick="event.stopPropagation()" style="text-align: left;">
-        <h2 id="adminModalTitle" style="margin-bottom:20px; font-weight:900; text-align: center;">ТОВАР</h2>
-        <form id="pForm">
-            <input type="hidden" id="pId">
-            <input type="text" id="pName" placeholder="Название" class="inp" required>
-            <input type="number" id="pPrice" placeholder="Цена" class="inp" required>
-            <input type="text" id="pCat" placeholder="Категория" class="inp" required>
-            <input type="text" id="pBtnName" placeholder="Текст кнопки (Вкусы)" class="inp">
-            
-            <div style="display:flex; gap:10px; margin-bottom:10px;">
-                <input type="text" id="vInp" class="inp" placeholder="Добавить вкус" style="margin-bottom:0">
-                <button type="button" onclick="addFlavorToList()" class="btn-full" style="margin-top:0; padding:0 20px; width:auto;">+</button>
-            </div>
-            <div id="adminVList" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:15px;"></div>
-            
-            <input type="file" id="fInp" class="inp" accept="image/*">
-            <input type="hidden" id="pImg">
-            
-            <button type="submit" class="btn-full">СОХРАНИТЬ</button>
-        </form>
+        <button class="btn-full" onclick="sendOrder()">ЗАКАЗАТЬ</button>
     </div>
 </div>
 
@@ -226,12 +215,8 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const userId = tg.initDataUnsafe?.user?.id || "test_user";
-    const userSpinRef = db.ref('users/' + userId + '/can_spin');
+    let products = [], cart = [], curCat = 'all', isAdmin = false, tempV = [];
 
-    let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
-
-    // Firebase Load
     function load() {
         db.ref('products').on('value', snap => {
             const val = snap.val();
@@ -241,35 +226,39 @@
     }
 
     function render() {
+        // Cats
         const cats = ['all', ...new Set(products.map(p => p.category))];
         document.getElementById('cats').innerHTML = cats.map(c => `
-            <div class="cat-link ${curCat === c ? 'active' : ''}" onclick="curCat='${c}';render()">${c === 'all' ? 'ВСЁ' : c}</div>
+            <div class="cat-link ${curCat === c ? 'active' : ''}" onclick="curCat='${c}';render()">${c === 'all' ? 'ВСЁ' : c.toUpperCase()}</div>
         `).join('');
 
+        // Products
         const filtered = curCat === 'all' ? products : products.filter(p => p.category === curCat);
         document.getElementById('productGrid').innerHTML = filtered.map(p => `
             <div class="card">
                 ${isAdmin ? `
-                    <div class="admin-btns">
-                        <button class="btn-mini" style="background:var(--neon-green);" onclick="editProduct('${p.id}')"><i class="fas fa-pen"></i></button>
-                        <button class="btn-mini" style="background:#ff4444; color:#fff;" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
+                    <div class="admin-card-controls">
+                        <button class="btn-edit" onclick="editP('${p.id}')"><i class="fas fa-pen"></i></button>
+                        <button class="btn-del" onclick="delP('${p.id}')"><i class="fas fa-trash"></i></button>
                     </div>
                 ` : ''}
-                <div class="card-img-wrapper">
-                    <img src="${p.imageData}" class="card-img" onerror="this.src='https://via.placeholder.com/400/111/fff?text=SMOKIN'">
+                <div style="height:150px; background:#111; display:flex; align-items:center; justify-content:center;">
+                    <img src="${p.imageData}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/300/111/fff?text=SMOKIN'">
                 </div>
-                <div class="card-info">
-                    <div class="card-name">${p.name}</div>
-                    <div class="card-price">${p.price} ₽</div>
+                <div style="padding:15px;">
+                    <div style="font-weight:900; font-size:0.9rem; margin-bottom:5px; height:2.4em; overflow:hidden;">${p.name}</div>
+                    <div style="color:var(--neon-green); font-weight:900; font-size:1.2rem; margin-bottom:10px;">${p.price} ₽</div>
                     ${p.variants && p.variants.length > 0 ? 
-                        `<button class="btn-variants" onclick="showFlavors('${p.id}')">${p.variantButtonName || 'ВКУСЫ'}</button>` : 
-                        `<button class="btn-variants" style="background:var(--neon-green); color:#000; border:none;" onclick="addToCart('${p.id}', 'Обычный')">В КОРЗИНУ</button>`
+                        `<button class="btn-variants" style="width:100%; padding:10px; border-radius:50px; background:rgba(255,255,255,0.1); border:1px solid #333; color:#fff; font-weight:900; cursor:pointer;" onclick="openFlavors('${p.id}')">${p.variantButtonName || 'ВКУСЫ'}</button>` :
+                        `<button class="btn-variants" style="width:100%; padding:10px; border-radius:50px; background:var(--neon-green); border:none; color:#000; font-weight:900; cursor:pointer;" onclick="addToCart('${p.id}', 'Оригинал')">В КОРЗИНУ</button>`
                     }
                 </div>
-            </div>`).join('');
+            </div>
+        `).join('');
     }
 
-    // Admin Logic
+    // Admin Functions
+    window.openLogin = () => openModal('loginOverlay');
     window.tryLogin = () => {
         if(document.getElementById('pass').value === 'smkn00') {
             isAdmin = true;
@@ -277,33 +266,22 @@
             document.getElementById('addBtn').style.display = 'flex';
             closeModal('loginOverlay');
             render();
-        } else { alert('Неверно'); }
+            tg.HapticFeedback.notificationOccurred('success');
+        } else { alert('Wrong password'); }
     };
 
-    window.openAddModal = () => {
+    window.openEditor = () => {
         document.getElementById('pForm').reset();
         document.getElementById('pId').value = '';
         document.getElementById('pImg').value = '';
-        tempVariants = [];
-        renderAdminVariants();
-        document.getElementById('adminModalTitle').innerText = "НОВЫЙ ТОВАР";
-        openModal('adminOverlay');
+        tempV = [];
+        renderV();
+        document.body.classList.add('admin-open');
     };
 
-    window.addFlavorToList = () => {
-        const val = document.getElementById('vInp').value.trim();
-        if(val) { tempVariants.push(val); document.getElementById('vInp').value = ''; renderAdminVariants(); }
-    };
+    window.closeEditor = () => document.body.classList.remove('admin-open');
 
-    function renderAdminVariants() {
-        document.getElementById('adminVList').innerHTML = tempVariants.map((v, i) => `
-            <span style="background:#222; padding:5px 12px; border-radius:50px; font-size:0.7rem; border:1px solid var(--neon-green);">
-                ${v} <i class="fas fa-times" onclick="tempVariants.splice(${i},1);renderAdminVariants()" style="margin-left:5px; color:#ff4444; cursor:pointer;"></i>
-            </span>
-        `).join('');
-    }
-
-    window.editProduct = (id) => {
+    window.editP = (id) => {
         const p = products.find(x => x.id === id);
         document.getElementById('pId').value = p.id;
         document.getElementById('pName').value = p.name;
@@ -311,13 +289,31 @@
         document.getElementById('pCat').value = p.category;
         document.getElementById('pBtnName').value = p.variantButtonName || '';
         document.getElementById('pImg').value = p.imageData || '';
-        tempVariants = p.variants ? [...p.variants] : [];
-        renderAdminVariants();
-        document.getElementById('adminModalTitle').innerText = "ИЗМЕНИТЬ";
-        openModal('adminOverlay');
+        tempV = p.variants ? [...p.variants] : [];
+        renderV();
+        document.body.classList.add('admin-open');
     };
 
-    window.deleteProduct = (id) => { if(confirm('Удалить товар?')) db.ref('products/'+id).remove(); };
+    window.delP = (id) => { if(confirm('Удалить товар?')) db.ref('products/'+id).remove(); };
+
+    window.addV = () => {
+        const v = document.getElementById('vInp').value.trim();
+        if(v) { tempV.push(v); document.getElementById('vInp').value = ''; renderV(); }
+    };
+
+    function renderV() {
+        document.getElementById('adminVList').innerHTML = tempV.map((v, i) => `
+            <div style="background:#222; padding:5px 12px; border-radius:50px; font-size:0.8rem; border:1px solid var(--neon-green); display:flex; align-items:center; gap:8px;">
+                ${v} <i class="fas fa-times" onclick="tempV.splice(${i},1);renderV()" style="color:#ff4444; cursor:pointer;"></i>
+            </div>
+        `).join('');
+    }
+
+    document.getElementById('fInp').onchange = (e) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => document.getElementById('pImg').value = ev.target.result;
+        reader.readAsDataURL(e.target.files[0]);
+    };
 
     document.getElementById('pForm').onsubmit = async (e) => {
         e.preventDefault();
@@ -327,121 +323,71 @@
             price: document.getElementById('pPrice').value,
             category: document.getElementById('pCat').value,
             variantButtonName: document.getElementById('pBtnName').value || 'ВКУСЫ',
-            variants: tempVariants,
+            variants: tempV,
             imageData: document.getElementById('pImg').value,
             updatedAt: Date.now()
         };
-        id ? await db.ref('products/'+id).update(data) : await db.ref('products').push(data);
-        closeModal('adminOverlay');
+        if(id) await db.ref('products/'+id).update(data);
+        else await db.ref('products').push(data);
+        closeEditor();
     };
 
-    document.getElementById('fInp').onchange = (e) => {
-        const reader = new FileReader();
-        reader.onload = (ev) => document.getElementById('pImg').value = ev.target.result;
-        reader.readAsDataURL(e.target.files[0]);
-    };
-
-    // User / Cart Logic
-    window.showFlavors = (id) => {
+    // User Functions
+    window.openFlavors = (id) => {
         const p = products.find(x => x.id === id);
         document.getElementById('vTitle').innerText = p.variantButtonName || 'ВКУСЫ';
         document.getElementById('vList').innerHTML = (p.variants || []).map(v => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom:8px;">
-                <div>${v}</div>
-                <button onclick="addToCart('${p.id}', '${v}')" style="background:var(--neon-green); border:none; padding:8px 18px; border-radius:10px; font-weight:900;">+</button>
-            </div>`).join('');
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom:10px;">
+                <span style="font-weight:900;">${v}</span>
+                <button onclick="addToCart('${p.id}', '${v}')" style="background:var(--neon-green); border:none; padding:10px 20px; border-radius:10px; font-weight:900; color:#000 !important;">+</button>
+            </div>
+        `).join('');
         openModal('vOverlay');
     };
 
     window.addToCart = (id, flavor) => {
         const p = products.find(x => x.id === id);
         cart.push({ name: p.name, flavor: flavor, price: parseInt(p.price) });
-        updateCartUI();
-        if(p.variants) closeModal('vOverlay');
+        tg.HapticFeedback.impactOccurred('medium');
+        updateCart();
+        closeModal('vOverlay');
     };
 
-    function updateCartUI() {
+    function updateCart() {
         document.getElementById('cartCount').innerText = cart.length;
         document.getElementById('cartFab').classList.toggle('visible', cart.length > 0);
-        let t = 0;
-        document.getElementById('cartItems').innerHTML = cart.map((item, i) => { 
-            t += item.price; 
-            return `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #222;">
-                <div>${item.name} <br><small style="opacity:0.5">${item.flavor}</small></div>
-                <div style="display:flex; align-items:center; gap:15px;">
-                    <span>${item.price}₽</span>
-                    <i class="fas fa-trash" style="color:#ff4444" onclick="removeItem(${i})"></i>
+        let total = 0;
+        document.getElementById('cartItems').innerHTML = cart.map((item, i) => {
+            total += item.price;
+            return `
+                <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #222;">
+                    <div>${item.name}<br><small style="opacity:0.5">${item.flavor}</small></div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span>${item.price}₽</span>
+                        <i class="fas fa-trash" style="color:#ff3b30;" onclick="cart.splice(${i},1);updateCart()"></i>
+                    </div>
                 </div>
-            </div>`; 
+            `;
         }).join('');
-        document.getElementById('cartTotal').innerText = t + ' ₽';
+        document.getElementById('cartTotal').innerText = total + ' ₽';
     }
 
-    window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
-    window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
-
-    window.sendToManager = () => {
-        let msg = `🛍 НОВЫЙ ЗАКАЗ:\n`;
-        cart.forEach((item, i) => msg += `${i+1}. ${item.name} (${item.flavor}) — ${item.price}₽\n`);
+    window.sendOrder = () => {
+        let msg = "🛍 ЗАКАЗ:\n";
+        cart.forEach((item, i) => msg += `${i+1}. ${item.name} (${item.flavor}) - ${item.price}₽\n`);
         msg += `\nИТОГО: ${document.getElementById('cartTotal').innerText}`;
         window.open(`https://t.me/SmokinShop174?text=${encodeURIComponent(msg)}`, '_blank');
-        cart=[]; updateCartUI(); closeModal('cartOverlay');
+        cart = []; updateCart(); closeModal('cartOverlay');
     };
 
-    // Wheel Logic
-    userSpinRef.on('value', (snap) => {
-        const canSpin = snap.val();
-        document.getElementById('paymentButtons').style.display = canSpin ? 'none' : 'block';
-        document.getElementById('spinBtn').style.display = canSpin ? 'block' : 'none';
-        const txt = document.getElementById('spinStatusText');
-        txt.innerText = canSpin ? "ОПЛАЧЕНО! ЖМИ КРУТИТЬ" : "СПИН СТОИТ 10⭐";
-        txt.style.color = canSpin ? "var(--neon-green)" : "rgba(255,255,255,0.5)";
-    });
-
-    async function startSpin() {
-        const result = document.getElementById('spinResult');
-        result.innerText = "ГЕНЕРАЦИЯ ЧЕКА...";
-        try {
-            const resp = await fetch(`https://smokin-v2.vercel.app/api/getInvoice?userId=${userId}`);
-            const data = await resp.json();
-            if (data.link) tg.openInvoice(data.link, (status) => { if (status === 'paid') result.innerText = "УСПЕХ!"; });
-        } catch (e) { result.innerText = "ОШИБКА"; }
-    }
-
-    function runSpinAnimation() {
-        const track = document.getElementById('slotTrack');
-        const res = document.getElementById('spinResult');
-        const btn = document.getElementById('spinBtn');
-        btn.disabled = true;
-        res.innerText = "КРУТИМ...";
-        const winIdx = 75;
-        const itemH = 160;
-        const winValue = Math.random() > 0.9 ? "СКИДКА 10%" : "ПУСТО";
-        track.children[winIdx].innerText = winValue;
-        track.style.transition = 'transform 5s cubic-bezier(0.1, 0, 0.1, 1)';
-        track.style.transform = `translateY(-${winIdx * itemH}px)`;
-        setTimeout(() => {
-            res.innerText = winValue === "ПУСТО" ? "НЕ ПОВЕЗЛО 😢" : "ВЫИГРЫШ: " + winValue;
-            userSpinRef.set(false);
-            btn.disabled = false;
-        }, 5200);
-    }
-
-    function openWheel() {
-        const track = document.getElementById('slotTrack');
-        let h = '';
-        for(let i=0; i<90; i++) h += `<div class="slot-item">${["ПУСТО","GIFT","5%","ПУСТО","10%"][i%5]}</div>`;
-        track.innerHTML = h;
-        track.style.transition = 'none';
-        track.style.transform = 'translateY(0)';
-        document.getElementById('spinResult').innerText = '';
-        openModal('wheelOverlay');
-    }
-
     window.openModal = (id) => { document.getElementById(id).style.display='flex'; setTimeout(()=>document.getElementById(id).classList.add('active'),10); };
-    window.closeModal = (id) => { document.getElementById(id).classList.remove('active'); setTimeout(()=>document.getElementById(id).style.display='none',400); };
+    window.closeModal = (id) => { 
+        document.getElementById(id).classList.remove('active'); 
+        setTimeout(()=>document.getElementById(id).style.display='none',400); 
+    };
 
     load();
 </script>
+
 </body>
 </html>
