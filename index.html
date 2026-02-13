@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Прайс | Smokin174</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
+
+        :root {
+            --bg-black: #000000;
+            --neon-green: #2bff00;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; letter-spacing: -0.5px; min-height: 100vh; }
+
+        .bg-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: #000; }
+        .circle { 
+            position: absolute; border-radius: 50%; background: var(--neon-green); 
+            filter: blur(80px); opacity: 0.2; animation: float 20s infinite alternate ease-in-out; 
+        }
+        @keyframes float { 
+            0% { transform: translate(-10%, -10%) scale(1); } 
+            100% { transform: translate(40%, 30%) scale(1.3); } 
+        }
+
+        header { 
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--glass-border); padding: 1.2rem 0; position: sticky; top: 0; z-index: 1000; 
+        }
+        .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .logo-text { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; color: #fff; }
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+        .btn-channel { background: #fff; color: #000; padding: 10px 25px; border-radius: 50px; font-weight: 900; font-size: 0.85rem; text-decoration: none; text-transform: uppercase; transition: 0.3s; }
+        .btn-channel:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        .gift-icon { color: var(--neon-green); cursor: pointer; transition: 0.3s; }
+        .gift-icon:hover { transform: scale(1.2); filter: drop-shadow(0 0 8px var(--neon-green)); }
+        .admin-icon { opacity: 0.2; cursor: pointer; transition: 0.3s; color: #fff; }
+
+        .cat-bar { padding: 20px 0; overflow-x: auto; scrollbar-width: none; }
+        .cat-bar::-webkit-scrollbar { display: none; }
+        .cat-container { display: flex; gap: 12px; padding: 0 20px; max-width: 1400px; margin: 0 auto; }
+        .cat-link { 
+            padding: 12px 26px; border-radius: 50px; background: var(--glass); border: 1px solid var(--glass-border);
+            color: #fff; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: var(--transition);
+            white-space: nowrap;
+        }
+        .cat-link.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 0 0 20px rgba(43, 255, 0, 0.3); }
+
+        .main { max-width: 1400px; margin: 0 auto; padding: 0 15px 120px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
+        .card { 
+            background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; 
+            display: flex; flex-direction: column; opacity: 0; transform: translateY(20px);
+            animation: appear 0.6s forwards; transition: transform 0.3s;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--neon-green); }
+        @keyframes appear { to { opacity: 1; transform: translateY(0); } }
+
+        .card-img-wrapper { width: 100%; height: 180px; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .card-info { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-name { font-weight: 900; font-size: 1rem; text-transform: uppercase; margin-bottom: 10px; min-height: 2.2em; }
+        .card-price { font-weight: 900; font-size: 1.4rem; color: var(--neon-green); }
+        .btn-variants { background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; padding: 14px; border-radius: 50px; font-weight: 900; font-size: 0.75rem; cursor: pointer; width: 100%; margin-top: 15px; text-transform: uppercase; }
+
+        .slot-window { position: relative; width: 100%; height: 160px; background: #0a0a0a; border-radius: 25px; border: 2px solid var(--glass-border); overflow: hidden; margin: 20px 0; }
+        .slot-track { position: absolute; top: 0; left: 0; width: 100%; transition: none; }
+        .slot-item { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #fff; text-transform: uppercase; text-align: center; padding: 0 10px; }
+
+        .slot-indicators {
+            position: absolute; top: 50%; left: 0; width: 100%; height: 40px;
+            transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center;
+            z-index: 10; pointer-events: none;
+        }
+        .arrow { width: 0; height: 0; border-top: 15px solid transparent; border-bottom: 15px solid transparent; filter: drop-shadow(0 0 8px var(--neon-green)); }
+        .arrow-left { border-left: 20px solid var(--neon-green); margin-left: 5px; }
+        .arrow-right { border-right: 20px solid var(--neon-green); margin-right: 5px; }
+
+        .btn-full { background: var(--neon-green); color: #000; border: none; padding: 22px; border-radius: 50px; width: 100%; font-weight: 900; font-size: 1rem; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+        .btn-full:disabled { opacity: 0.5; filter: grayscale(1); }
+        .skeleton { background: var(--glass); height: 250px; border-radius: 30px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 0.6; } 100% { opacity: 0.3; } }
+
+        .cart-fab { position: fixed; bottom: 40px; right: 40px; width: 80px; height: 80px; background: var(--neon-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(43, 255, 0, 0.4); transform: scale(0); transition: var(--transition); cursor: pointer; }
+        .cart-fab.visible { transform: scale(1); }
+        .cart-count { position: absolute; top: 5px; right: 5px; background: #000; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-weight: 900; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; border: 2px solid var(--neon-green); }
+
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .overlay.active { display: flex; }
+        .modal { background: rgba(15, 15, 15, 0.98); border-radius: 40px; padding: 40px; width: 95%; max-width: 500px; border: 1px solid var(--glass-border); transform: scale(0.9); opacity: 0; transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); text-align: center; }
+        .overlay.active .modal { transform: scale(1); opacity: 1; }
+    </style>
+</head>
+<body>
+
+<div class="bg-fixed">
+    <div class="circle" style="width: 30vw; height: 30vw; left: -10%; top: 10%;"></div>
+    <div class="circle" style="width: 40vw; height: 40vw; right: -10%; bottom: 10%; background: #004400; animation-delay: -5s;"></div>
+</div>
+
+<header>
+    <div class="header-content">
+        <div class="logo-text">ПРАЙС</div>
+        <div class="nav-right">
+            <i class="fas fa-gift fa-2xl gift-icon" onclick="openWheel()"></i>
+            <a href="https://t.me/smokin174" target="_blank" class="btn-channel">КАНАЛ</a>
+            <i class="fas fa-fingerprint fa-2xl admin-icon" onclick="openModal('loginOverlay')"></i>
+        </div>
+    </div>
+</header>
+
+<div class="cat-bar"><div class="cat-container" id="cats"></div></div>
+
+<main class="main">
+    <div class="grid" id="productGrid">
+        <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+    </div>
+</main>
+
+<div class="overlay" id="wheelOverlay" onclick="closeModal('wheelOverlay')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <h2 style="font-weight:900; text-transform:uppercase; margin-bottom:10px;">LUCKY SMOKIN</h2>
+        <p id="spinStatusText" style="font-size: 0.7rem; opacity: 0.5; margin-bottom: 10px;">ВЫБЕРИТЕ ВАРИАНТ ОПЛАТЫ</p>
+        
+        <div class="slot-window">
+            <div class="slot-indicators">
+                <div class="arrow arrow-left"></div>
+                <div class="arrow arrow-right"></div>
+            </div>
+            <div class="slot-track" id="slotTrack"></div>
+        </div>
+
+        <div id="paymentButtons" style="display: flex; gap: 10px;">
+            <button class="btn-full" style="background: #0088cc; color: #fff;" onclick="startSpin('stars')">10 ⭐ ЗВЁЗД</button>
+            <button class="btn-full" onclick="startSpin('money')">10 ₽ РУБЛИ</button>
+        </div>
+
+        <button class="btn-full" id="spinBtn" style="display: none;" onclick="runSpinAnimation()">КРУТИТЬ БЕСПЛАТНО</button>
+        <div id="spinResult" style="margin-top:20px; font-weight:900; height: 1.2em; color: var(--neon-green);"></div>
+    </div>
+</div>
+
+<div class="cart-fab" id="cartFab" onclick="openModal('cartOverlay')">
+    <i class="fas fa-shopping-bag fa-2xl"></i>
+    <div class="cart-count" id="cartCount">0</div>
+</div>
+
+<div class="overlay" id="vOverlay" onclick="closeModal('vOverlay')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <h2 id="vTitle" style="margin-bottom:25px; font-weight:900; text-transform:uppercase;">ВЫБЕРИТЕ ВКУС</h2>
+        <div id="vList" style="max-height:50vh; overflow-y:auto;"></div>
+        <button class="btn-full" style="background:#222; color:#fff;" onclick="closeModal('vOverlay')">ЗАКРЫТЬ</button>
+    </div>
+</div>
+
+<div class="overlay" id="cartOverlay" onclick="closeModal('cartOverlay')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <h2 style="margin-bottom:25px; font-weight:900; text-transform:uppercase; color:var(--neon-green);">ВАШ ЗАКАЗ</h2>
+        <div id="cartItems" style="max-height:45vh; overflow-y:auto; margin-bottom:20px;"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+            <span style="opacity:0.6; font-weight:900;">ИТОГО</span>
+            <span style="font-weight:900; font-size:2rem;" id="cartTotal">0 ₽</span>
+        </div>
+        <button class="btn-full" onclick="sendToManager()">ОФОРМИТЬ В TG</button>
+        <button class="btn-full" style="background:#ff3b30; color:#fff; margin-top:12px; padding:15px; font-size:0.8rem;" onclick="clearCart()">ОЧИСТИТЬ</button>
+    </div>
+</div>
+
+<div class="overlay" id="loginOverlay" onclick="closeModal('loginOverlay')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <h2 style="margin-bottom:20px; font-weight:900;">АДМИНКА</h2>
+        <input type="password" id="pass" style="width:100%; padding:22px; border-radius:25px; background:#000; border:1px solid #333; color:#fff; margin-bottom:15px;" placeholder="ПАРОЛЬ">
+        <button onclick="tryLogin()" class="btn-full">ВОЙТИ</button>
+    </div>
+</div>
+
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    // СЮДА НУЖНО БУДЕТ ВСТАВИТЬ ССЫЛКУ НА ТВОЙ СЕРВЕР ПОТОМ
+    const BACKEND_URL = "https://your-backend-placeholder.com"; 
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyD3wDw2ZTTXn2gY467grDOVi9E5vcusilc",
+        authDomain: "alexsmok-1dc1c.firebaseapp.com",
+        databaseURL: "https://alexsmok-1dc1c-default-rtdb.firebaseio.com",
+        projectId: "alexsmok-1dc1c",
+        appId: "1:173792761960:web:5bc84d324322edd58ac3dd"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const userId = tg.initDataUnsafe?.user?.id || "test_user";
+    const userSpinRef = db.ref('users/' + userId + '/can_spin');
+
+    let products = [], cart = [], curCat = 'all';
+
+    // Слушатель статуса оплаты из базы
+    userSpinRef.on('value', (snapshot) => {
+        const canSpin = snapshot.val();
+        const payBlock = document.getElementById('paymentButtons');
+        const spinBtn = document.getElementById('spinBtn');
+        const statusText = document.getElementById('spinStatusText');
+
+        if (canSpin) {
+            payBlock.style.display = 'none';
+            spinBtn.style.display = 'block';
+            statusText.innerText = "ОПЛАЧЕНО! ЖМИ КРУТИТЬ";
+            statusText.style.color = "var(--neon-green)";
+        } else {
+            payBlock.style.display = 'flex';
+            spinBtn.style.display = 'none';
+            statusText.innerText = "СПИН СТОИТ 10₽ / 10⭐";
+            statusText.style.color = "rgba(255,255,255,0.5)";
+        }
+    });
+
+    // Функция запроса счета (Инвойса)
+async function startSpin(type) {
+    const result = document.getElementById('spinResult');
+    if (type === 'stars') {
+        result.innerText = "ГЕНЕРАЦИЯ ЧЕКА...";
+        try {
+            // Запрашиваем ссылку у твоего API на Vercel
+            const response = await fetch(`/api/getInvoice?userId=${userId}`);
+            const data = await response.json();
+
+            if (data.link) {
+                tg.openInvoice(data.link, function(status) {
+                    if (status === 'paid') {
+                        result.innerText = "ГОТОВО! ПРОВЕРЯЕМ...";
+                        // База обновится сама через 1-2 секунды
+                    }
+                });
+            }
+        } catch (e) {
+            result.innerText = "ОШИБКА";
+        }
+    }
+}
+
+    // Вся остальная твоя логика магазина...
+    const visualPrizes = ["IPHONE 16", "СКИДКА 50%", "FREE LIQUID", "BONUS 1000", "СКИДКА 30%", "GIFT BOX", "FREE VAPE"];
+    
+    function openWheel() {
+        const track = document.getElementById('slotTrack');
+        let html = '';
+        for(let i=0; i<90; i++) {
+            let prize = visualPrizes[Math.floor(Math.random() * visualPrizes.length)];
+            if(i % 5 === 0) prize = "ПУСТО";
+            if(i % 12 === 0) prize = "СКИДКА 5%";
+            html += `<div class="slot-item">${prize}</div>`;
+        }
+        track.innerHTML = html;
+        track.style.transition = 'none';
+        track.style.transform = 'translateY(0)';
+        document.getElementById('spinResult').innerText = '';
+        openModal('wheelOverlay');
+    }
+
+    function runSpinAnimation() {
+        const track = document.getElementById('slotTrack');
+        const result = document.getElementById('spinResult');
+        const btn = document.getElementById('spinBtn');
+        btn.disabled = true;
+        result.innerText = "КРУТИМ...";
+        const winIndex = 75;
+        const itemHeight = 160;
+        const rand = Math.random() * 100;
+        const finalPrize = rand <= 98 ? "ПУСТО" : "СКИДКА 5%";
+        track.children[winIndex].innerText = finalPrize;
+        track.style.transition = 'transform 5s cubic-bezier(0.1, 0, 0.1, 1)';
+        track.style.transform = `translateY(-${winIndex * itemHeight}px)`;
+        setTimeout(() => {
+            result.innerText = finalPrize === "ПУСТО" ? "НЕ ПОВЕЗЛО" : "ВЫИГРЫШ: " + finalPrize;
+            userSpinRef.set(false);
+            btn.disabled = false;
+        }, 5200);
+    }
+
+    function load() {
+        db.ref('products').on('value', snap => {
+            const val = snap.val();
+            products = val ? Object.keys(val).map(k => ({ id: k, ...val[k] })) : [];
+            render();
+        });
+    }
+
+    function render() {
+        const cats = ['all', ...new Set(products.map(p => p.category))];
+        document.getElementById('cats').innerHTML = cats.map(c => `<div class="cat-link ${curCat === c ? 'active' : ''}" onclick="curCat='${c}';render()">${c === 'all' ? 'ВСЁ' : c}</div>`).join('');
+        const filtered = curCat === 'all' ? products : products.filter(p => p.category === curCat);
+        document.getElementById('productGrid').innerHTML = filtered.map((p, i) => `
+            <div class="card" style="animation-delay: ${i*0.05}s">
+                <div class="card-img-wrapper"><img src="${p.imageData}" class="card-img" onerror="this.src='https://via.placeholder.com/400/111/fff?text=SMOKIN'"></div>
+                <div class="card-info">
+                    <div class="card-name">${p.name}</div>
+                    <div class="card-price">${p.price} ₽</div>
+                    ${p.variants ? `<button class="btn-variants" onclick="showFlavors('${p.id}')">${p.variantButtonName || 'ВКУСЫ'}</button>` : ''}
+                </div>
+            </div>`).join('');
+    }
+
+    window.showFlavors = (id) => {
+        const p = products.find(x => x.id === id);
+        document.getElementById('vTitle').innerText = p.variantButtonName || 'ВКУСЫ';
+        document.getElementById('vList').innerHTML = (p.variants || []).map(v => `<div class="flavor-item" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:15px; border-radius:20px; margin-bottom:10px;"><div>${v}</div><button onclick="addToCart('${p.id}', '${v}')" style="background:var(--neon-green); border:none; padding:10px 15px; border-radius:15px; font-weight:900; cursor:pointer;">+</button></div>`).join('');
+        openModal('vOverlay');
+    };
+
+    window.addToCart = (id, flavor) => {
+        const p = products.find(x => x.id === id);
+        cart.push({ name: p.name, flavor: flavor, price: parseInt(p.price) });
+        updateCartUI();
+        closeModal('vOverlay');
+    };
+
+    function updateCartUI() {
+        const count = cart.length;
+        document.getElementById('cartCount').innerText = count;
+        document.getElementById('cartFab').classList.toggle('visible', count > 0);
+        let total = 0;
+        document.getElementById('cartItems').innerHTML = cart.map((item, i) => { total += item.price; return `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #222;"><div>${item.name} (${item.flavor})</div><i class="fas fa-trash" onclick="removeItem(${i})"></i></div>`; }).join('');
+        document.getElementById('cartTotal').innerText = total + ' ₽';
+    }
+
+    window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
+    window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
+    window.sendToManager = () => {
+        let msg = `🛍 ЗАКАЗ\n`;
+        cart.forEach((item, i) => msg += `${i+1}. ${item.name} (${item.flavor}) - ${item.price}₽\n`);
+        window.open(`https://t.me/SmokinShop174?text=${encodeURIComponent(msg)}`, '_blank');
+        cart=[]; updateCartUI(); closeModal('cartOverlay');
+    };
+    window.openModal = (id) => { document.getElementById(id).style.display='flex'; setTimeout(()=>document.getElementById(id).classList.add('active'),10); };
+    window.closeModal = (id) => { document.getElementById(id).classList.remove('active'); setTimeout(()=>document.getElementById(id).style.display='none',400); };
+    window.tryLogin = () => { if(document.getElementById('pass').value === 'smkn00') alert('Admin'); };
+
+    load();
+</script>
+</body>
+</html>
