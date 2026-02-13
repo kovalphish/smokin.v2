@@ -437,13 +437,41 @@
     window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
     window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
 
+    // Найди в самом низу кода функцию window.sendToManager и замени её на эту:
+    
     window.sendToManager = () => {
-        if(cart.length === 0) return;
-        let msg = `🛍 НОВЫЙ ЗАКАЗ:\n`;
-        cart.forEach((item, i) => msg += `${i+1}. ${item.name} (${item.flavor}) — ${item.price}₽\n`);
-        msg += `\nИТОГО: ${document.getElementById('cartTotal').innerText}`;
-        window.open(`https://t.me/SmokinShop174?text=${encodeURIComponent(msg)}`, '_blank');
-        cart=[]; updateCartUI(); closeModal('cartOverlay');
+        if(cart.length === 0) {
+            alert("Корзина пуста!");
+            return;
+        }
+    
+        // 1. Формируем красивый заголовок
+        let msg = `🛍 *НОВЫЙ ЗАКАЗ*\n`;
+        msg += `━━━━━━━━━━━━━━\n`;
+    
+        // 2. Перебираем товары из корзины
+        cart.forEach((item, i) => {
+            msg += `${i + 1}. *${item.name}*\n`;
+            msg += `   └ Вкус: ${item.flavor}\n`;
+            msg += `   └ Цена: ${item.price} ₽\n`;
+        });
+    
+        // 3. Добавляем итог
+        const total = document.getElementById('cartTotal').innerText;
+        msg += `━━━━━━━━━━━━━━\n`;
+        msg += `💰 *ИТОГО К ОПЛАТЕ: ${total}*`;
+    
+        // 4. Генерируем ссылку на менеджера (t.me/smokin174)
+        // Используем юзернейм Smokin174 без собачки
+        const managerUrl = `https://t.me/smokin174?text=${encodeURIComponent(msg)}`;
+    
+        // 5. Открываем чат
+        window.open(managerUrl, '_blank');
+    
+        // 6. Очищаем корзину после перехода
+        cart = [];
+        updateCartUI();
+        closeModal('cartOverlay');
     };
 
     userSpinRef.on('value', (snap) => {
@@ -510,3 +538,4 @@
 </script>
 </body>
 </html>
+
