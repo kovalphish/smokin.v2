@@ -3,7 +3,7 @@ const axios = require('axios');
 
 export default async function handler(req, res) {
     const update = req.body;
-    const BOT_TOKEN = "8470694002:AAGYITMQ3yNIuoP3w7MqQmnmWmRF66kzUd0"; // <--- ТОТ ЖЕ ТОКЕН
+    const BOT_TOKEN = "8470694002:AAFht8GbM5QJEItnociSjtOgaYf0jQEstIo"; // <--- ТОТ ЖЕ ТОКЕН
     const DB_URL = "https://alexsmok-1dc1c-default-rtdb.firebaseio.com";
 
     // Подтверждаем платеж для Telegram
@@ -22,3 +22,4 @@ export default async function handler(req, res) {
     }
     res.status(200).send('ok');
 }
+
