@@ -399,36 +399,50 @@
     window.sendToManager = () => {
         if (cart.length === 0) return;
     
-        // ... (сборка msg как раньше)
+        let msg = `🛍 НОВЫЙ ЗАКАЗ\n`;
+        msg += `──────────────\n`;
+        
+        cart.forEach((item, i) => {
+            msg += `${i + 1}. ${item.name}\n`;
+            msg += `   └ Вкус: ${item.flavor}\n`;
+            msg += `   └ Цена: ${item.price} ₽\n`;
+        });
+        
+        const totalValue = document.getElementById('cartTotal').innerText;
+        msg += `──────────────\n`;
+        msg += `💰 ИТОГО: ${totalValue}`;
     
-        const username = "smokinshop174";
-        const encodedMsg = encodeURIComponent(msg);
-        const link = `https://t.me/${username}?text=${encodedMsg}`;
+        const username = "smokinshop174"; // без @
     
-        // Показываем уведомление
-        const notification = document.createElement('div');
-        notification.style = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:var(--neon-green); color:#000; padding:15px 30px; border-radius:50px; font-weight:900; z-index:3000; box-shadow:0 0 20px rgba(43,255,0,0.5);';
-        notification.innerText = 'Открываем чат в Telegram...';
-        document.body.appendChild(notification);
+        const shareUrl = `https://t.me/share/url?url=@${username}&text=${encodeURIComponent(msg)}`;
+    
+        // Уведомление для пользователя
+        const note = document.createElement('div');
+        note.innerText = 'Открываем поделиться в Telegram...';
+        note.style.cssText = 'position:fixed; bottom:120px; left:50%; transform:translateX(-50%); background:#000; color:var(--neon-green); padding:15px 30px; border-radius:30px; font-weight:900; z-index:3000; border:2px solid var(--neon-green); box-shadow:0 0 30px rgba(43,255,0,0.6);';
+        document.body.appendChild(note);
+        setTimeout(() => note.remove(), 4000);
     
         if (window.Telegram?.WebApp) {
-            Telegram.WebApp.openLink(link, { try_instant_view: false });
+            try {
+                Telegram.WebApp.openLink(shareUrl);
+            } catch (err) {
+                console.error('openLink error:', err);
+                window.open(shareUrl, '_blank');
+            }
         } else {
-            window.open(link, '_blank');
+            window.open(shareUrl, '_blank');
         }
-    
-        setTimeout(() => notification.remove(), 3000);
     
         cart = [];
         updateCartUI();
         closeModal('cartOverlay');
     
-        // Дополнительно: модалка успеха
+        // Успех после задержки (чтобы пользователь увидел)
         setTimeout(() => {
-            alert('Заказ отправлен! Проверьте чат с @smokinshop174 и подтвердите.');
-        }, 1500);
+            alert('Заказ готов к отправке! Выберите чат с @smokinshop174 и подтвердите.');
+        }, 1000);
     };
-
     userSpinRef.on('value', (snap) => {
         const canSpin = snap.val();
         document.getElementById('paymentButtons').style.display = canSpin ? 'none' : 'block';
@@ -494,5 +508,6 @@
 </script>
 </body>
 </html>
+
 
 
