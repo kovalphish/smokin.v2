@@ -394,11 +394,11 @@
     window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
     window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
 
-        // ────────────────────────────────────────────────
-        // ИСПРАВЛЕННАЯ ФУНКЦИЯ ОТПРАВКИ ЗАКАЗА (самый надёжный способ 2026)
+    // ────────────────────────────────────────────────
+    // ИСПРАВЛЕННАЯ ФУНКЦИЯ ОТПРАВКИ ЗАКАЗА (самый надёжный способ 2026)
     window.sendToManager = () => {
         if (cart.length === 0) return;
-    
+
         let msg = `🛍 НОВЫЙ ЗАКАЗ\n`;
         msg += `──────────────\n`;
         
@@ -411,38 +411,29 @@
         const totalValue = document.getElementById('cartTotal').innerText;
         msg += `──────────────\n`;
         msg += `💰 ИТОГО: ${totalValue}`;
-    
-        const username = "smokinshop174"; // без @
-    
+
+        const username = "smokinshop174";  // без @
+
+        // Самый стабильный способ в 2025–2026
         const shareUrl = `https://t.me/share/url?url=@${username}&text=${encodeURIComponent(msg)}`;
-    
-        // Уведомление для пользователя
-        const note = document.createElement('div');
-        note.innerText = 'Открываем поделиться в Telegram...';
-        note.style.cssText = 'position:fixed; bottom:120px; left:50%; transform:translateX(-50%); background:#000; color:var(--neon-green); padding:15px 30px; border-radius:30px; font-weight:900; z-index:3000; border:2px solid var(--neon-green); box-shadow:0 0 30px rgba(43,255,0,0.6);';
-        document.body.appendChild(note);
-        setTimeout(() => note.remove(), 4000);
-    
+
         if (window.Telegram?.WebApp) {
             try {
-                Telegram.WebApp.openLink(shareUrl);
-            } catch (err) {
-                console.error('openLink error:', err);
+                Telegram.WebApp.openLink(shareUrl, { try_instant_view: false });
+            } catch (e) {
                 window.open(shareUrl, '_blank');
             }
         } else {
             window.open(shareUrl, '_blank');
         }
-    
+
+        // Очистка корзины после отправки
         cart = [];
         updateCartUI();
         closeModal('cartOverlay');
-    
-        // Успех после задержки (чтобы пользователь увидел)
-        setTimeout(() => {
-            alert('Заказ готов к отправке! Выберите чат с @smokinshop174 и подтвердите.');
-        }, 1000);
     };
+    // ────────────────────────────────────────────────
+
     userSpinRef.on('value', (snap) => {
         const canSpin = snap.val();
         document.getElementById('paymentButtons').style.display = canSpin ? 'none' : 'block';
@@ -508,6 +499,3 @@
 </script>
 </body>
 </html>
-
-
-
