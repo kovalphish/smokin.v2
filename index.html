@@ -409,25 +409,53 @@
     window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
 
     window.sendToManager = () => {
-        if (cart.length === 0) return;
-        let msg = `🛍 НОВЫЙ ЗАКАЗ\n`;
-        msg += `──────────────\n`;
-        cart.forEach((item, i) => {
-            msg += `${i + 1}. ${item.name}\n`;
-            msg += `   └ Вкус: ${item.flavor}\n`;
-            msg += `   └ Цена: ${item.price} ₽\n`;
-        });
-        const totalValue = document.getElementById('cartTotal').innerText;
-        msg += `──────────────\n`;
-        msg += `💰 ИТОГО: ${totalValue}`;
-        const username = "smokinshop174"; 
-        const shareUrl = `https://t.me/share/url?url=@${username}&text=${encodeURIComponent(msg)}`;
-        if (window.Telegram?.WebApp) {
-            try { Telegram.WebApp.openLink(shareUrl, { try_instant_view: false }); } catch (e) { window.open(shareUrl, '_blank'); }
-        } else { window.open(shareUrl, '_blank'); }
-        cart = []; updateCartUI(); closeModal('cartOverlay');
-    };
+            if (cart.length === 0) return;
+    
+            let msg = `🛍 НОВЫЙ ЗАКАЗ\n`;
+            msg += `──────────────\n`;
+            
+            cart.forEach((item, i) => {
+                msg += `${i + 1}. ${item.name}\n`;
+                msg += `   └ Вкус: ${item.flavor}\n`;
+                msg += `   └ Цена: ${item.price} ₽\n`;
+            });
+            
+            const totalValue = document.getElementById('cartTotal').innerText;
+            msg += `──────────────\n`;
+            msg += `💰 ИТОГО: ${totalValue}`;
+    
+            const username = "smokinshop174"; // твой менеджер
+    
+            // 1. Кодируем текст для URL
+            const encodedText = encodeURIComponent(msg);
+    
+            // 2. Формируем разные типы ссылок
+            // Прямая ссылка на чат с предзаполненным текстом (лучший вариант для iOS)
+            const tgUrl = `tg://resolve?domain=${username}&text=${encodedText}`;
+            // Резервный вариант
+            const webUrl = `https://t.me/${username}?text=${encodedText}`;
+    
+            // 3. Логика отправки специально для iOS/Android
+            if (tg.sendData) {
+                // Если бот поддерживает sendData, можно юзать его, 
+                // но для перехода к менеджеру используем openTelegramLink
+                try {
+                    tg.openTelegramLink(webUrl);
+                } catch(e) {
+                    window.location.href = tgUrl;
+                }
+            } else {
+                // Обычный переход для браузера
+                window.location.href = tgUrl;
+            }
 
+        // Очистка
+        setTimeout(() => {
+            cart = [];
+            updateCartUI();
+            closeModal('cartOverlay');
+        }, 500);
+    };
     // --- ЛОГИКА КОЛЕСА И ОПЛАТЫ ---
     function checkSpinStatus() {
         userSpinRef.on('value', (snap) => {
@@ -520,3 +548,4 @@
 </script>
 </body>
 </html>
+
