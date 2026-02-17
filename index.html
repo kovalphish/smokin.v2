@@ -20,26 +20,23 @@
             --transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; letter-spacing: -0.5px; min-height: 100vh; position: relative; }
+        body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; letter-spacing: -0.5px; min-height: 100vh; }
 
-        /* --- ОБНОВЛЕННЫЙ СИЛЬНЫЙ ФОН --- */
+        /* --- ТОТ САМЫЙ СИЛЬНЫЙ ЗЕЛЕНЫЙ ФОН --- */
         #bg-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: -2;
-            background: radial-gradient(circle at center, #071a02 0%, #000 100%);
+            background: radial-gradient(circle at 50% 50%, #0a2200 0%, #000000 100%);
         }
 
-        /* Текстурный шум для премиального вида */
+        /* Текстура шума (Grain) */
         body::before {
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.12;
+            opacity: 0.15;
             pointer-events: none;
             z-index: -1;
         }
@@ -48,19 +45,18 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: 
-                radial-gradient(circle at 20% 30%, rgba(43, 255, 0, 0.07) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(43, 255, 0, 0.04) 0%, transparent 50%);
+                radial-gradient(circle at 20% 30%, rgba(43, 255, 0, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(20, 100, 0, 0.1) 0%, transparent 40%);
             z-index: -1;
-            pointer-events: none;
-            filter: blur(50px);
-            animation: fogMove 15s infinite alternate ease-in-out;
+            filter: blur(60px);
+            animation: fogMove 20s infinite alternate ease-in-out;
         }
 
         @keyframes fogMove {
             0% { transform: scale(1) translate(0, 0); }
-            100% { transform: scale(1.15) translate(3%, 3%); }
+            100% { transform: scale(1.3) translate(5%, 5%); }
         }
-        /* ------------------------------- */
+        /* ------------------------------------ */
 
         header { 
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
@@ -241,7 +237,7 @@
     const userSpinRef = db.ref('users/' + userId + '/can_spin');
     let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
 
-    // --- ОБНОВЛЕННАЯ ЛОГИКА АНИМИРОВАННОГО КАНВАСА ---
+    // --- ЛОГИКА АНИМИРОВАННОГО КАНВАСА (СФЕРЫ И ДЫМ) ---
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -254,20 +250,20 @@
         reset() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 2.5 + 0.5;
+            this.size = Math.random() * 5 + 2; 
             this.speedY = Math.random() * 0.4 + 0.1;
-            this.speedX = (Math.random() - 0.5) * 0.2;
-            this.alpha = Math.random() * 0.3;
-            this.blur = Math.random() * 3;
+            this.speedX = (Math.random() - 0.5) * 0.3;
+            this.alpha = Math.random() * 0.4;
+            this.blur = Math.random() * 10 + 2;
         }
         update() {
             this.y -= this.speedY;
             this.x += this.speedX;
-            if (this.y < -10) this.reset();
+            if (this.y < -20) this.reset();
         }
         draw() {
             ctx.shadowBlur = this.blur;
-            ctx.shadowColor = 'rgba(43, 255, 0, 0.5)';
+            ctx.shadowColor = 'rgba(43, 255, 0, 0.8)';
             ctx.fillStyle = `rgba(43, 255, 0, ${this.alpha})`;
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -277,10 +273,9 @@
     }
     function initParticles() {
         particles = [];
-        for (let i = 0; i < 70; i++) particles.push(new Particle());
+        for (let i = 0; i < 60; i++) particles.push(new Particle());
     }
     function animate() {
-        // Эффект небольшого шлейфа
         ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         particles.forEach(p => { p.update(); p.draw(); });
