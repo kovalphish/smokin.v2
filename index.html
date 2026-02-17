@@ -22,114 +22,109 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; letter-spacing: -0.5px; min-height: 100vh; }
 
-        /* --- ТОТ САМЫЙ СИЛЬНЫЙ ЗЕЛЕНЫЙ ФОН --- */
+        /* --- ОБНОВЛЕННЫЙ РЕЗКИЙ ФОН --- */
         #bg-canvas {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -2;
-            background: radial-gradient(circle at 50% 50%, #0a2200 0%, #000000 100%);
+            background: #000;
         }
 
-        /* Текстура шума (Grain) */
+        /* Эффект сканирующих линий (CRT) */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 3px, 2px 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
         body::before {
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.15;
+            opacity: 0.12;
             pointer-events: none;
             z-index: -1;
         }
 
-        .fog {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(43, 255, 0, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(20, 100, 0, 0.1) 0%, transparent 40%);
-            z-index: -1;
-            filter: blur(60px);
-            animation: fogMove 20s infinite alternate ease-in-out;
-        }
-
-        @keyframes fogMove {
-            0% { transform: scale(1) translate(0, 0); }
-            100% { transform: scale(1.3) translate(5%, 5%); }
-        }
-        /* ------------------------------------ */
-
         header { 
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border-bottom: 1px solid var(--glass-border); padding: 1.2rem 0; position: sticky; top: 0; z-index: 1000; 
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--neon-green); padding: 1.2rem 0; position: sticky; top: 0; z-index: 1000; 
         }
         .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
-        .logo-text { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; color: #fff; }
+        .logo-text { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; color: #fff; text-shadow: 0 0 10px var(--neon-green); }
         .nav-right { display: flex; align-items: center; gap: 15px; }
-        .btn-channel { background: #fff; color: #000; padding: 10px 25px; border-radius: 50px; font-weight: 900; font-size: 0.85rem; text-decoration: none; text-transform: uppercase; transition: 0.3s; }
-        .btn-channel:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        .btn-channel { background: var(--neon-green); color: #000; padding: 10px 25px; border-radius: 0; font-weight: 900; font-size: 0.85rem; text-decoration: none; text-transform: uppercase; transition: 0.3s; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); }
+        .btn-channel:hover { transform: skewX(-5deg); box-shadow: 0 0 20px var(--neon-green); }
         .gift-icon { color: var(--neon-green); cursor: pointer; transition: 0.3s; }
-        .gift-icon:hover { transform: scale(1.2); filter: drop-shadow(0 0 8px var(--neon-green)); }
         .admin-icon { opacity: 0.3; cursor: pointer; transition: 0.3s; color: #fff; }
         .admin-icon.active { opacity: 1; color: var(--neon-green); }
-        .cat-bar { padding: 20px 0; overflow-x: auto; scrollbar-width: none; position: relative; z-index: 10; }
-        .cat-bar::-webkit-scrollbar { display: none; }
-        .cat-container { display: flex; gap: 12px; padding: 0 20px; max-width: 1400px; margin: 0 auto; }
+        
+        .cat-bar { padding: 20px 0; overflow-x: auto; scrollbar-width: none; position: relative; z-index: 20; }
+        .cat-container { display: flex; gap: 10px; padding: 0 20px; max-width: 1400px; margin: 0 auto; }
         .cat-link { 
-            padding: 12px 26px; border-radius: 50px; background: var(--glass); border: 1px solid var(--glass-border);
-            color: #fff; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: var(--transition);
-            white-space: nowrap;
+            padding: 10px 22px; background: #111; border: 1px solid #333;
+            color: #fff; font-weight: 900; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; transition: 0.2s;
         }
-        .cat-link.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 0 0 20px rgba(43, 255, 0, 0.3); }
+        .cat-link.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 4px 4px 0px #fff; }
+
         .main { max-width: 1400px; margin: 0 auto; padding: 0 15px 120px; position: relative; z-index: 5; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-        .card { 
-            background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; 
-            display: flex; flex-direction: column; opacity: 0; transform: translateY(20px);
-            animation: appear 0.6s forwards; transition: transform 0.3s; position: relative;
-        }
-        @keyframes appear { to { opacity: 1; transform: translateY(0); } }
-        .card-img-wrapper { width: 100%; height: 130px; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; }
-        .card-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .card-name { font-weight: 900; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; min-height: 2.2em; line-height: 1.2; }
-        .card-price { font-weight: 900; font-size: 1.2rem; color: var(--neon-green); }
-        .btn-variants { background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; padding: 12px; border-radius: 50px; font-weight: 900; font-size: 0.7rem; cursor: pointer; width: 100%; margin-top: 10px; text-transform: uppercase; border: none; }
-        .slot-window { position: relative; width: 100%; height: 160px; background: #0a0a0a; border-radius: 25px; border: 2px solid var(--glass-border); overflow: hidden; margin: 20px 0; }
-        .slot-track { position: absolute; top: 0; left: 0; width: 100%; transition: none; }
-        .slot-item { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #fff; text-transform: uppercase; text-align: center; padding: 0 10px; }
-        .slot-indicators { position: absolute; top: 50%; left: 0; width: 100%; height: 40px; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
-        .arrow { width: 0; height: 0; border-top: 15px solid transparent; border-bottom: 15px solid transparent; filter: drop-shadow(0 0 8px var(--neon-green)); }
-        .arrow-left { border-left: 20px solid var(--neon-green); margin-left: 5px; }
-        .arrow-right { border-right: 20px solid var(--neon-green); margin-right: 5px; }
-        .btn-full { background: var(--neon-green); color: #000; border: none; padding: 22px; border-radius: 50px; width: 100%; font-weight: 900; font-size: 1rem; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.3s; }
-        .btn-full:disabled { opacity: 0.5; filter: grayscale(1); }
-        .cart-fab { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--neon-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(43, 255, 0, 0.4); transform: scale(0); transition: var(--transition); cursor: pointer; }
-        .cart-fab.visible { transform: scale(1); }
-        .cart-count { position: absolute; top: 0; right: 0; background: #000; color: #fff; width: 24px; height: 24px; border-radius: 50%; font-weight: 900; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; border: 2px solid var(--neon-green); }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; z-index: 2000; opacity: 0; transition: opacity 0.4s; }
-        .overlay.active { display: flex; opacity: 1; }
-        .modal { background: rgba(15, 15, 15, 0.98); border-radius: 40px; padding: 30px; width: 95%; max-width: 500px; border: 1px solid var(--glass-border); transform: scale(0.9); transition: 0.4s; text-align: center; }
-        .overlay.active .modal { transform: scale(1); }
-        .inp { width: 100%; padding: 18px; border-radius: 20px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 12px; outline: none; }
-        .inp:focus { border-color: var(--neon-green); }
-        .admin-btns { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; gap: 8px; }
-        .btn-mini { width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; }
         
-        #addBtn { position: fixed; bottom: 30px; left: 30px; width: 70px; height: 70px; background: #fff; color: #000; border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(255,255,255,0.2); cursor: pointer; }
+        .card { 
+            background: rgba(10, 10, 10, 0.9); border: 1px solid #222; overflow: hidden; 
+            display: flex; flex-direction: column; opacity: 0; transform: translateY(20px);
+            animation: appear 0.6s forwards; transition: 0.3s; position: relative;
+        }
+        .card:hover { border-color: var(--neon-green); transform: translateY(-5px); }
+        @keyframes appear { to { opacity: 1; transform: translateY(0); } }
+        
+        .card-img-wrapper { width: 100%; height: 140px; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.3) contrast(1.2); }
+        .card-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-name { font-weight: 900; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; line-height: 1.2; }
+        .card-price { font-weight: 900; font-size: 1.3rem; color: var(--neon-green); font-style: italic; }
+        
+        .btn-variants { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer; width: 100%; margin-top: 10px; text-transform: uppercase; }
+        .btn-variants:hover { background: #fff; color: #000; }
+
+        /* Модалки и прочее */
+        .slot-window { position: relative; width: 100%; height: 160px; background: #000; border: 2px solid var(--neon-green); overflow: hidden; margin: 20px 0; }
+        .slot-item { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #fff; text-transform: uppercase; }
+        
+        .btn-full { background: var(--neon-green); color: #000; border: none; padding: 20px; width: 100%; font-weight: 900; font-size: 1rem; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.2s; }
+        .btn-full:active { transform: scale(0.95); }
+
+        .cart-fab { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--neon-green); display: flex; align-items: center; justify-content: center; z-index: 1500; clip-path: polygon(20% 0%, 100% 0, 100% 80%, 80% 100%, 0 100%, 0% 20%); transform: scale(0); transition: 0.4s; cursor: pointer; }
+        .cart-fab.visible { transform: scale(1); }
+        .cart-count { position: absolute; top: 5px; right: 5px; background: #fff; color: #000; width: 22px; height: 22px; font-weight: 900; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; }
+
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 2000; opacity: 0; transition: 0.3s; }
+        .overlay.active { display: flex; opacity: 1; }
+        .modal { background: #000; border: 1px solid var(--neon-green); padding: 30px; width: 95%; max-width: 500px; transform: scale(0.9); transition: 0.3s; text-align: center; box-shadow: 0 0 30px rgba(43,255,0,0.2); }
+        .overlay.active .modal { transform: scale(1); }
+        
+        .inp { width: 100%; padding: 15px; background: #111; border: 1px solid #333; color: #fff; margin-bottom: 10px; outline: none; font-weight: 900; }
+        .inp:focus { border-color: var(--neon-green); }
+        
+        #addBtn { position: fixed; bottom: 30px; left: 30px; width: 70px; height: 70px; background: #fff; color: #000; display: none; align-items: center; justify-content: center; z-index: 1500; cursor: pointer; clip-path: circle(50% at 50% 50%); }
     </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
-<div class="fog"></div>
 
 <header>
     <div class="header-content">
-        <div class="logo-text">ПРАЙС</div>
+        <div class="logo-text">SMOKIN174</div>
         <div class="nav-right">
-            <i class="fas fa-gift fa-2xl gift-icon" onclick="openWheel()"></i>
-            <a href="https://t.me/smokin174" target="_blank" class="btn-channel">КАНАЛ</a>
+            <i class="fas fa-bolt fa-2xl gift-icon" onclick="openWheel()"></i>
+            <a href="https://t.me/smokin174" target="_blank" class="btn-channel">CHANNEL</a>
             <i class="fas fa-fingerprint fa-2xl admin-icon" id="adminLock" onclick="openModal('loginOverlay')"></i>
         </div>
     </div>
@@ -145,77 +140,70 @@
 
 <div class="overlay" id="wheelOverlay" onclick="closeModal('wheelOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
-        <h2 style="font-weight:900; text-transform:uppercase; margin-bottom:10px;">LUCKY SMOKIN</h2>
-        <p id="spinStatusText" style="font-size: 0.7rem; opacity: 0.5; margin-bottom: 10px;">ЗАГРУЗКА...</p>
+        <h2 style="font-weight:900; text-transform:uppercase; margin-bottom:10px;">LUCKY SYSTEM</h2>
+        <p id="spinStatusText" style="font-size: 0.7rem; opacity: 0.5; margin-bottom: 10px;">READY TO ROLL</p>
         <div class="slot-window">
-            <div class="slot-indicators">
-                <div class="arrow arrow-left"></div>
-                <div class="arrow arrow-right"></div>
-            </div>
             <div class="slot-track" id="slotTrack"></div>
         </div>
         <div id="paymentButtons">
-            <button class="btn-full" style="background: #0088cc; color: #fff;" onclick="startSpin()">КУПИТЬ СПИН 10 ⭐</button>
+            <button class="btn-full" style="background: #0088cc; color: #fff;" onclick="startSpin()">BUY SPIN 10 ⭐</button>
         </div>
-        <button class="btn-full" id="spinBtn" style="display: none;" onclick="runSpinAnimation()">КРУТИТЬ БЕСПЛАТНО</button>
-        <div id="spinResult" style="margin-top:20px; font-weight:900; height: 1.2em; color: var(--neon-green);"></div>
+        <button class="btn-full" id="spinBtn" style="display: none;" onclick="runSpinAnimation()">SPIN FREE</button>
+        <div id="spinResult" style="margin-top:20px; font-weight:900; color: var(--neon-green); letter-spacing: 2px;"></div>
     </div>
 </div>
 
 <div class="cart-fab" id="cartFab" onclick="openModal('cartOverlay')">
-    <i class="fas fa-shopping-bag fa-xl"></i>
+    <i class="fas fa-shopping-cart fa-xl"></i>
     <div class="cart-count" id="cartCount">0</div>
 </div>
 
 <div class="overlay" id="cartOverlay" onclick="closeModal('cartOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
-        <h2 style="margin-bottom:20px; font-weight:900; text-transform:uppercase; color:var(--neon-green);">КОРЗИНА</h2>
+        <h2 style="margin-bottom:20px; font-weight:900; text-transform:uppercase; color:var(--neon-green);">CART</h2>
         <div id="cartItems" style="max-height:40vh; overflow-y:auto; margin-bottom:20px;"></div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <span style="opacity:0.6;">ИТОГО</span>
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+            <span style="opacity:0.6;">TOTAL</span>
             <span style="font-weight:900; font-size:1.8rem;" id="cartTotal">0 ₽</span>
         </div>
-        <button class="btn-full" onclick="sendToManager()">ОФОРМИТЬ В TG</button>
-        <button class="btn-full" style="background:#ff3b30; color:#fff; margin-top:10px; padding:15px; font-size:0.8rem;" onclick="clearCart()">ОЧИСТИТЬ</button>
+        <button class="btn-full" onclick="sendToManager()">ORDER VIA TG</button>
+        <button class="btn-full" style="background:#333; color:#fff; margin-top:10px; padding:12px; font-size:0.7rem;" onclick="clearCart()">CLEAR</button>
     </div>
 </div>
 
 <div class="overlay" id="vOverlay" onclick="closeModal('vOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
-        <h2 id="vTitle" style="margin-bottom:25px; font-weight:900; text-transform:uppercase;">ВКУСЫ</h2>
+        <h2 id="vTitle" style="margin-bottom:25px; font-weight:900; text-transform:uppercase;">FLAVORS</h2>
         <div id="vList" style="max-height:50vh; overflow-y:auto;"></div>
-        <button class="btn-full" style="background:#222; color:#fff;" onclick="closeModal('vOverlay')">ЗАКРЫТЬ</button>
+        <button class="btn-full" style="background:#222; color:#fff;" onclick="closeModal('vOverlay')">BACK</button>
     </div>
 </div>
 
 <div class="overlay" id="loginOverlay" onclick="closeModal('loginOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
-        <h2 style="margin-bottom:20px; font-weight:900;">АДМИН-ДОСТУП</h2>
-        <input type="password" id="pass" class="inp" style="text-align:center;" placeholder="ПАРОЛЬ">
-        <button onclick="tryLogin()" class="btn-full">ПОДТВЕРДИТЬ</button>
+        <h2 style="margin-bottom:20px; font-weight:900;">ADMIN LOGIN</h2>
+        <input type="password" id="pass" class="inp" style="text-align:center;" placeholder="PASSWORD">
+        <button onclick="tryLogin()" class="btn-full">ENTER</button>
     </div>
 </div>
 
 <div class="overlay" id="adminOverlay" onclick="closeModal('adminOverlay')">
     <div class="modal" onclick="event.stopPropagation()" style="text-align: left;">
-        <h2 id="adminModalTitle" style="margin-bottom:20px; font-weight:900; text-align: center;">ТОВАР</h2>
+        <h2 id="adminModalTitle" style="margin-bottom:20px; font-weight:900; text-align: center;">EDIT ITEM</h2>
         <form id="pForm">
             <input type="hidden" id="pId">
-            <input type="text" id="pName" placeholder="Название" class="inp" required>
-            <input type="number" id="pPrice" placeholder="Цена" class="inp" required>
-            <input type="text" id="pCat" placeholder="Категория" class="inp" required>
-            <input type="text" id="pBtnName" placeholder="Текст кнопки (Вкусы)" class="inp">
-            
+            <input type="text" id="pName" placeholder="Name" class="inp" required>
+            <input type="number" id="pPrice" placeholder="Price" class="inp" required>
+            <input type="text" id="pCat" placeholder="Category" class="inp" required>
+            <input type="text" id="pBtnName" placeholder="Button Text (e.g. ВКУСЫ)" class="inp">
             <div style="display:flex; gap:10px; margin-bottom:10px;">
-                <input type="text" id="vInp" class="inp" placeholder="Добавить вкус" style="margin-bottom:0">
+                <input type="text" id="vInp" class="inp" placeholder="Add flavor" style="margin-bottom:0">
                 <button type="button" onclick="addFlavorToList()" class="btn-full" style="margin-top:0; padding:0 20px; width:auto;">+</button>
             </div>
             <div id="adminVList" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:15px;"></div>
-            
             <input type="file" id="fInp" class="inp" accept="image/*">
             <input type="hidden" id="pImg">
-            
-            <button type="submit" class="btn-full">СОХРАНИТЬ</button>
+            <button type="submit" class="btn-full">SAVE TO DATABASE</button>
         </form>
     </div>
 </div>
@@ -224,6 +212,8 @@
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
+    
+    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyD3wDw2ZTTXn2gY467grDOVi9E5vcusilc",
         authDomain: "alexsmok-1dc1c.firebaseapp.com",
@@ -233,60 +223,88 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    
     const userId = tg.initDataUnsafe?.user?.id || "test_user";
     const userSpinRef = db.ref('users/' + userId + '/can_spin');
     let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
 
-    // --- ЛОГИКА АНИМИРОВАННОГО КАНВАСА (СФЕРЫ И ДЫМ) ---
+    // --- НОВЫЙ "РЕЗКИЙ" КАНВАС ---
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
-    let particles = [];
+    let glitches = [], spikes = [];
+
     function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
-    class Particle {
+
+    class GlitchLine {
         constructor() { this.reset(); }
         reset() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 5 + 2; 
-            this.speedY = Math.random() * 0.4 + 0.1;
-            this.speedX = (Math.random() - 0.5) * 0.3;
-            this.alpha = Math.random() * 0.4;
-            this.blur = Math.random() * 10 + 2;
+            this.w = Math.random() * 150 + 50;
+            this.h = Math.random() * 1 + 0.5;
+            this.speed = Math.random() * 15 + 10;
+            this.opacity = Math.random() * 0.4;
         }
         update() {
-            this.y -= this.speedY;
-            this.x += this.speedX;
-            if (this.y < -20) this.reset();
+            this.x += this.speed;
+            if (this.x > canvas.width) this.reset();
         }
         draw() {
-            ctx.shadowBlur = this.blur;
-            ctx.shadowColor = 'rgba(43, 255, 0, 0.8)';
-            ctx.fillStyle = `rgba(43, 255, 0, ${this.alpha})`;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
+            ctx.fillStyle = `rgba(43, 255, 0, ${this.opacity})`;
+            ctx.fillRect(this.x, this.y, this.w, this.h);
         }
     }
-    function initParticles() {
-        particles = [];
-        for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+    class Spike {
+        constructor() { this.reset(); }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + 20;
+            this.len = Math.random() * 80 + 20;
+            this.speed = Math.random() * 20 + 15;
+        }
+        update() {
+            this.y -= this.speed;
+            if (this.y < -this.len) this.reset();
+        }
+        draw() {
+            ctx.strokeStyle = 'rgba(43, 255, 0, 0.4)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x, this.y + this.len);
+            ctx.stroke();
+        }
     }
+
+    function initBG() {
+        glitches = Array.from({length: 20}, () => new GlitchLine());
+        spikes = Array.from({length: 30}, () => new Spike());
+    }
+
     function animate() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+        // Резкие вспышки фона
+        ctx.fillStyle = Math.random() > 0.98 ? 'rgba(43, 255, 0, 0.08)' : 'rgba(0, 0, 0, 0.25)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => { p.update(); p.draw(); });
+
+        glitches.forEach(g => { g.update(); g.draw(); });
+        spikes.forEach(s => { s.update(); s.draw(); });
+
+        if(Math.random() > 0.96) {
+            ctx.fillStyle = 'rgba(43, 255, 0, 0.1)';
+            ctx.fillRect(0, Math.random()*canvas.height, canvas.width, 2);
+        }
+
         requestAnimationFrame(animate);
     }
-    window.addEventListener('resize', resize);
-    resize();
-    initParticles();
-    animate();
 
-    // --- ФУНКЦИИ ПРИЛОЖЕНИЯ ---
+    window.addEventListener('resize', resize);
+    resize(); initBG(); animate();
+
+    // --- ЛОГИКА ПРИЛОЖЕНИЯ ---
     function load() {
         db.ref('products').on('value', snap => {
             const val = snap.val();
@@ -304,20 +322,20 @@
         document.getElementById('productGrid').innerHTML = filtered.map(p => `
             <div class="card">
                 ${isAdmin ? `
-                    <div class="admin-btns">
-                        <button class="btn-mini" style="background:var(--neon-green);" onclick="editProduct('${p.id}')"><i class="fas fa-pen"></i></button>
-                        <button class="btn-mini" style="background:#ff4444; color:#fff;" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
+                    <div style="position:absolute;top:10px;right:10px;z-index:100;display:flex;gap:5px;">
+                        <button onclick="editProduct('${p.id}')" style="width:30px;height:30px;background:var(--neon-green);border:none;"><i class="fas fa-pen fa-xs"></i></button>
+                        <button onclick="deleteProduct('${p.id}')" style="width:30px;height:30px;background:#ff4444;border:none;color:#fff;"><i class="fas fa-trash fa-xs"></i></button>
                     </div>
                 ` : ''}
                 <div class="card-img-wrapper">
-                    <img src="${p.imageData || ''}" class="card-img" onerror="this.src='https://via.placeholder.com/400/111/fff?text=SMOKIN'">
+                    <img src="${p.imageData || ''}" class="card-img" onerror="this.src='https://via.placeholder.com/400/000/2bff00?text=SMOKIN'">
                 </div>
                 <div class="card-info">
                     <div class="card-name">${p.name}</div>
                     <div class="card-price">${p.price} ₽</div>
                     ${p.variants && p.variants.length > 0 ? 
                         `<button class="btn-variants" onclick="showFlavors('${p.id}')">${p.variantButtonName || 'ВКУСЫ'}</button>` : 
-                        `<button class="btn-variants" style="background:var(--neon-green); color:#000;" onclick="addToCart('${p.id}', 'Стандарт')">В КОРЗИНУ</button>`
+                        `<button class="btn-variants" style="background:var(--neon-green); color:#000; border:none;" onclick="addToCart('${p.id}', 'Стандарт')">В КОРЗИНУ</button>`
                     }
                 </div>
             </div>`).join('');
@@ -330,7 +348,7 @@
             document.getElementById('addBtn').style.display = 'flex';
             closeModal('loginOverlay');
             render();
-        } else { alert('Неверно'); }
+        } else { alert('ACCESS DENIED'); }
     };
 
     window.openAddModal = () => {
@@ -338,20 +356,24 @@
         document.getElementById('pId').value = '';
         document.getElementById('pImg').value = '';
         tempVariants = [];
-        renderAdminVariants();
-        document.getElementById('adminModalTitle').innerText = "НОВЫЙ ТОВАР";
+        document.getElementById('adminVList').innerHTML = '';
+        document.getElementById('adminModalTitle').innerText = "NEW ITEM";
         openModal('adminOverlay');
     };
 
     window.addFlavorToList = () => {
         const val = document.getElementById('vInp').value.trim();
-        if(val) { tempVariants.push(val); document.getElementById('vInp').value = ''; renderAdminVariants(); }
+        if(val) { 
+            tempVariants.push(val); 
+            document.getElementById('vInp').value = ''; 
+            renderAdminVariants(); 
+        }
     };
 
     function renderAdminVariants() {
         document.getElementById('adminVList').innerHTML = tempVariants.map((v, i) => `
-            <span style="background:#222; padding:5px 12px; border-radius:50px; font-size:0.7rem; border:1px solid var(--neon-green); display: flex; align-items: center; gap: 5px;">
-                ${v} <i class="fas fa-times" onclick="tempVariants.splice(${i},1);renderAdminVariants()" style="color:#ff4444; cursor:pointer;"></i>
+            <span style="background:#222; padding:5px 10px; border:1px solid var(--neon-green); font-size:0.7rem;">
+                ${v} <i class="fas fa-times" onclick="tempVariants.splice(${i},1);renderAdminVariants()" style="color:#ff4444; margin-left:5px;"></i>
             </span>
         `).join('');
     }
@@ -366,11 +388,10 @@
         document.getElementById('pImg').value = p.imageData || '';
         tempVariants = p.variants ? [...p.variants] : [];
         renderAdminVariants();
-        document.getElementById('adminModalTitle').innerText = "ИЗМЕНИТЬ";
         openModal('adminOverlay');
     };
 
-    window.deleteProduct = (id) => { if(confirm('Удалить товар?')) db.ref('products/'+id).remove(); };
+    window.deleteProduct = (id) => { if(confirm('DELETE ITEM?')) db.ref('products/'+id).remove(); };
 
     document.getElementById('pForm').onsubmit = async (e) => {
         e.preventDefault();
@@ -396,11 +417,11 @@
 
     window.showFlavors = (id) => {
         const p = products.find(x => x.id === id);
-        document.getElementById('vTitle').innerText = p.variantButtonName || 'ВКУСЫ';
+        document.getElementById('vTitle').innerText = p.variantButtonName || 'FLAVORS';
         document.getElementById('vList').innerHTML = (p.variants || []).map(v => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom:8px;">
-                <div>${v}</div>
-                <button onclick="addToCart('${p.id}', '${v}')" style="background:var(--neon-green); border:none; padding:8px 18px; border-radius:10px; font-weight:900; color:#000;">+</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#111; padding:15px; border:1px solid #222; margin-bottom:8px;">
+                <div style="font-weight:900; font-size:0.8rem;">${v}</div>
+                <button onclick="addToCart('${p.id}', '${v}')" style="background:var(--neon-green); border:none; padding:10px 20px; font-weight:900;">ADD</button>
             </div>`).join('');
         openModal('vOverlay');
     };
@@ -418,11 +439,11 @@
         let t = 0;
         document.getElementById('cartItems').innerHTML = cart.map((item, i) => { 
             t += item.price; 
-            return `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #222;">
-                <div style="text-align: left;">${item.name} <br><small style="opacity:0.5">${item.flavor}</small></div>
+            return `<div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #111;">
+                <div style="text-align: left;"><div style="font-weight:900;font-size:0.8rem;">${item.name}</div><small style="color:var(--neon-green)">${item.flavor}</small></div>
                 <div style="display:flex; align-items:center; gap:15px;">
-                    <span>${item.price}₽</span>
-                    <i class="fas fa-trash" style="color:#ff4444" onclick="removeItem(${i})"></i>
+                    <span style="font-weight:900;">${item.price}₽</span>
+                    <i class="fas fa-times" style="color:#ff4444" onclick="removeItem(${i})"></i>
                 </div>
             </div>`; 
         }).join('');
@@ -434,18 +455,13 @@
 
     window.sendToManager = () => {
         if (cart.length === 0) return;
-        let msg = `🛍 НОВЫЙ ЗАКАЗ\n──────────────\n`;
+        let msg = `⚡️ NEW ORDER\n\n`;
         cart.forEach((item, i) => {
-            msg += `${i + 1}. ${item.name}\n   └ Вкус: ${item.flavor}\n   └ Цена: ${item.price} ₽\n`;
+            msg += `${i + 1}. ${item.name} [${item.flavor}] — ${item.price}₽\n`;
         });
-        const totalValue = document.getElementById('cartTotal').innerText;
-        msg += `──────────────\n💰 ИТОГО: ${totalValue}`;
-        const username = "smokinshop174";
-        const shareUrl = `https://t.me/share/url?url=@${username}&text=${encodeURIComponent(msg)}`;
-        if (window.Telegram?.WebApp) {
-            try { Telegram.WebApp.openLink(shareUrl, { try_instant_view: false }); } 
-            catch (e) { window.open(shareUrl, '_blank'); }
-        } else { window.open(shareUrl, '_blank'); }
+        msg += `\nTOTAL: ${document.getElementById('cartTotal').innerText}`;
+        const url = `https://t.me/share/url?url=@smokinshop174&text=${encodeURIComponent(msg)}`;
+        tg.openLink(url);
         cart = []; updateCartUI(); closeModal('cartOverlay');
     };
 
@@ -453,19 +469,15 @@
         const canSpin = snap.val();
         document.getElementById('paymentButtons').style.display = canSpin ? 'none' : 'block';
         document.getElementById('spinBtn').style.display = canSpin ? 'block' : 'none';
-        const txt = document.getElementById('spinStatusText');
-        txt.innerText = canSpin ? "ОПЛАЧЕНО! ЖМИ КРУТИТЬ" : "СПИН СТОИТ 10⭐";
-        txt.style.color = canSpin ? "var(--neon-green)" : "rgba(255,255,255,0.5)";
+        document.getElementById('spinStatusText').innerText = canSpin ? "SYSTEM CHARGED! PUSH SPIN" : "LOCKED: 10 STARS REQUIRED";
     });
 
     async function startSpin() {
-        const result = document.getElementById('spinResult');
-        result.innerText = "ГЕНЕРАЦИЯ ЧЕКА...";
         try {
             const resp = await fetch(`https://smokin-v2.vercel.app/api/getInvoice?userId=${userId}`);
             const data = await resp.json();
-            if (data.link) tg.openInvoice(data.link, (status) => { if (status === 'paid') result.innerText = "УСПЕХ!"; });
-        } catch (e) { result.innerText = "ОШИБКА ОПЛАТЫ"; }
+            if (data.link) tg.openInvoice(data.link, (s) => { if(s==='paid') document.getElementById('spinResult').innerText="SUCCESS!"; });
+        } catch (e) { alert("PAYMENT ERROR"); }
     }
 
     function runSpinAnimation() {
@@ -473,25 +485,28 @@
         const res = document.getElementById('spinResult');
         const btn = document.getElementById('spinBtn');
         btn.disabled = true;
-        res.innerText = "КРУТИМ...";
-        const winIdx = 75; 
+        res.innerText = "PROCESSING...";
+        const winIdx = 40; 
         const itemH = 160;
-        const winValue = Math.random() > 0.8 ? "СКИДКА 10%" : "ПУСТО";
-        track.children[winIdx].innerText = winValue;
-        track.style.transition = 'transform 5s cubic-bezier(0.1, 0, 0.1, 1)';
+        const winValue = Math.random() > 0.8 ? "WIN: 10%" : "EMPTY";
+        
+        let h = '';
+        for(let i=0; i<60; i++) h += `<div class="slot-item">${i === winIdx ? winValue : 'VOID'}</div>`;
+        track.innerHTML = h;
+        
+        track.style.transition = 'transform 4s cubic-bezier(0.15, 0, 0.15, 1)';
         track.style.transform = `translateY(-${winIdx * itemH}px)`;
+        
         setTimeout(() => {
-            res.innerText = winValue === "ПУСТО" ? "НЕ ПОВЕЗЛО 😢" : "ВЫИГРЫШ: " + winValue;
+            res.innerText = winValue === "EMPTY" ? "SYSTEM: FAILURE" : "SYSTEM: " + winValue;
             userSpinRef.set(false);
             btn.disabled = false;
-        }, 5200);
+        }, 4200);
     }
 
     function openWheel() {
         const track = document.getElementById('slotTrack');
-        let h = '';
-        for(let i=0; i<90; i++) h += `<div class="slot-item">${["ПУСТО","GIFT","5%","ПУСТО","10%"][i%5]}</div>`;
-        track.innerHTML = h;
+        track.innerHTML = '<div class="slot-item">READY?</div>';
         track.style.transition = 'none';
         track.style.transform = 'translateY(0)';
         document.getElementById('spinResult').innerText = '';
@@ -503,11 +518,10 @@
         el.style.display = 'flex'; 
         setTimeout(() => el.classList.add('active'), 10); 
     };
-
     window.closeModal = (id) => { 
         const el = document.getElementById(id);
         el.classList.remove('active'); 
-        setTimeout(() => el.style.display = 'none', 400); 
+        setTimeout(() => el.style.display = 'none', 300); 
     };
 
     load();
