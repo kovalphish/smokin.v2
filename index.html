@@ -21,43 +21,22 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; letter-spacing: -0.5px; min-height: 100vh; }
-
-        /* --- ТОТ САМЫЙ СИЛЬНЫЙ ЗЕЛЕНЫЙ ФОН --- */
         #bg-canvas {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2;
-            background: radial-gradient(circle at 50% 50%, #0a2200 0%, #000000 100%);
-        }
-
-        /* Текстура шума (Grain) */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.15;
-            pointer-events: none;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -1;
+            background: radial-gradient(circle at center, #0a1a05 0%, #000 100%);
         }
-
         .fog {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(43, 255, 0, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(20, 100, 0, 0.1) 0%, transparent 40%);
+            background: radial-gradient(circle at 50% 50%, rgba(43, 255, 0, 0.05), transparent 70%);
             z-index: -1;
-            filter: blur(60px);
-            animation: fogMove 20s infinite alternate ease-in-out;
+            pointer-events: none;
         }
-
-        @keyframes fogMove {
-            0% { transform: scale(1) translate(0, 0); }
-            100% { transform: scale(1.3) translate(5%, 5%); }
-        }
-        /* ------------------------------------ */
-
         header { 
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border-bottom: 1px solid var(--glass-border); padding: 1.2rem 0; position: sticky; top: 0; z-index: 1000; 
@@ -123,7 +102,6 @@
 <body>
 <canvas id="bg-canvas"></canvas>
 <div class="fog"></div>
-
 <header>
     <div class="header-content">
         <div class="logo-text">ПРАЙС</div>
@@ -134,15 +112,11 @@
         </div>
     </div>
 </header>
-
 <div class="cat-bar"><div class="cat-container" id="cats"></div></div>
-
 <main class="main">
     <div class="grid" id="productGrid"></div>
 </main>
-
 <div id="addBtn" onclick="openAddModal()"><i class="fas fa-plus fa-xl"></i></div>
-
 <div class="overlay" id="wheelOverlay" onclick="closeModal('wheelOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
         <h2 style="font-weight:900; text-transform:uppercase; margin-bottom:10px;">LUCKY SMOKIN</h2>
@@ -161,12 +135,10 @@
         <div id="spinResult" style="margin-top:20px; font-weight:900; height: 1.2em; color: var(--neon-green);"></div>
     </div>
 </div>
-
 <div class="cart-fab" id="cartFab" onclick="openModal('cartOverlay')">
     <i class="fas fa-shopping-bag fa-xl"></i>
     <div class="cart-count" id="cartCount">0</div>
 </div>
-
 <div class="overlay" id="cartOverlay" onclick="closeModal('cartOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
         <h2 style="margin-bottom:20px; font-weight:900; text-transform:uppercase; color:var(--neon-green);">КОРЗИНА</h2>
@@ -179,7 +151,6 @@
         <button class="btn-full" style="background:#ff3b30; color:#fff; margin-top:10px; padding:15px; font-size:0.8rem;" onclick="clearCart()">ОЧИСТИТЬ</button>
     </div>
 </div>
-
 <div class="overlay" id="vOverlay" onclick="closeModal('vOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
         <h2 id="vTitle" style="margin-bottom:25px; font-weight:900; text-transform:uppercase;">ВКУСЫ</h2>
@@ -187,7 +158,6 @@
         <button class="btn-full" style="background:#222; color:#fff;" onclick="closeModal('vOverlay')">ЗАКРЫТЬ</button>
     </div>
 </div>
-
 <div class="overlay" id="loginOverlay" onclick="closeModal('loginOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
         <h2 style="margin-bottom:20px; font-weight:900;">АДМИН-ДОСТУП</h2>
@@ -195,7 +165,6 @@
         <button onclick="tryLogin()" class="btn-full">ПОДТВЕРДИТЬ</button>
     </div>
 </div>
-
 <div class="overlay" id="adminOverlay" onclick="closeModal('adminOverlay')">
     <div class="modal" onclick="event.stopPropagation()" style="text-align: left;">
         <h2 id="adminModalTitle" style="margin-bottom:20px; font-weight:900; text-align: center;">ТОВАР</h2>
@@ -237,7 +206,7 @@
     const userSpinRef = db.ref('users/' + userId + '/can_spin');
     let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
 
-    // --- ЛОГИКА АНИМИРОВАННОГО КАНВАСА (СФЕРЫ И ДЫМ) ---
+    // --- ЛОГИКА АНИМИРОВАННОГО КАНВАСА ---
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -250,34 +219,27 @@
         reset() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 5 + 2; 
-            this.speedY = Math.random() * 0.4 + 0.1;
-            this.speedX = (Math.random() - 0.5) * 0.3;
-            this.alpha = Math.random() * 0.4;
-            this.blur = Math.random() * 10 + 2;
+            this.size = Math.random() * 2 + 0.5;
+            this.speedY = Math.random() * 1 + 0.2;
+            this.alpha = Math.random() * 0.5;
         }
         update() {
             this.y -= this.speedY;
-            this.x += this.speedX;
-            if (this.y < -20) this.reset();
+            if (this.y < -10) this.reset();
         }
         draw() {
-            ctx.shadowBlur = this.blur;
-            ctx.shadowColor = 'rgba(43, 255, 0, 0.8)';
             ctx.fillStyle = `rgba(43, 255, 0, ${this.alpha})`;
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fill();
-            ctx.shadowBlur = 0;
         }
     }
     function initParticles() {
         particles = [];
-        for (let i = 0; i < 60; i++) particles.push(new Particle());
+        for (let i = 0; i < 100; i++) particles.push(new Particle());
     }
     function animate() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach(p => { p.update(); p.draw(); });
         requestAnimationFrame(animate);
     }
@@ -432,22 +394,45 @@
     window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
     window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
 
+    // ────────────────────────────────────────────────
+    // ИСПРАВЛЕННАЯ ФУНКЦИЯ ОТПРАВКИ ЗАКАЗА (самый надёжный способ 2026)
     window.sendToManager = () => {
         if (cart.length === 0) return;
-        let msg = `🛍 НОВЫЙ ЗАКАЗ\n──────────────\n`;
+
+        let msg = `🛍 НОВЫЙ ЗАКАЗ\n`;
+        msg += `──────────────\n`;
+        
         cart.forEach((item, i) => {
-            msg += `${i + 1}. ${item.name}\n   └ Вкус: ${item.flavor}\n   └ Цена: ${item.price} ₽\n`;
+            msg += `${i + 1}. ${item.name}\n`;
+            msg += `   └ Вкус: ${item.flavor}\n`;
+            msg += `   └ Цена: ${item.price} ₽\n`;
         });
+        
         const totalValue = document.getElementById('cartTotal').innerText;
-        msg += `──────────────\n💰 ИТОГО: ${totalValue}`;
-        const username = "smokinshop174";
+        msg += `──────────────\n`;
+        msg += `💰 ИТОГО: ${totalValue}`;
+
+        const username = "smokinshop174";  // без @
+
+        // Самый стабильный способ в 2025–2026
         const shareUrl = `https://t.me/share/url?url=@${username}&text=${encodeURIComponent(msg)}`;
+
         if (window.Telegram?.WebApp) {
-            try { Telegram.WebApp.openLink(shareUrl, { try_instant_view: false }); } 
-            catch (e) { window.open(shareUrl, '_blank'); }
-        } else { window.open(shareUrl, '_blank'); }
-        cart = []; updateCartUI(); closeModal('cartOverlay');
+            try {
+                Telegram.WebApp.openLink(shareUrl, { try_instant_view: false });
+            } catch (e) {
+                window.open(shareUrl, '_blank');
+            }
+        } else {
+            window.open(shareUrl, '_blank');
+        }
+
+        // Очистка корзины после отправки
+        cart = [];
+        updateCartUI();
+        closeModal('cartOverlay');
     };
+    // ────────────────────────────────────────────────
 
     userSpinRef.on('value', (snap) => {
         const canSpin = snap.val();
@@ -514,4 +499,3 @@
 </script>
 </body>
 </html>
-
