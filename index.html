@@ -10,7 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
-    <style>
+<style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
         :root {
             --bg-black: #000000;
@@ -22,35 +22,31 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; letter-spacing: -0.5px; min-height: 100vh; }
 
-        /* --- ОБНОВЛЕННЫЙ ФОН: ЗЕЛЕНЫЙ ОГОНЬ И ДЫМ --- */
+        /* --- ЗЕЛЕНЫЙ ОГОНЬ И ДЫМ --- */
         #bg-canvas {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -2;
             background: #000;
         }
-
-        .smoke-overlay {
+        .smoke-wrap {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            background: 
-                radial-gradient(circle at 50% 120%, rgba(43, 255, 0, 0.15), transparent 70%),
-                radial-gradient(circle at 20% 80%, rgba(20, 100, 0, 0.1), transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(0, 50, 0, 0.1), transparent 50%);
-            filter: blur(50px);
+            overflow: hidden;
             pointer-events: none;
         }
-
-        /* Текстура шума поверх всего для объема дыма */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.18;
-            pointer-events: none;
-            z-index: -1;
+        .smoke-layer {
+            position: absolute;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(43, 255, 0, 0.08), transparent 50%);
+            filter: blur(80px);
+            animation: smokeMove 25s infinite linear;
+            opacity: 0.5;
+        }
+        @keyframes smokeMove {
+            from { transform: translate(-25%, -25%) rotate(0deg); }
+            to { transform: translate(-10%, -10%) rotate(360deg); }
         }
 
         header { 
@@ -61,29 +57,14 @@
         .logo-text { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; color: #fff; }
         .nav-right { display: flex; align-items: center; gap: 15px; }
         .btn-channel { background: #fff; color: #000; padding: 10px 25px; border-radius: 50px; font-weight: 900; font-size: 0.85rem; text-decoration: none; text-transform: uppercase; transition: 0.3s; }
-        .btn-channel:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
-        .gift-icon { color: var(--neon-green); cursor: pointer; transition: 0.3s; }
-        .gift-icon:hover { transform: scale(1.2); filter: drop-shadow(0 0 8px var(--neon-green)); }
-        .admin-icon { opacity: 0.3; cursor: pointer; transition: 0.3s; color: #fff; }
-        .admin-icon.active { opacity: 1; color: var(--neon-green); }
         .cat-bar { padding: 20px 0; overflow-x: auto; scrollbar-width: none; position: relative; z-index: 10; }
-        .cat-bar::-webkit-scrollbar { display: none; }
         .cat-container { display: flex; gap: 12px; padding: 0 20px; max-width: 1400px; margin: 0 auto; }
-        .cat-link { 
-            padding: 12px 26px; border-radius: 50px; background: var(--glass); border: 1px solid var(--glass-border);
-            color: #fff; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: var(--transition);
-            white-space: nowrap;
-        }
+        .cat-link { padding: 12px 26px; border-radius: 50px; background: var(--glass); border: 1px solid var(--glass-border); color: #fff; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: var(--transition); white-space: nowrap; }
         .cat-link.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 0 0 20px rgba(43, 255, 0, 0.3); }
         .main { max-width: 1400px; margin: 0 auto; padding: 0 15px 120px; position: relative; z-index: 5; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-        .card { 
-            background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; 
-            display: flex; flex-direction: column; opacity: 0; transform: translateY(20px);
-            animation: appear 0.6s forwards; transition: transform 0.3s; position: relative;
-        }
+        .card { background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; display: flex; flex-direction: column; opacity: 0; transform: translateY(20px); animation: appear 0.6s forwards; transition: transform 0.3s; position: relative; }
         @keyframes appear { to { opacity: 1; transform: translateY(0); } }
         .card-img-wrapper { width: 100%; height: 130px; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-img { width: 100%; height: 100%; object-fit: cover; }
@@ -91,28 +72,25 @@
         .card-name { font-weight: 900; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; min-height: 2.2em; line-height: 1.2; }
         .card-price { font-weight: 900; font-size: 1.2rem; color: var(--neon-green); }
         .btn-variants { background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; padding: 12px; border-radius: 50px; font-weight: 900; font-size: 0.7rem; cursor: pointer; width: 100%; margin-top: 10px; text-transform: uppercase; border: none; }
-        .slot-window { position: relative; width: 100%; height: 160px; background: #0a0a0a; border-radius: 25px; border: 2px solid var(--glass-border); overflow: hidden; margin: 20px 0; }
-        .slot-track { position: absolute; top: 0; left: 0; width: 100%; transition: none; }
-        .slot-item { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #fff; text-transform: uppercase; text-align: center; padding: 0 10px; }
-        .slot-indicators { position: absolute; top: 50%; left: 0; width: 100%; height: 40px; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
-        .arrow { width: 0; height: 0; border-top: 15px solid transparent; border-bottom: 15px solid transparent; filter: drop-shadow(0 0 8px var(--neon-green)); }
-        .arrow-left { border-left: 20px solid var(--neon-green); margin-left: 5px; }
-        .arrow-right { border-right: 20px solid var(--neon-green); margin-right: 5px; }
-        .btn-full { background: var(--neon-green); color: #000; border: none; padding: 22px; border-radius: 50px; width: 100%; font-weight: 900; font-size: 1rem; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.3s; }
-        .btn-full:disabled { opacity: 0.5; filter: grayscale(1); }
         .cart-fab { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--neon-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(43, 255, 0, 0.4); transform: scale(0); transition: var(--transition); cursor: pointer; }
         .cart-fab.visible { transform: scale(1); }
         .cart-count { position: absolute; top: 0; right: 0; background: #000; color: #fff; width: 24px; height: 24px; border-radius: 50%; font-weight: 900; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; border: 2px solid var(--neon-green); }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; z-index: 2000; opacity: 0; transition: opacity 0.4s; }
         .overlay.active { display: flex; opacity: 1; }
         .modal { background: rgba(15, 15, 15, 0.98); border-radius: 40px; padding: 30px; width: 95%; max-width: 500px; border: 1px solid var(--glass-border); transform: scale(0.9); transition: 0.4s; text-align: center; }
-        .overlay.active .modal { transform: scale(1); }
         .inp { width: 100%; padding: 18px; border-radius: 20px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 12px; outline: none; }
-        .inp:focus { border-color: var(--neon-green); }
+        .btn-full { background: var(--neon-green); color: #000; border: none; padding: 22px; border-radius: 50px; width: 100%; font-weight: 900; font-size: 1rem; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.3s; }
         .admin-btns { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; gap: 8px; }
         .btn-mini { width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; }
-        
-        #addBtn { position: fixed; bottom: 30px; left: 30px; width: 70px; height: 70px; background: #fff; color: #000; border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(255,255,255,0.2); cursor: pointer; }
+        #addBtn { position: fixed; bottom: 30px; left: 30px; width: 70px; height: 70px; background: #fff; color: #000; border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 1500; cursor: pointer; }
+        /* Lucky Wheel */
+        .slot-window { position: relative; width: 100%; height: 160px; background: #0a0a0a; border-radius: 25px; border: 2px solid var(--glass-border); overflow: hidden; margin: 20px 0; }
+        .slot-track { position: absolute; top: 0; left: 0; width: 100%; }
+        .slot-item { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #fff; text-transform: uppercase; }
+        .arrow { width: 0; height: 0; border-top: 15px solid transparent; border-bottom: 15px solid transparent; }
+        .arrow-left { border-left: 20px solid var(--neon-green); margin-left: 5px; }
+        .arrow-right { border-right: 20px solid var(--neon-green); margin-right: 5px; }
+        .slot-indicators { position: absolute; top: 50%; left: 0; width: 100%; height: 40px; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -217,8 +195,7 @@
 
 <script>
     const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
+    tg.ready(); tg.expand();
     const firebaseConfig = {
         apiKey: "AIzaSyD3wDw2ZTTXn2gY467grDOVi9E5vcusilc",
         authDomain: "alexsmok-1dc1c.firebaseapp.com",
@@ -232,63 +209,47 @@
     const userSpinRef = db.ref('users/' + userId + '/can_spin');
     let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
 
-    // --- ОБНОВЛЕННЫЙ КАНВАС: ЭФФЕКТ ЗЕЛЕНОГО ОГНЯ ---
+    // --- ОГОНЬ И ДЫМ ---
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
-    let particles = [];
-    
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-
-    class FlameParticle {
+    let fireParticles = [];
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    class FireParticle {
         constructor() { this.reset(); }
         reset() {
             this.x = Math.random() * canvas.width;
-            this.y = canvas.height + Math.random() * 100;
-            this.size = Math.random() * 25 + 10;
-            this.speedY = Math.random() * 2 + 1;
-            this.speedX = (Math.random() - 0.5) * 1.5;
+            this.y = canvas.height + Math.random() * 50;
+            this.size = Math.random() * 40 + 20;
+            this.speedY = Math.random() * 3 + 2;
+            this.speedX = (Math.random() - 0.5) * 2;
             this.life = 1.0;
-            this.decay = Math.random() * 0.02 + 0.005;
+            this.decay = Math.random() * 0.015 + 0.005;
         }
         update() {
-            this.y -= this.speedY;
-            this.x += this.speedX;
-            this.life -= this.decay;
-            if (this.life <= 0) this.reset();
+            this.y -= this.speedY; this.x += this.speedX; this.life -= this.decay; this.size *= 0.98;
+            if (this.life <= 0 || this.size < 1) this.reset();
         }
         draw() {
-            ctx.globalAlpha = this.life;
-            ctx.fillStyle = `rgba(43, 255, 0, ${this.life * 0.4})`;
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = '#2bff00';
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
+            let g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+            g.addColorStop(0, `rgba(43, 255, 0, ${this.life * 0.6})`);
+            g.addColorStop(0.5, `rgba(10, 80, 0, ${this.life * 0.3})`);
+            g.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = g; ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
         }
     }
-
-    function initParticles() {
-        particles = [];
-        for (let i = 0; i < 40; i++) particles.push(new FlameParticle());
-    }
-
+    function initBg() { for (let i = 0; i < 100; i++) fireParticles.push(new FireParticle()); }
     function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.globalCompositeOperation = 'lighter';
-        particles.forEach(p => { p.update(); p.draw(); });
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'screen';
+        fireParticles.forEach(p => { p.update(); p.draw(); });
+        ctx.globalCompositeOperation = 'source-over';
         requestAnimationFrame(animate);
     }
-
     window.addEventListener('resize', resize);
-    resize();
-    initParticles();
-    animate();
+    resize(); initBg(); animate();
 
-    // --- ОСТАЛЬНАЯ ЛОГИКА (БЕЗ ИЗМЕНЕНИЙ) ---
+    // --- ЛОГИКА МАГАЗИНА ---
     function load() {
         db.ref('products').on('value', snap => {
             const val = snap.val();
@@ -296,223 +257,38 @@
             render();
         });
     }
-
     function render() {
         const cats = ['all', ...new Set(products.map(p => p.category))];
-        document.getElementById('cats').innerHTML = cats.map(c => `
-            <div class="cat-link ${curCat === c ? 'active' : ''}" onclick="curCat='${c}';render()">${c === 'all' ? 'ВСЁ' : c}</div>
-        `).join('');
+        document.getElementById('cats').innerHTML = cats.map(c => `<div class="cat-link ${curCat === c ? 'active' : ''}" onclick="curCat='${c}';render()">${c === 'all' ? 'ВСЁ' : c}</div>`).join('');
         const filtered = curCat === 'all' ? products : products.filter(p => p.category === curCat);
         document.getElementById('productGrid').innerHTML = filtered.map(p => `
             <div class="card">
-                ${isAdmin ? `
-                    <div class="admin-btns">
-                        <button class="btn-mini" style="background:var(--neon-green);" onclick="editProduct('${p.id}')"><i class="fas fa-pen"></i></button>
-                        <button class="btn-mini" style="background:#ff4444; color:#fff;" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
-                    </div>
-                ` : ''}
-                <div class="card-img-wrapper">
-                    <img src="${p.imageData || ''}" class="card-img" onerror="this.src='https://via.placeholder.com/400/111/fff?text=SMOKIN'">
-                </div>
-                <div class="card-info">
-                    <div class="card-name">${p.name}</div>
-                    <div class="card-price">${p.price} ₽</div>
-                    ${p.variants && p.variants.length > 0 ? 
-                        `<button class="btn-variants" onclick="showFlavors('${p.id}')">${p.variantButtonName || 'ВКУСЫ'}</button>` : 
-                        `<button class="btn-variants" style="background:var(--neon-green); color:#000;" onclick="addToCart('${p.id}', 'Стандарт')">В КОРЗИНУ</button>`
-                    }
+                ${isAdmin ? `<div class="admin-btns"><button class="btn-mini" style="background:var(--neon-green);" onclick="editProduct('${p.id}')"><i class="fas fa-pen"></i></button><button class="btn-mini" style="background:#ff4444; color:#fff;" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button></div>` : ''}
+                <div class="card-img-wrapper"><img src="${p.imageData || ''}" class="card-img" onerror="this.src='https://via.placeholder.com/400/111/fff?text=SMOKIN'"></div>
+                <div class="card-info"><div class="card-name">${p.name}</div><div class="card-price">${p.price} ₽</div>
+                ${p.variants && p.variants.length > 0 ? `<button class="btn-variants" onclick="showFlavors('${p.id}')">${p.variantButtonName || 'ВКУСЫ'}</button>` : `<button class="btn-variants" style="background:var(--neon-green); color:#000;" onclick="addToCart('${p.id}', 'Стандарт')">В КОРЗИНУ</button>`}
                 </div>
             </div>`).join('');
     }
-
-    window.tryLogin = () => {
-        if(document.getElementById('pass').value === 'smkn00') {
-            isAdmin = true;
-            document.getElementById('adminLock').classList.add('active');
-            document.getElementById('addBtn').style.display = 'flex';
-            closeModal('loginOverlay');
-            render();
-        } else { alert('Неверно'); }
-    };
-
-    window.openAddModal = () => {
-        document.getElementById('pForm').reset();
-        document.getElementById('pId').value = '';
-        document.getElementById('pImg').value = '';
-        tempVariants = [];
-        renderAdminVariants();
-        document.getElementById('adminModalTitle').innerText = "НОВЫЙ ТОВАР";
-        openModal('adminOverlay');
-    };
-
-    window.addFlavorToList = () => {
-        const val = document.getElementById('vInp').value.trim();
-        if(val) { tempVariants.push(val); document.getElementById('vInp').value = ''; renderAdminVariants(); }
-    };
-
-    function renderAdminVariants() {
-        document.getElementById('adminVList').innerHTML = tempVariants.map((v, i) => `
-            <span style="background:#222; padding:5px 12px; border-radius:50px; font-size:0.7rem; border:1px solid var(--neon-green); display: flex; align-items: center; gap: 5px;">
-                ${v} <i class="fas fa-times" onclick="tempVariants.splice(${i},1);renderAdminVariants()" style="color:#ff4444; cursor:pointer;"></i>
-            </span>
-        `).join('');
-    }
-
-    window.editProduct = (id) => {
-        const p = products.find(x => x.id === id);
-        document.getElementById('pId').value = p.id;
-        document.getElementById('pName').value = p.name;
-        document.getElementById('pPrice').value = p.price;
-        document.getElementById('pCat').value = p.category;
-        document.getElementById('pBtnName').value = p.variantButtonName || '';
-        document.getElementById('pImg').value = p.imageData || '';
-        tempVariants = p.variants ? [...p.variants] : [];
-        renderAdminVariants();
-        document.getElementById('adminModalTitle').innerText = "ИЗМЕНИТЬ";
-        openModal('adminOverlay');
-    };
-
-    window.deleteProduct = (id) => { if(confirm('Удалить товар?')) db.ref('products/'+id).remove(); };
-
-    document.getElementById('pForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('pId').value;
-        const data = {
-            name: document.getElementById('pName').value,
-            price: document.getElementById('pPrice').value,
-            category: document.getElementById('pCat').value,
-            variantButtonName: document.getElementById('pBtnName').value || 'ВКУСЫ',
-            variants: tempVariants,
-            imageData: document.getElementById('pImg').value,
-            updatedAt: Date.now()
-        };
-        id ? await db.ref('products/'+id).update(data) : await db.ref('products').push(data);
-        closeModal('adminOverlay');
-    };
-
-    document.getElementById('fInp').onchange = (e) => {
-        const reader = new FileReader();
-        reader.onload = (ev) => document.getElementById('pImg').value = ev.target.result;
-        if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
-    };
-
-    window.showFlavors = (id) => {
-        const p = products.find(x => x.id === id);
-        document.getElementById('vTitle').innerText = p.variantButtonName || 'ВКУСЫ';
-        document.getElementById('vList').innerHTML = (p.variants || []).map(v => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom:8px;">
-                <div>${v}</div>
-                <button onclick="addToCart('${p.id}', '${v}')" style="background:var(--neon-green); border:none; padding:8px 18px; border-radius:10px; font-weight:900; color:#000;">+</button>
-            </div>`).join('');
-        openModal('vOverlay');
-    };
-
-    window.addToCart = (id, flavor) => {
-        const p = products.find(x => x.id === id);
-        cart.push({ name: p.name, flavor: flavor, price: parseInt(p.price) });
-        updateCartUI();
-        if(p.variants) closeModal('vOverlay');
-    };
-
-    function updateCartUI() {
-        document.getElementById('cartCount').innerText = cart.length;
-        document.getElementById('cartFab').classList.toggle('visible', cart.length > 0);
-        let t = 0;
-        document.getElementById('cartItems').innerHTML = cart.map((item, i) => { 
-            t += item.price; 
-            return `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #222;">
-                <div style="text-align: left;">${item.name} <br><small style="opacity:0.5">${item.flavor}</small></div>
-                <div style="display:flex; align-items:center; gap:15px;">
-                    <span>${item.price}₽</span>
-                    <i class="fas fa-trash" style="color:#ff4444" onclick="removeItem(${i})"></i>
-                </div>
-            </div>`; 
-        }).join('');
-        document.getElementById('cartTotal').innerText = t + ' ₽';
-    }
-
+    window.tryLogin = () => { if(document.getElementById('pass').value === 'smkn00') { isAdmin = true; document.getElementById('adminLock').classList.add('active'); document.getElementById('addBtn').style.display = 'flex'; closeModal('loginOverlay'); render(); } else { alert('Неверно'); } };
+    window.openAddModal = () => { document.getElementById('pForm').reset(); document.getElementById('pId').value = ''; document.getElementById('pImg').value = ''; tempVariants = []; renderAdminVariants(); openModal('adminOverlay'); };
+    window.addFlavorToList = () => { const val = document.getElementById('vInp').value.trim(); if(val) { tempVariants.push(val); document.getElementById('vInp').value = ''; renderAdminVariants(); } };
+    function renderAdminVariants() { document.getElementById('adminVList').innerHTML = tempVariants.map((v, i) => `<span style="background:#222; padding:5px 12px; border-radius:50px; font-size:0.7rem; border:1px solid var(--neon-green); display: flex; align-items: center; gap: 5px;">${v} <i class="fas fa-times" onclick="tempVariants.splice(${i},1);renderAdminVariants()" style="color:#ff4444; cursor:pointer;"></i></span>`).join(''); }
+    window.editProduct = (id) => { const p = products.find(x => x.id === id); document.getElementById('pId').value = p.id; document.getElementById('pName').value = p.name; document.getElementById('pPrice').value = p.price; document.getElementById('pCat').value = p.category; document.getElementById('pBtnName').value = p.variantButtonName || ''; document.getElementById('pImg').value = p.imageData || ''; tempVariants = p.variants ? [...p.variants] : []; renderAdminVariants(); openModal('adminOverlay'); };
+    window.deleteProduct = (id) => { if(confirm('Удалить?')) db.ref('products/'+id).remove(); };
+    document.getElementById('pForm').onsubmit = async (e) => { e.preventDefault(); const id = document.getElementById('pId').value; const data = { name: document.getElementById('pName').value, price: document.getElementById('pPrice').value, category: document.getElementById('pCat').value, variantButtonName: document.getElementById('pBtnName').value || 'ВКУСЫ', variants: tempVariants, imageData: document.getElementById('pImg').value, updatedAt: Date.now() }; id ? await db.ref('products/'+id).update(data) : await db.ref('products').push(data); closeModal('adminOverlay'); };
+    document.getElementById('fInp').onchange = (e) => { const reader = new FileReader(); reader.onload = (ev) => document.getElementById('pImg').value = ev.target.result; if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]); };
+    window.showFlavors = (id) => { const p = products.find(x => x.id === id); document.getElementById('vTitle').innerText = p.variantButtonName || 'ВКУСЫ'; document.getElementById('vList').innerHTML = (p.variants || []).map(v => `<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom:8px;"><div>${v}</div><button onclick="addToCart('${p.id}', '${v}')" style="background:var(--neon-green); border:none; padding:8px 18px; border-radius:10px; font-weight:900; color:#000;">+</button></div>`).join(''); openModal('vOverlay'); };
+    window.addToCart = (id, flavor) => { const p = products.find(x => x.id === id); cart.push({ name: p.name, flavor: flavor, price: parseInt(p.price) }); updateCartUI(); if(p.variants) closeModal('vOverlay'); };
+    function updateCartUI() { document.getElementById('cartCount').innerText = cart.length; document.getElementById('cartFab').classList.toggle('visible', cart.length > 0); let t = 0; document.getElementById('cartItems').innerHTML = cart.map((item, i) => { t += item.price; return `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #222;"><div style="text-align: left;">${item.name} <br><small style="opacity:0.5">${item.flavor}</small></div><div style="display:flex; align-items:center; gap:15px;"><span>${item.price}₽</span><i class="fas fa-trash" style="color:#ff4444" onclick="removeItem(${i})"></i></div></div>`; }).join(''); document.getElementById('cartTotal').innerText = t + ' ₽'; }
     window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
     window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
-
-    window.sendToManager = () => {
-        if (cart.length === 0) return;
-        let msg = `🛍 НОВЫЙ ЗАКАЗ\n──────────────\n`;
-        cart.forEach((item, i) => {
-            msg += `${i + 1}. ${item.name}\n   └ Вкус: ${item.flavor}\n   └ Цена: ${item.price} ₽\n`;
-        });
-        const totalValue = document.getElementById('cartTotal').innerText;
-        msg += `──────────────\n💰 ИТОГО: ${totalValue}`;
-        const username = "smokinshop174";
-        const shareUrl = `https://t.me/share/url?url=@${username}&text=${encodeURIComponent(msg)}`;
-        if (window.Telegram?.WebApp) {
-            try { Telegram.WebApp.openLink(shareUrl, { try_instant_view: false }); } 
-            catch (e) { window.open(shareUrl, '_blank'); }
-        } else { window.open(shareUrl, '_blank'); }
-        cart = []; updateCartUI(); closeModal('cartOverlay');
-    };
-
-    userSpinRef.on('value', (snap) => {
-        const canSpin = snap.val();
-        document.getElementById('paymentButtons').style.display = canSpin ? 'none' : 'block';
-        document.getElementById('spinBtn').style.display = canSpin ? 'block' : 'none';
-        const txt = document.getElementById('spinStatusText');
-        txt.innerText = canSpin ? "ОПЛАЧЕНО! ЖМИ КРУТИТЬ" : "СПИН СТОИТ 10⭐";
-        txt.style.color = canSpin ? "var(--neon-green)" : "rgba(255,255,255,0.5)";
-    });
-
-    async function startSpin() {
-        const result = document.getElementById('spinResult');
-        result.innerText = "ГЕНЕРАЦИЯ ЧЕКА...";
-        try {
-            const resp = await fetch(`https://smokin-v2.vercel.app/api/getInvoice?userId=${userId}`);
-            const data = await resp.json();
-            if (data.link) tg.openInvoice(data.link, (status) => { if (status === 'paid') result.innerText = "УСПЕХ!"; });
-        } catch (e) { result.innerText = "ОШИБКА ОПЛАТЫ"; }
-    }
-
-    function runSpinAnimation() {
-        const track = document.getElementById('slotTrack');
-        const res = document.getElementById('spinResult');
-        const btn = document.getElementById('spinBtn');
-        btn.disabled = true;
-        res.innerText = "КРУТИМ...";
-        const winIdx = 75; 
-        const itemH = 160;
-        const winValue = Math.random() > 0.8 ? "СКИДКА 10%" : "ПУСТО";
-        track.children[winIdx].innerText = winValue;
-        track.style.transition = 'transform 5s cubic-bezier(0.1, 0, 0.1, 1)';
-        track.style.transform = `translateY(-${winIdx * itemH}px)`;
-        setTimeout(() => {
-            res.innerText = winValue === "ПУСТО" ? "НЕ ПОВЕЗЛО 😢" : "ВЫИГРЫШ: " + winValue;
-            userSpinRef.set(false);
-            btn.disabled = false;
-        }, 5200);
-    }
-
-    function openWheel() {
-        const track = document.getElementById('slotTrack');
-        let h = '';
-        for(let i=0; i<90; i++) h += `<div class="slot-item">${["ПУСТО","GIFT","5%","ПУСТО","10%"][i%5]}</div>`;
-        track.innerHTML = h;
-        track.style.transition = 'none';
-        track.style.transform = 'translateY(0)';
-        document.getElementById('spinResult').innerText = '';
-        openModal('wheelOverlay');
-    }
-
-    window.openModal = (id) => { 
-        const el = document.getElementById(id);
-        el.style.display = 'flex'; 
-        setTimeout(() => el.classList.add('active'), 10); 
-    };
-
-    window.closeModal = (id) => { 
-        const el = document.getElementById(id);
-        el.classList.remove('active'); 
-        setTimeout(() => el.style.display = 'none', 400); 
-    };
-
+    window.sendToManager = () => { if (cart.length === 0) return; let msg = `🛍 НОВЫЙ ЗАКАЗ\n──────────────\n`; cart.forEach((item, i) => { msg += `${i + 1}. ${item.name}\n   └ Вкус: ${item.flavor}\n   └ Цена: ${item.price} ₽\n`; }); msg += `──────────────\n💰 ИТОГО: ${document.getElementById('cartTotal').innerText}`; const shareUrl = `https://t.me/share/url?url=@smokinshop174&text=${encodeURIComponent(msg)}`; window.open(shareUrl, '_blank'); cart = []; updateCartUI(); closeModal('cartOverlay'); };
+    userSpinRef.on('value', (snap) => { const canSpin = snap.val(); document.getElementById('paymentButtons').style.display = canSpin ? 'none' : 'block'; document.getElementById('spinBtn').style.display = canSpin ? 'block' : 'none'; });
+    window.openModal = (id) => { const el = document.getElementById(id); el.style.display = 'flex'; setTimeout(() => el.classList.add('active'), 10); };
+    window.closeModal = (id) => { const el = document.getElementById(id); el.classList.remove('active'); setTimeout(() => el.style.display = 'none', 400); };
     load();
 </script>
 </body>
 </html>
+
