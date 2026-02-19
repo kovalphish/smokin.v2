@@ -323,47 +323,48 @@
     window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
     window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
 
-    window.sendToManager = async () => {
-        if (cart.length === 0) return;
+    window.sendToManager = () => { // Убрали async, чтобы не было микрозадержек
+    if (cart.length === 0) return;
+
+    // 1. Формируем текст
+    let msg = `🛍 ЗАКАЗ\n`;
+    cart.forEach((item, i) => {
+        msg += `${i + 1}. ${item.name} (${item.flavor}) — ${item.price} ₽\n`;
+    });
+    msg += `💰 ИТОГО: ${document.getElementById('cartTotal').innerText}`;
+
+    // 2. Быстрое копирование (синхронное)
+    const textArea = document.createElement("textarea");
+    textArea.value = msg;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+    textArea.style.top = "0";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    let copied = false;
+    try {
+        copied = document.execCommand('copy');
+    } catch (err) {
+        console.error('Ошибка копирования');
+    }
+    document.body.removeChild(textArea);
+
+    // 3. Мгновенный переход
+    const managerUser = "smokinshop174";
+    
+    // Показываем уведомление через нативный интерфейс Telegram
+    tg.showAlert(copied ? "✅ Заказ скопирован! Вставь его в чат с менеджером." : "Напиши менеджеру в чат", () => {
+        // Это откроет чат сразу после закрытия уведомления
+        tg.openTelegramLink(`https://t.me/${managerUser}`);
         
-        let msg = `🛍 НОВЫЙ ЗАКАЗ\n`;
-        msg += `--------------------------\n`;
-        cart.forEach((item, i) => {
-            msg += `${i + 1}. ${item.name} (${item.flavor}) — ${item.price} ₽\n`;
-        });
-        const totalValue = document.getElementById('cartTotal').innerText;
-        msg += `--------------------------\n`;
-        msg += `💰 ИТОГО: ${totalValue}`;
-
-        const managerUser = "smokinshop174";
-
-        const copyText = async (text) => {
-            try {
-                await navigator.clipboard.writeText(text);
-            } catch (err) {
-                const textArea = document.createElement("textarea");
-                textArea.value = text;
-                textArea.style.position = "fixed"; textArea.style.left = "-9999px";
-                document.body.appendChild(textArea);
-                textArea.focus(); textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-            }
-        };
-
-        await copyText(msg);
-
-        tg.showConfirm("Заказ скопирован! Открыть чат с менеджером, чтобы вставить и отправить?", (ok) => {
-            if (ok) {
-                tg.openTelegramLink(`https://t.me/${managerUser}`);
-                setTimeout(() => {
-                    cart = [];
-                    updateCartUI();
-                    closeModal('cartOverlay');
-                }, 1000);
-            }
-        });
-    };
+        // Очистка корзины
+        cart = [];
+        updateCartUI();
+        closeModal('cartOverlay');
+    });
+};
 
     // --- ADMIN LOGIC ---
     window.tryLogin = () => {
@@ -538,3 +539,4 @@
 </script>
 </body>
 </html>
+
