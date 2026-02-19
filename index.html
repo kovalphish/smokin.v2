@@ -23,10 +23,7 @@
         body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; letter-spacing: -0.5px; min-height: 100vh; }
         #bg-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
             background: radial-gradient(circle at center, #0a1a05 0%, #000 100%);
         }
@@ -75,6 +72,8 @@
         .card-name { font-weight: 900; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; min-height: 2.2em; line-height: 1.2; }
         .card-price { font-weight: 900; font-size: 1.2rem; color: var(--neon-green); }
         .btn-variants { background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; padding: 12px; border-radius: 50px; font-weight: 900; font-size: 0.7rem; cursor: pointer; width: 100%; margin-top: 10px; text-transform: uppercase; border: none; }
+        
+        /* WHEEL STYLE */
         .slot-window { position: relative; width: 100%; height: 160px; background: #0a0a0a; border-radius: 25px; border: 2px solid var(--glass-border); overflow: hidden; margin: 20px 0; }
         .slot-track { position: absolute; top: 0; left: 0; width: 100%; transition: none; }
         .slot-item { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #fff; text-transform: uppercase; text-align: center; padding: 0 10px; }
@@ -82,26 +81,30 @@
         .arrow { width: 0; height: 0; border-top: 15px solid transparent; border-bottom: 15px solid transparent; filter: drop-shadow(0 0 8px var(--neon-green)); }
         .arrow-left { border-left: 20px solid var(--neon-green); margin-left: 5px; }
         .arrow-right { border-right: 20px solid var(--neon-green); margin-right: 5px; }
+        
         .btn-full { background: var(--neon-green); color: #000; border: none; padding: 22px; border-radius: 50px; width: 100%; font-weight: 900; font-size: 1rem; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.3s; }
         .btn-full:disabled { opacity: 0.5; filter: grayscale(1); }
+        
         .cart-fab { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--neon-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(43, 255, 0, 0.4); transform: scale(0); transition: var(--transition); cursor: pointer; }
         .cart-fab.visible { transform: scale(1); }
         .cart-count { position: absolute; top: 0; right: 0; background: #000; color: #fff; width: 24px; height: 24px; border-radius: 50%; font-weight: 900; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; border: 2px solid var(--neon-green); }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; z-index: 2000; opacity: 0; transition: opacity 0.4s; }
+        
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; z-index: 2000; opacity: 0; transition: opacity 0.4s; }
         .overlay.active { display: flex; opacity: 1; }
         .modal { background: rgba(15, 15, 15, 0.98); border-radius: 40px; padding: 30px; width: 95%; max-width: 500px; border: 1px solid var(--glass-border); transform: scale(0.9); transition: 0.4s; text-align: center; }
         .overlay.active .modal { transform: scale(1); }
+        
         .inp { width: 100%; padding: 18px; border-radius: 20px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 12px; outline: none; }
         .inp:focus { border-color: var(--neon-green); }
         .admin-btns { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; gap: 8px; }
         .btn-mini { width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; }
-        
         #addBtn { position: fixed; bottom: 30px; left: 30px; width: 70px; height: 70px; background: #fff; color: #000; border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(255,255,255,0.2); cursor: pointer; }
     </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
 <div class="fog"></div>
+
 <header>
     <div class="header-content">
         <div class="logo-text">ПРАЙС</div>
@@ -112,10 +115,13 @@
         </div>
     </div>
 </header>
+
 <div class="cat-bar"><div class="cat-container" id="cats"></div></div>
+
 <main class="main">
     <div class="grid" id="productGrid"></div>
 </main>
+
 <div id="addBtn" onclick="openAddModal()"><i class="fas fa-plus fa-xl"></i></div>
 
 <div class="overlay" id="wheelOverlay" onclick="closeModal('wheelOverlay')">
@@ -164,6 +170,7 @@
         <button class="btn-full" style="background:#ff3b30; color:#fff; margin-top:10px; padding:15px; font-size:0.8rem;" onclick="clearCart()">ОЧИСТИТЬ</button>
     </div>
 </div>
+
 <div class="overlay" id="vOverlay" onclick="closeModal('vOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
         <h2 id="vTitle" style="margin-bottom:25px; font-weight:900; text-transform:uppercase;">ВКУСЫ</h2>
@@ -171,6 +178,7 @@
         <button class="btn-full" style="background:#222; color:#fff;" onclick="closeModal('vOverlay')">ЗАКРЫТЬ</button>
     </div>
 </div>
+
 <div class="overlay" id="loginOverlay" onclick="closeModal('loginOverlay')">
     <div class="modal" onclick="event.stopPropagation()">
         <h2 style="margin-bottom:20px; font-weight:900;">АДМИН-ДОСТУП</h2>
@@ -178,6 +186,7 @@
         <button onclick="tryLogin()" class="btn-full">ПОДТВЕРДИТЬ</button>
     </div>
 </div>
+
 <div class="overlay" id="adminOverlay" onclick="closeModal('adminOverlay')">
     <div class="modal" onclick="event.stopPropagation()" style="text-align: left;">
         <h2 id="adminModalTitle" style="margin-bottom:20px; font-weight:900; text-align: center;">ТОВАР</h2>
@@ -187,16 +196,13 @@
             <input type="number" id="pPrice" placeholder="Цена" class="inp" required>
             <input type="text" id="pCat" placeholder="Категория" class="inp" required>
             <input type="text" id="pBtnName" placeholder="Текст кнопки (Вкусы)" class="inp">
-            
             <div style="display:flex; gap:10px; margin-bottom:10px;">
                 <input type="text" id="vInp" class="inp" placeholder="Добавить вкус" style="margin-bottom:0">
                 <button type="button" onclick="addFlavorToList()" class="btn-full" style="margin-top:0; padding:0 20px; width:auto;">+</button>
             </div>
             <div id="adminVList" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:15px;"></div>
-            
             <input type="file" id="fInp" class="inp" accept="image/*">
             <input type="hidden" id="pImg">
-            
             <button type="submit" class="btn-full">СОХРАНИТЬ</button>
         </form>
     </div>
@@ -206,6 +212,7 @@
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
+
     const firebaseConfig = {
         apiKey: "AIzaSyD3wDw2ZTTXn2gY467grDOVi9E5vcusilc",
         authDomain: "alexsmok-1dc1c.firebaseapp.com",
@@ -217,16 +224,14 @@
     const db = firebase.database();
     const userId = tg.initDataUnsafe?.user?.id || "test_user";
     const userSpinRef = db.ref('users/' + userId + '/can_spin');
+    
     let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
 
-    // --- КАНВАС ---
+    // --- CANVAS ANIMATION ---
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     class Particle {
         constructor() { this.reset(); }
         reset() {
@@ -236,32 +241,22 @@
             this.speedY = Math.random() * 1 + 0.2;
             this.alpha = Math.random() * 0.5;
         }
-        update() {
-            this.y -= this.speedY;
-            if (this.y < -10) this.reset();
-        }
+        update() { this.y -= this.speedY; if (this.y < -10) this.reset(); }
         draw() {
             ctx.fillStyle = `rgba(43, 255, 0, ${this.alpha})`;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
         }
     }
-    function initParticles() {
-        particles = [];
-        for (let i = 0; i < 100; i++) particles.push(new Particle());
-    }
+    function initParticles() { particles = []; for (let i = 0; i < 100; i++) particles.push(new Particle()); }
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach(p => { p.update(); p.draw(); });
         requestAnimationFrame(animate);
     }
     window.addEventListener('resize', resize);
-    resize();
-    initParticles();
-    animate();
+    resize(); initParticles(); animate();
 
-    // --- ФУНКЦИИ ---
+    // --- CORE FUNCTIONS ---
     function load() {
         db.ref('products').on('value', snap => {
             const val = snap.val();
@@ -275,6 +270,7 @@
         document.getElementById('cats').innerHTML = cats.map(c => `
             <div class="cat-link ${curCat === c ? 'active' : ''}" onclick="curCat='${c}';render()">${c === 'all' ? 'ВСЁ' : c}</div>
         `).join('');
+        
         const filtered = curCat === 'all' ? products : products.filter(p => p.category === curCat);
         document.getElementById('productGrid').innerHTML = filtered.map(p => `
             <div class="card">
@@ -298,6 +294,78 @@
             </div>`).join('');
     }
 
+    // --- CART SYSTEM ---
+    window.addToCart = (id, flavor) => {
+        const p = products.find(x => x.id === id);
+        cart.push({ name: p.name, flavor: flavor, price: parseInt(p.price) });
+        updateCartUI();
+        if(p.variants) closeModal('vOverlay');
+        tg.HapticFeedback.notificationOccurred('success');
+    };
+
+    function updateCartUI() {
+        document.getElementById('cartCount').innerText = cart.length;
+        document.getElementById('cartFab').classList.toggle('visible', cart.length > 0);
+        let t = 0;
+        document.getElementById('cartItems').innerHTML = cart.map((item, i) => { 
+            t += item.price; 
+            return `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #222;">
+                <div style="text-align: left;">${item.name} <br><small style="opacity:0.5">${item.flavor}</small></div>
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <span>${item.price}₽</span>
+                    <i class="fas fa-trash" style="color:#ff4444" onclick="removeItem(${i})"></i>
+                </div>
+            </div>`; 
+        }).join('');
+        document.getElementById('cartTotal').innerText = t + ' ₽';
+    }
+
+    window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
+    window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
+
+    window.sendToManager = async () => {
+        if (cart.length === 0) return;
+        
+        let msg = `🛍 НОВЫЙ ЗАКАЗ\n`;
+        msg += `--------------------------\n`;
+        cart.forEach((item, i) => {
+            msg += `${i + 1}. ${item.name} (${item.flavor}) — ${item.price} ₽\n`;
+        });
+        const totalValue = document.getElementById('cartTotal').innerText;
+        msg += `--------------------------\n`;
+        msg += `💰 ИТОГО: ${totalValue}`;
+
+        const managerUser = "smokinshop174";
+
+        const copyText = async (text) => {
+            try {
+                await navigator.clipboard.writeText(text);
+            } catch (err) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed"; textArea.style.left = "-9999px";
+                document.body.appendChild(textArea);
+                textArea.focus(); textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+        };
+
+        await copyText(msg);
+
+        tg.showConfirm("Заказ скопирован! Открыть чат с менеджером, чтобы вставить и отправить?", (ok) => {
+            if (ok) {
+                tg.openTelegramLink(`https://t.me/${managerUser}`);
+                setTimeout(() => {
+                    cart = [];
+                    updateCartUI();
+                    closeModal('cartOverlay');
+                }, 1000);
+            }
+        });
+    };
+
+    // --- ADMIN LOGIC ---
     window.tryLogin = () => {
         if(document.getElementById('pass').value === 'smkn00') {
             isAdmin = true;
@@ -313,8 +381,7 @@
         document.getElementById('pForm').reset();
         document.getElementById('pId').value = '';
         document.getElementById('pImg').value = '';
-        tempVariants = [];
-        renderAdminVariants();
+        tempVariants = []; renderAdminVariants();
         document.getElementById('adminModalTitle').innerText = "НОВЫЙ ТОВАР";
         openModal('adminOverlay');
     };
@@ -346,7 +413,7 @@
         openModal('adminOverlay');
     };
 
-    window.deleteProduct = (id) => { if(confirm('Удалить товар?')) db.ref('products/'+id).remove(); };
+    window.deleteProduct = (id) => { if(confirm('Удалить?')) db.ref('products/'+id).remove(); };
 
     document.getElementById('pForm').onsubmit = async (e) => {
         e.preventDefault();
@@ -381,103 +448,11 @@
         openModal('vOverlay');
     };
 
-    window.addToCart = (id, flavor) => {
-        const p = products.find(x => x.id === id);
-        cart.push({ name: p.name, flavor: flavor, price: parseInt(p.price) });
-        updateCartUI();
-        if(p.variants) closeModal('vOverlay');
-    };
-
-    function updateCartUI() {
-        document.getElementById('cartCount').innerText = cart.length;
-        document.getElementById('cartFab').classList.toggle('visible', cart.length > 0);
-        let t = 0;
-        document.getElementById('cartItems').innerHTML = cart.map((item, i) => { 
-            t += item.price; 
-            return `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #222;">
-                <div style="text-align: left;">${item.name} <br><small style="opacity:0.5">${item.flavor}</small></div>
-                <div style="display:flex; align-items:center; gap:15px;">
-                    <span>${item.price}₽</span>
-                    <i class="fas fa-trash" style="color:#ff4444" onclick="removeItem(${i})"></i>
-                </div>
-            </div>`; 
-        }).join('');
-        document.getElementById('cartTotal').innerText = t + ' ₽';
-    }
-
-    window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
-    window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
-
-    window.sendToManager = async () => {
-        if (cart.length === 0) return;
-    
-        // 1. Формируем текст заказа
-        let msg = `🛍 НОВЫЙ ЗАКАЗ\n`;
-        msg += `--------------------------\n`;
-        cart.forEach((item, i) => {
-            msg += `${i + 1}. ${item.name} (${item.flavor}) — ${item.price} ₽\n`;
-        });
-        const totalValue = document.getElementById('cartTotal').innerText;
-        msg += `--------------------------\n`;
-        msg += `💰 ИТОГО: ${totalValue}`;
-    
-        const managerUser = "smokinshop174";
-    
-        // 2. Функция копирования, адаптированная под iOS
-        const copyText = async (text) => {
-            try {
-                // Пробуем современный метод
-                await navigator.clipboard.writeText(text);
-            } catch (err) {
-                // Запасной метод для старых iOS
-                const textArea = document.createElement("textarea");
-                textArea.value = text;
-                textArea.style.position = "fixed"; 
-                textArea.style.left = "-9999px";
-                textArea.style.top = "0";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                } catch (e) {
-                    console.error('Не удалось скопировать', e);
-                }
-                document.body.removeChild(textArea);
-            }
-        };
-    
-        // Сначала копируем
-        await copyText(msg);
-    
-        // 3. Используем нативный метод Telegram для открытия ссылки
-        tg.showConfirm("Заказ скопирован! Открыть чат с менеджером, чтобы вставить и отправить?", (ok) => {
-            if (ok) {
-                // Нативный метод WebApp для ссылок t.me
-                tg.openTelegramLink(`https://t.me/${managerUser}`);
-                
-                // Очищаем корзину после перехода
-                setTimeout(() => {
-                    cart = [];
-                    updateCartUI();
-                    closeModal('cartOverlay');
-                }, 500);
-            }
-        });
-    };
-        // Очистка корзины
-        setTimeout(() => {
-            cart = [];
-            updateCartUI();
-            closeModal('cartOverlay');
-        }, 1000);
-    };
-    // --- КОЛЕСО ---
+    // --- WHEEL LOGIC ---
     function checkSpinStatus() {
         userSpinRef.on('value', (snap) => {
             const canSpin = snap.val();
             const isAdminSpin = isAdmin;
-            
             if (isAdminSpin) {
                 document.getElementById('paymentButtons').style.display = 'none';
                 document.getElementById('spinBtn').style.display = 'block';
@@ -503,27 +478,25 @@
         } catch (e) { result.innerText = "ОШИБКА ОПЛАТЫ"; }
     }
 
-    function paySBP() {
+    window.paySBP = () => {
         const demoLink = "https://qr.nspk.ru/test_payment_link";
         const qrImg = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(demoLink)}`;
         document.getElementById('qrContainer').innerHTML = `<img src="${qrImg}" style="display:block;">`;
         openModal('sbpOverlay');
-    }
+    };
 
-    function confirmPayment() {
-        alert("Запрос на проверку отправлен.");
+    window.confirmPayment = () => {
         userSpinRef.set(true);
         closeModal('sbpOverlay');
-    }
+        tg.showAlert("Запрос на проверку отправлен. Ожидайте.");
+    };
 
-    function runSpinAnimation() {
+    window.runSpinAnimation = () => {
         const track = document.getElementById('slotTrack');
         const res = document.getElementById('spinResult');
         const btn = document.getElementById('spinBtn');
-        btn.disabled = true;
-        res.innerText = "КРУТИМ...";
-        const winIdx = 75; 
-        const itemH = 160;
+        btn.disabled = true; res.innerText = "КРУТИМ...";
+        const winIdx = 75; const itemH = 160;
         const winValue = Math.random() > 0.8 ? "СКИДКА 10%" : "ПУСТО";
         track.children[winIdx].innerText = winValue;
         track.style.transition = 'transform 5s cubic-bezier(0.1, 0, 0.1, 1)';
@@ -532,20 +505,21 @@
             res.innerText = winValue === "ПУСТО" ? "НЕ ПОВЕЗЛО 😢" : "ВЫИГРЫШ: " + winValue;
             if(!isAdmin) userSpinRef.set(false);
             btn.disabled = false;
+            tg.HapticFeedback.notificationOccurred('warning');
         }, 5200);
-    }
+    };
 
-    function openWheel() {
+    window.openWheel = () => {
         const track = document.getElementById('slotTrack');
         let h = '';
         for(let i=0; i<90; i++) h += `<div class="slot-item">${["ПУСТО","GIFT","5%","ПУСТО","10%"][i%5]}</div>`;
         track.innerHTML = h;
-        track.style.transition = 'none';
-        track.style.transform = 'translateY(0)';
+        track.style.transition = 'none'; track.style.transform = 'translateY(0)';
         document.getElementById('spinResult').innerText = '';
         openModal('wheelOverlay');
-    }
+    };
 
+    // --- MODALS ---
     window.openModal = (id) => { 
         const el = document.getElementById(id);
         el.style.display = 'flex'; 
@@ -558,11 +532,9 @@
         setTimeout(() => el.style.display = 'none', 400); 
     };
 
+    // INIT
     load();
     checkSpinStatus();
 </script>
 </body>
 </html>
-
-
-
