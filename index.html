@@ -25,7 +25,6 @@
             background: radial-gradient(circle at center, #0a1a05 0%, #000 100%);
         }
         
-        /* LIQUID GLASS УТИЛИТА */
         .glass {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01));
             backdrop-filter: blur(25px);
@@ -84,7 +83,6 @@
         .btn-full { background: var(--neon-green); color: #000; border: none; padding: 18px; border-radius: 50px; width: 100%; font-weight: 900; font-size: 0.9rem; text-transform: uppercase; cursor: pointer; margin-top: 10px; transition: 0.3s; box-shadow: 0 5px 20px rgba(43,255,0,0.3); }
         .btn-full:disabled { opacity: 0.5; filter: grayscale(1); box-shadow: none; }
         
-        /* FAB КНОПКИ (Корзина и Добавление товара) */
         .cart-fab { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--neon-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(43, 255, 0, 0.5); transform: scale(0); transition: var(--transition); cursor: pointer; color: #000; }
         .cart-fab.visible { transform: scale(1); }
         .cart-count { position: absolute; top: 0; right: 0; background: #000; color: #fff; width: 24px; height: 24px; border-radius: 50%; font-weight: 900; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; border: 2px solid var(--neon-green); }
@@ -97,15 +95,9 @@
         .overlay.active .modal { transform: scale(1); }
         .modal::-webkit-scrollbar { display: none; }
         
-        /* ПОЛНОЭКРАННАЯ МОДАЛКА ДЛЯ РЕДАКТОРА */
-        .fullscreen-modal {
-            width: 100%; height: 100%; max-width: 100%; max-height: 100vh;
-            border-radius: 0; padding: 40px 20px 20px 20px;
-            display: flex; flex-direction: column; justify-content: flex-start;
-        }
-        .fullscreen-modal h2 { font-size: 2rem; margin-bottom: 30px; }
-        .fullscreen-modal .inp { padding: 22px; font-size: 1.1rem; border-radius: 20px; margin-bottom: 15px; }
-        .fullscreen-modal .btn-full { padding: 22px; font-size: 1.1rem; margin-top: 15px; border-radius: 20px; }
+        .fullscreen-modal { width: 100%; height: 100%; max-width: 100%; max-height: 100vh; border-radius: 0; padding: 40px 20px 20px 20px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .fullscreen-modal h2 { font-size: 2rem; margin-bottom: 20px; }
+        .fullscreen-modal .btn-full { padding: 22px; font-size: 1.1rem; margin-top: 10px; border-radius: 20px; }
 
         .inp { width: 100%; padding: 18px; border-radius: 20px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); color: #fff; margin-bottom: 12px; outline: none; transition: 0.3s; }
         .inp:focus { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(43,255,0,0.2); }
@@ -114,6 +106,14 @@
         
         .roulette-item-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
         .roulette-item-row input { margin-bottom: 0; padding: 12px; }
+
+        /* СТИЛИ КВАДРАТНЫХ БЛОКОВ АДМИНКИ */
+        .admin-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 15px; }
+        .admin-block { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1 / 1; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
+        .admin-block:focus-within { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(43,255,0,0.2); }
+        .admin-block-wide { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 20px; display: flex; flex-direction: column; margin-bottom: 15px; }
+        .inp-clean { width: 100%; background: transparent; border: none; color: #fff; text-align: center; font-size: 1rem; font-weight: 900; outline: none; margin-top: 10px; }
+        .inp-clean::placeholder { color: rgba(255,255,255,0.4); font-weight: 400; }
     </style>
 </head>
 <body>
@@ -229,27 +229,47 @@
     <i class="fas fa-plus fa-xl"></i>
 </div>
 
-<!-- FULLSCREEN PRODUCT ADMIN MODAL -->
+<!-- FULLSCREEN PRODUCT ADMIN MODAL (С КВАДРАТНЫМИ БЛОКАМИ) -->
 <div class="overlay" id="adminOverlay" onclick="closeModal('adminOverlay')">
     <div class="modal glass fullscreen-modal" onclick="event.stopPropagation()" style="text-align: left;">
         <h2 id="adminModalTitle" style="font-weight:900; text-align: center; color: var(--neon-green);">ТОВАР</h2>
         <form id="pForm" style="display: flex; flex-direction: column; flex-grow: 1; overflow-y: auto; padding-bottom: 20px;">
             <input type="hidden" id="pId">
-            <input type="text" id="pName" placeholder="Название товара" class="inp" required>
-            <input type="number" id="pPrice" placeholder="Цена (₽)" class="inp" required>
-            <input type="text" id="pCat" placeholder="Категория" class="inp" required>
-            <input type="text" id="pBtnName" placeholder="Текст кнопки (например: Вкусы)" class="inp">
             
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <input type="text" id="vInp" class="inp" placeholder="Добавить вкус/вариант" style="margin-bottom:0">
-                <button type="button" onclick="addFlavorToList()" class="btn-full" style="margin-top:0; padding:0 25px; width:auto; border-radius: 20px;">+</button>
+            <!-- СЕТКА КВАДРАТНЫХ БЛОКОВ -->
+            <div class="admin-grid">
+                <div class="admin-block">
+                    <i class="fas fa-box" style="font-size: 2rem; color: var(--neon-green);"></i>
+                    <input type="text" id="pName" placeholder="Название" class="inp-clean" required>
+                </div>
+                <div class="admin-block">
+                    <i class="fas fa-tag" style="font-size: 2rem; color: var(--neon-green);"></i>
+                    <input type="number" id="pPrice" placeholder="Цена (₽)" class="inp-clean" required>
+                </div>
+                <div class="admin-block">
+                    <i class="fas fa-folder" style="font-size: 2rem; color: var(--neon-green);"></i>
+                    <input type="text" id="pCat" placeholder="Категория" class="inp-clean" required>
+                </div>
+                <div class="admin-block">
+                    <i id="imgIcon" class="fas fa-image" style="font-size: 2rem; color: var(--neon-green); margin-bottom: 10px;"></i>
+                    <span id="imgText" style="font-size: 0.8rem; font-weight: 900; color: #fff;">ФОТО</span>
+                    <input type="file" id="fInp" accept="image/*" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0; cursor: pointer;">
+                    <input type="hidden" id="pImg">
+                </div>
             </div>
-            <div id="adminVList" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;"></div>
+
+            <!-- ШИРОКИЙ БЛОК ДЛЯ ВКУСОВ -->
+            <div class="admin-block-wide">
+                <input type="text" id="pBtnName" placeholder="Текст кнопки (например: Вкусы)" class="inp-clean" style="margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <input type="text" id="vInp" class="inp-clean" placeholder="Добавить вкус" style="margin-top: 0; text-align: left; padding-left: 10px;">
+                    <button type="button" onclick="addFlavorToList()" class="btn-full" style="margin-top:0; padding:0 25px; width:auto; border-radius: 15px;">+</button>
+                </div>
+                <div id="adminVList" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+            </div>
             
-            <input type="file" id="fInp" class="inp" accept="image/*" style="padding: 18px;">
-            <input type="hidden" id="pImg">
-            
-            <div style="margin-top: auto; padding-top: 20px;">
+            <div style="margin-top: auto; padding-top: 10px;">
                 <button type="submit" class="btn-full">СОХРАНИТЬ ТОВАР</button>
                 <button type="button" class="btn-full" style="background:rgba(255,255,255,0.1); color:#fff; box-shadow:none;" onclick="closeModal('adminOverlay')">ОТМЕНА</button>
             </div>
@@ -277,7 +297,6 @@
     let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
     let wheelConfig = [{name: "ПУСТО", chance: 80}, {name: "СКИДКА 10%", chance: 20}];
 
-    // --- CANVAS ANIMATION ---
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -306,7 +325,6 @@
     window.addEventListener('resize', resize);
     resize(); initParticles(); animate();
 
-    // --- CORE FUNCTIONS ---
     function load() {
         db.ref('products').on('value', snap => {
             const val = snap.val();
@@ -347,7 +365,6 @@
             </div>`).join('');
     }
 
-    // --- CART SYSTEM ---
     window.addToCart = (id, flavor) => {
         const p = products.find(x => x.id === id);
         cart.push({ name: p.name, flavor: flavor, price: parseInt(p.price) });
@@ -392,13 +409,8 @@
         closeModal('cartOverlay');
     };
 
-    // --- ADMIN LOGIC ---
     window.handleAdminClick = () => {
-        if(isAdmin) {
-            openModal('adminMenuOverlay');
-        } else {
-            openModal('loginOverlay');
-        }
+        if(isAdmin) { openModal('adminMenuOverlay'); } else { openModal('loginOverlay'); }
     };
 
     window.tryLogin = () => {
@@ -406,7 +418,7 @@
             isAdmin = true;
             document.getElementById('adminLock').classList.add('active');
             document.getElementById('pass').value = '';
-            document.getElementById('addFab').style.display = 'flex'; // Показываем кнопку добавления
+            document.getElementById('addFab').style.display = 'flex';
             closeModal('loginOverlay');
             openModal('adminMenuOverlay');
             render();
@@ -420,7 +432,7 @@
     window.logoutAdmin = () => {
         isAdmin = false;
         document.getElementById('adminLock').classList.remove('active');
-        document.getElementById('addFab').style.display = 'none'; // Скрываем кнопку добавления
+        document.getElementById('addFab').style.display = 'none';
         closeModal('adminMenuOverlay');
         render();
         checkSpinStatus();
@@ -430,6 +442,11 @@
         document.getElementById('pForm').reset();
         document.getElementById('pId').value = '';
         document.getElementById('pImg').value = '';
+        
+        // Сброс иконки фото
+        document.getElementById('imgIcon').className = 'fas fa-image';
+        document.getElementById('imgText').innerText = 'ФОТО';
+        
         tempVariants = []; renderAdminVariants();
         document.getElementById('adminModalTitle').innerText = "НОВЫЙ ТОВАР";
         openModal('adminOverlay');
@@ -456,6 +473,16 @@
         document.getElementById('pCat').value = p.category;
         document.getElementById('pBtnName').value = p.variantButtonName || '';
         document.getElementById('pImg').value = p.imageData || '';
+        
+        // Установка иконки фото если оно есть
+        if(p.imageData) {
+            document.getElementById('imgIcon').className = 'fas fa-check-circle';
+            document.getElementById('imgText').innerText = 'ЗАГРУЖЕНО';
+        } else {
+            document.getElementById('imgIcon').className = 'fas fa-image';
+            document.getElementById('imgText').innerText = 'ФОТО';
+        }
+
         tempVariants = p.variants ? [...p.variants] : [];
         renderAdminVariants();
         document.getElementById('adminModalTitle').innerText = "ИЗМЕНИТЬ";
@@ -488,7 +515,11 @@
 
     document.getElementById('fInp').onchange = (e) => {
         const reader = new FileReader();
-        reader.onload = (ev) => document.getElementById('pImg').value = ev.target.result;
+        reader.onload = (ev) => {
+            document.getElementById('pImg').value = ev.target.result;
+            document.getElementById('imgIcon').className = 'fas fa-check-circle';
+            document.getElementById('imgText').innerText = 'ЗАГРУЖЕНО';
+        };
         if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
     };
 
@@ -503,7 +534,6 @@
         openModal('vOverlay');
     };
 
-    // --- ROULETTE ADMIN LOGIC ---
     window.openRouletteAdmin = () => {
         renderRouletteAdminUI();
         openModal('rouletteAdminOverlay');
@@ -531,7 +561,6 @@
         closeModal('rouletteAdminOverlay');
     };
 
-    // --- WHEEL LOGIC ---
     function checkSpinStatus() {
         userSpinRef.on('value', (snap) => {
             const canSpin = snap.val();
