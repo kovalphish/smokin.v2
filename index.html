@@ -11,107 +11,121 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap');
         :root {
             --bg-black: #000000;
             --neon-green: #2bff00;
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            --transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-black); color: #fff; overflow-x: hidden; letter-spacing: -0.5px; min-height: 100vh; }
+        
         #bg-canvas {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
             background: radial-gradient(circle at center, #0a1a05 0%, #000 100%);
         }
-        .fog {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(43, 255, 0, 0.05), transparent 70%);
-            z-index: -1;
-            pointer-events: none;
+        
+        /* LIQUID GLASS УТИЛИТА */
+        .glass {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01));
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
+
         header { 
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border-bottom: 1px solid var(--glass-border); padding: 1.2rem 0; position: sticky; top: 0; z-index: 1000; 
+            position: sticky; top: 0; z-index: 1000; padding: 1.2rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
-        .logo-text { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; color: #fff; }
+        .logo-text { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
         .nav-right { display: flex; align-items: center; gap: 15px; }
         .btn-channel { background: #fff; color: #000; padding: 10px 25px; border-radius: 50px; font-weight: 900; font-size: 0.85rem; text-decoration: none; text-transform: uppercase; transition: 0.3s; }
-        .btn-channel:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
-        .gift-icon { color: var(--neon-green); cursor: pointer; transition: 0.3s; }
-        .gift-icon:hover { transform: scale(1.2); filter: drop-shadow(0 0 8px var(--neon-green)); }
+        .btn-channel:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,255,255,0.5); }
+        .gift-icon { color: var(--neon-green); cursor: pointer; transition: 0.3s; filter: drop-shadow(0 0 5px var(--neon-green)); }
+        .gift-icon:hover { transform: scale(1.2); filter: drop-shadow(0 0 15px var(--neon-green)); }
         .admin-icon { opacity: 0.3; cursor: pointer; transition: 0.3s; color: #fff; }
-        .admin-icon.active { opacity: 1; color: var(--neon-green); }
+        .admin-icon.active { opacity: 1; color: var(--neon-green); filter: drop-shadow(0 0 8px var(--neon-green)); }
+        
         .cat-bar { padding: 20px 0; overflow-x: auto; scrollbar-width: none; position: relative; z-index: 10; }
         .cat-bar::-webkit-scrollbar { display: none; }
         .cat-container { display: flex; gap: 12px; padding: 0 20px; max-width: 1400px; margin: 0 auto; }
         .cat-link { 
-            padding: 12px 26px; border-radius: 50px; background: var(--glass); border: 1px solid var(--glass-border);
-            color: #fff; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: var(--transition);
-            white-space: nowrap;
+            padding: 12px 26px; border-radius: 50px; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: var(--transition); white-space: nowrap;
         }
-        .cat-link.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 0 0 20px rgba(43, 255, 0, 0.3); }
+        .cat-link.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 0 0 20px rgba(43, 255, 0, 0.4); }
+        
         .main { max-width: 1400px; margin: 0 auto; padding: 0 15px 120px; position: relative; z-index: 5; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+        
         .card { 
-            background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; 
-            display: flex; flex-direction: column; opacity: 0; transform: translateY(20px);
-            animation: appear 0.6s forwards; transition: transform 0.3s; position: relative;
+            border-radius: 30px; overflow: hidden; display: flex; flex-direction: column; 
+            opacity: 0; transform: translateY(20px); animation: appear 0.6s forwards; transition: transform 0.3s; position: relative;
         }
         @keyframes appear { to { opacity: 1; transform: translateY(0); } }
-        .card-img-wrapper { width: 100%; height: 130px; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card-img-wrapper { width: 100%; height: 140px; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-img { width: 100%; height: 100%; object-fit: cover; }
         .card-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
         .card-name { font-weight: 900; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; min-height: 2.2em; line-height: 1.2; }
-        .card-price { font-weight: 900; font-size: 1.2rem; color: var(--neon-green); }
-        .btn-variants { background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; padding: 12px; border-radius: 50px; font-weight: 900; font-size: 0.7rem; cursor: pointer; width: 100%; margin-top: 10px; text-transform: uppercase; border: none; }
+        .card-price { font-weight: 900; font-size: 1.2rem; color: var(--neon-green); text-shadow: 0 0 10px rgba(43,255,0,0.3); }
+        .btn-variants { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px; border-radius: 50px; font-weight: 900; font-size: 0.7rem; cursor: pointer; width: 100%; margin-top: 10px; text-transform: uppercase; transition: 0.3s; }
+        .btn-variants:hover { background: rgba(255,255,255,0.2); }
         
-        /* WHEEL STYLE */
-        .slot-window { position: relative; width: 100%; height: 160px; background: #0a0a0a; border-radius: 25px; border: 2px solid var(--glass-border); overflow: hidden; margin: 20px 0; }
+        .slot-window { position: relative; width: 100%; height: 160px; background: rgba(0,0,0,0.8); border-radius: 25px; border: 1px solid rgba(255,255,255,0.2); overflow: hidden; margin: 20px 0; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }
         .slot-track { position: absolute; top: 0; left: 0; width: 100%; transition: none; }
-        .slot-item { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #fff; text-transform: uppercase; text-align: center; padding: 0 10px; }
+        .slot-item { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #fff; text-transform: uppercase; text-align: center; padding: 0 10px; text-shadow: 0 0 15px rgba(255,255,255,0.5); }
         .slot-indicators { position: absolute; top: 50%; left: 0; width: 100%; height: 40px; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
         .arrow { width: 0; height: 0; border-top: 15px solid transparent; border-bottom: 15px solid transparent; filter: drop-shadow(0 0 8px var(--neon-green)); }
         .arrow-left { border-left: 20px solid var(--neon-green); margin-left: 5px; }
         .arrow-right { border-right: 20px solid var(--neon-green); margin-right: 5px; }
         
-        .btn-full { background: var(--neon-green); color: #000; border: none; padding: 22px; border-radius: 50px; width: 100%; font-weight: 900; font-size: 1rem; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.3s; }
-        .btn-full:disabled { opacity: 0.5; filter: grayscale(1); }
+        .btn-full { background: var(--neon-green); color: #000; border: none; padding: 18px; border-radius: 50px; width: 100%; font-weight: 900; font-size: 0.9rem; text-transform: uppercase; cursor: pointer; margin-top: 10px; transition: 0.3s; box-shadow: 0 5px 20px rgba(43,255,0,0.3); }
+        .btn-full:disabled { opacity: 0.5; filter: grayscale(1); box-shadow: none; }
         
-        .cart-fab { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--neon-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(43, 255, 0, 0.4); transform: scale(0); transition: var(--transition); cursor: pointer; }
+        /* FAB КНОПКИ (Корзина и Добавление товара) */
+        .cart-fab { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--neon-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(43, 255, 0, 0.5); transform: scale(0); transition: var(--transition); cursor: pointer; color: #000; }
         .cart-fab.visible { transform: scale(1); }
         .cart-count { position: absolute; top: 0; right: 0; background: #000; color: #fff; width: 24px; height: 24px; border-radius: 50%; font-weight: 900; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; border: 2px solid var(--neon-green); }
         
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; z-index: 2000; opacity: 0; transition: opacity 0.4s; }
+        #addFab { left: 30px; right: auto; background: #fff; color: #000; box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3); display: none; transform: scale(1); }
+
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 2000; opacity: 0; transition: opacity 0.4s; }
         .overlay.active { display: flex; opacity: 1; }
-        .modal { background: rgba(15, 15, 15, 0.98); border-radius: 40px; padding: 30px; width: 95%; max-width: 500px; border: 1px solid var(--glass-border); transform: scale(0.9); transition: 0.4s; text-align: center; }
+        .modal { border-radius: 40px; padding: 30px; width: 95%; max-width: 500px; transform: scale(0.9); transition: 0.4s; text-align: center; max-height: 90vh; overflow-y: auto; }
         .overlay.active .modal { transform: scale(1); }
+        .modal::-webkit-scrollbar { display: none; }
         
-        .inp { width: 100%; padding: 18px; border-radius: 20px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 12px; outline: none; }
-        .inp:focus { border-color: var(--neon-green); }
+        /* ПОЛНОЭКРАННАЯ МОДАЛКА ДЛЯ РЕДАКТОРА */
+        .fullscreen-modal {
+            width: 100%; height: 100%; max-width: 100%; max-height: 100vh;
+            border-radius: 0; padding: 40px 20px 20px 20px;
+            display: flex; flex-direction: column; justify-content: flex-start;
+        }
+        .fullscreen-modal h2 { font-size: 2rem; margin-bottom: 30px; }
+        .fullscreen-modal .inp { padding: 22px; font-size: 1.1rem; border-radius: 20px; margin-bottom: 15px; }
+        .fullscreen-modal .btn-full { padding: 22px; font-size: 1.1rem; margin-top: 15px; border-radius: 20px; }
+
+        .inp { width: 100%; padding: 18px; border-radius: 20px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); color: #fff; margin-bottom: 12px; outline: none; transition: 0.3s; }
+        .inp:focus { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(43,255,0,0.2); }
         .admin-btns { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; gap: 8px; }
-        .btn-mini { width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; }
-        #addBtn { position: fixed; bottom: 30px; left: 30px; width: 70px; height: 70px; background: #fff; color: #000; border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(255,255,255,0.2); cursor: pointer; }
+        .btn-mini { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        
+        .roulette-item-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        .roulette-item-row input { margin-bottom: 0; padding: 12px; }
     </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
-<div class="fog"></div>
 
-<header>
+<header class="glass">
     <div class="header-content">
         <div class="logo-text">ПРАЙС</div>
         <div class="nav-right">
             <i class="fas fa-gift fa-2xl gift-icon" onclick="openWheel()"></i>
             <a href="https://t.me/smokin174" target="_blank" class="btn-channel">КАНАЛ</a>
-            <i class="fas fa-fingerprint fa-2xl admin-icon" id="adminLock" onclick="openModal('loginOverlay')"></i>
+            <i class="fas fa-fingerprint fa-2xl admin-icon" id="adminLock" onclick="handleAdminClick()"></i>
         </div>
     </div>
 </header>
@@ -122,12 +136,11 @@
     <div class="grid" id="productGrid"></div>
 </main>
 
-<div id="addBtn" onclick="openAddModal()"><i class="fas fa-plus fa-xl"></i></div>
-
+<!-- WHEEL MODAL -->
 <div class="overlay" id="wheelOverlay" onclick="closeModal('wheelOverlay')">
-    <div class="modal" onclick="event.stopPropagation()">
-        <h2 style="font-weight:900; text-transform:uppercase; margin-bottom:10px;">LUCKY SMOKIN</h2>
-        <p id="spinStatusText" style="font-size: 0.7rem; opacity: 0.5; margin-bottom: 10px;">ЗАГРУЗКА...</p>
+    <div class="modal glass" onclick="event.stopPropagation()">
+        <h2 style="font-weight:900; text-transform:uppercase; margin-bottom:10px; text-shadow: 0 0 15px rgba(255,255,255,0.5);">LUCKY SMOKIN</h2>
+        <p id="spinStatusText" style="font-size: 0.7rem; opacity: 0.7; margin-bottom: 10px;">ЗАГРУЗКА...</p>
         <div class="slot-window">
             <div class="slot-indicators">
                 <div class="arrow arrow-left"></div>
@@ -136,74 +149,110 @@
             <div class="slot-track" id="slotTrack"></div>
         </div>
         <div id="paymentButtons">
-            <button class="btn-full" style="background: #0088cc; color: #fff; margin-bottom: 10px;" onclick="startSpin()">КУПИТЬ СПИН 10 ⭐</button>
-            <button class="btn-full" style="background: #fff; color: #000;" onclick="paySBP()">ОПЛАТИТЬ СБП (100 ₽)</button>
+            <button class="btn-full" style="background: #0088cc; color: #fff; margin-bottom: 10px; box-shadow: 0 5px 20px rgba(0,136,204,0.4);" onclick="startSpin()">КУПИТЬ СПИН 10 ⭐</button>
+            <button class="btn-full" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); box-shadow: none;" onclick="paySBP()">ОПЛАТИТЬ СБП (100 ₽)</button>
         </div>
         <button class="btn-full" id="spinBtn" style="display: none;" onclick="runSpinAnimation()">КРУТИТЬ БЕСПЛАТНО</button>
-        <div id="spinResult" style="margin-top:20px; font-weight:900; height: 1.2em; color: var(--neon-green);"></div>
+        <div id="spinResult" style="margin-top:20px; font-weight:900; height: 1.2em; color: var(--neon-green); text-shadow: 0 0 10px rgba(43,255,0,0.5); font-size: 1.2rem;"></div>
     </div>
 </div>
 
+<!-- SBP MODAL -->
 <div class="overlay" id="sbpOverlay" onclick="closeModal('sbpOverlay')">
-    <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal glass" onclick="event.stopPropagation()">
         <h2 style="margin-bottom:15px; font-weight:900;">ОПЛАТА СБП</h2>
         <div id="qrContainer" style="background:#fff; padding:15px; border-radius:20px; display:inline-block; margin-bottom:15px;"></div>
         <p style="font-size:0.8rem; opacity:0.8; margin-bottom:20px;">Отсканируйте QR код для оплаты 100 ₽</p>
         <button class="btn-full" onclick="confirmPayment()">Я ОПЛАТИЛ</button>
-        <button class="btn-full" style="background:#222; color:#fff; margin-top:10px;" onclick="closeModal('sbpOverlay')">НАЗАД</button>
+        <button class="btn-full" style="background:rgba(255,255,255,0.1); color:#fff; box-shadow:none;" onclick="closeModal('sbpOverlay')">НАЗАД</button>
     </div>
 </div>
 
+<!-- CART FAB & MODAL -->
 <div class="cart-fab" id="cartFab" onclick="openModal('cartOverlay')">
     <i class="fas fa-shopping-bag fa-xl"></i>
     <div class="cart-count" id="cartCount">0</div>
 </div>
 <div class="overlay" id="cartOverlay" onclick="closeModal('cartOverlay')">
-    <div class="modal" onclick="event.stopPropagation()">
-        <h2 style="margin-bottom:20px; font-weight:900; text-transform:uppercase; color:var(--neon-green);">КОРЗИНА</h2>
+    <div class="modal glass" onclick="event.stopPropagation()">
+        <h2 style="margin-bottom:20px; font-weight:900; text-transform:uppercase; color:var(--neon-green); text-shadow: 0 0 10px rgba(43,255,0,0.3);">КОРЗИНА</h2>
         <div id="cartItems" style="max-height:40vh; overflow-y:auto; margin-bottom:20px;"></div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <span style="opacity:0.6;">ИТОГО</span>
-            <span style="font-weight:900; font-size:1.8rem;" id="cartTotal">0 ₽</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px;">
+            <span style="opacity:0.8; font-weight: 900;">ИТОГО</span>
+            <span style="font-weight:900; font-size:1.8rem; color: var(--neon-green);" id="cartTotal">0 ₽</span>
         </div>
         <button class="btn-full" onclick="sendToManager()">ОФОРМИТЬ В TG</button>
-        <button class="btn-full" style="background:#ff3b30; color:#fff; margin-top:10px; padding:15px; font-size:0.8rem;" onclick="clearCart()">ОЧИСТИТЬ</button>
+        <button class="btn-full" style="background:rgba(255,59,48,0.2); color:#ff3b30; box-shadow:none; border: 1px solid rgba(255,59,48,0.3);" onclick="clearCart()">ОЧИСТИТЬ</button>
     </div>
 </div>
 
+<!-- FLAVORS MODAL -->
 <div class="overlay" id="vOverlay" onclick="closeModal('vOverlay')">
-    <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal glass" onclick="event.stopPropagation()">
         <h2 id="vTitle" style="margin-bottom:25px; font-weight:900; text-transform:uppercase;">ВКУСЫ</h2>
         <div id="vList" style="max-height:50vh; overflow-y:auto;"></div>
-        <button class="btn-full" style="background:#222; color:#fff;" onclick="closeModal('vOverlay')">ЗАКРЫТЬ</button>
+        <button class="btn-full" style="background:rgba(255,255,255,0.1); color:#fff; box-shadow:none;" onclick="closeModal('vOverlay')">ЗАКРЫТЬ</button>
     </div>
 </div>
 
+<!-- ADMIN LOGIN -->
 <div class="overlay" id="loginOverlay" onclick="closeModal('loginOverlay')">
-    <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal glass" onclick="event.stopPropagation()">
         <h2 style="margin-bottom:20px; font-weight:900;">АДМИН-ДОСТУП</h2>
         <input type="password" id="pass" class="inp" style="text-align:center;" placeholder="ПАРОЛЬ">
-        <button onclick="tryLogin()" class="btn-full">ПОДТВЕРДИТЬ</button>
+        <button onclick="tryLogin()" class="btn-full">ВОЙТИ</button>
     </div>
 </div>
 
+<!-- ADMIN MAIN MENU -->
+<div class="overlay" id="adminMenuOverlay" onclick="closeModal('adminMenuOverlay')">
+    <div class="modal glass" onclick="event.stopPropagation()">
+        <h2 style="margin-bottom:20px; font-weight:900; color: var(--neon-green);">АДМИН ПАНЕЛЬ</h2>
+        <button class="btn-full" onclick="closeModal('adminMenuOverlay'); openRouletteAdmin();" style="background: #fff; color: #000; margin-bottom: 10px;">⚙️ НАСТРОЙКА РУЛЕТКИ</button>
+        <button class="btn-full" style="background:rgba(255,59,48,0.2); color:#ff3b30; box-shadow:none;" onclick="logoutAdmin()">ВЫЙТИ</button>
+    </div>
+</div>
+
+<!-- ROULETTE ADMIN MODAL -->
+<div class="overlay" id="rouletteAdminOverlay" onclick="closeModal('rouletteAdminOverlay')">
+    <div class="modal glass" onclick="event.stopPropagation()">
+        <h2 style="margin-bottom:20px; font-weight:900;">НАСТРОЙКА РУЛЕТКИ</h2>
+        <p style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 15px;">Сумма шансов не обязательно 100%, алгоритм считает веса.</p>
+        <div id="rouletteItemsList" style="max-height: 40vh; overflow-y: auto; margin-bottom: 15px;"></div>
+        <button class="btn-full" style="background: rgba(255,255,255,0.1); color: #fff; box-shadow: none; margin-bottom: 10px;" onclick="addRouletteItemUI()">+ ДОБАВИТЬ ПРИЗ</button>
+        <button class="btn-full" onclick="saveRouletteConfig()">СОХРАНИТЬ НАСТРОЙКИ</button>
+    </div>
+</div>
+
+<!-- ADD PRODUCT FAB -->
+<div class="cart-fab" id="addFab" onclick="openAddModal()">
+    <i class="fas fa-plus fa-xl"></i>
+</div>
+
+<!-- FULLSCREEN PRODUCT ADMIN MODAL -->
 <div class="overlay" id="adminOverlay" onclick="closeModal('adminOverlay')">
-    <div class="modal" onclick="event.stopPropagation()" style="text-align: left;">
-        <h2 id="adminModalTitle" style="margin-bottom:20px; font-weight:900; text-align: center;">ТОВАР</h2>
-        <form id="pForm">
+    <div class="modal glass fullscreen-modal" onclick="event.stopPropagation()" style="text-align: left;">
+        <h2 id="adminModalTitle" style="font-weight:900; text-align: center; color: var(--neon-green);">ТОВАР</h2>
+        <form id="pForm" style="display: flex; flex-direction: column; flex-grow: 1; overflow-y: auto; padding-bottom: 20px;">
             <input type="hidden" id="pId">
-            <input type="text" id="pName" placeholder="Название" class="inp" required>
-            <input type="number" id="pPrice" placeholder="Цена" class="inp" required>
+            <input type="text" id="pName" placeholder="Название товара" class="inp" required>
+            <input type="number" id="pPrice" placeholder="Цена (₽)" class="inp" required>
             <input type="text" id="pCat" placeholder="Категория" class="inp" required>
-            <input type="text" id="pBtnName" placeholder="Текст кнопки (Вкусы)" class="inp">
-            <div style="display:flex; gap:10px; margin-bottom:10px;">
-                <input type="text" id="vInp" class="inp" placeholder="Добавить вкус" style="margin-bottom:0">
-                <button type="button" onclick="addFlavorToList()" class="btn-full" style="margin-top:0; padding:0 20px; width:auto;">+</button>
+            <input type="text" id="pBtnName" placeholder="Текст кнопки (например: Вкусы)" class="inp">
+            
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <input type="text" id="vInp" class="inp" placeholder="Добавить вкус/вариант" style="margin-bottom:0">
+                <button type="button" onclick="addFlavorToList()" class="btn-full" style="margin-top:0; padding:0 25px; width:auto; border-radius: 20px;">+</button>
             </div>
-            <div id="adminVList" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:15px;"></div>
-            <input type="file" id="fInp" class="inp" accept="image/*">
+            <div id="adminVList" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;"></div>
+            
+            <input type="file" id="fInp" class="inp" accept="image/*" style="padding: 18px;">
             <input type="hidden" id="pImg">
-            <button type="submit" class="btn-full">СОХРАНИТЬ</button>
+            
+            <div style="margin-top: auto; padding-top: 20px;">
+                <button type="submit" class="btn-full">СОХРАНИТЬ ТОВАР</button>
+                <button type="button" class="btn-full" style="background:rgba(255,255,255,0.1); color:#fff; box-shadow:none;" onclick="closeModal('adminOverlay')">ОТМЕНА</button>
+            </div>
         </form>
     </div>
 </div>
@@ -226,6 +275,7 @@
     const userSpinRef = db.ref('users/' + userId + '/can_spin');
     
     let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
+    let wheelConfig = [{name: "ПУСТО", chance: 80}, {name: "СКИДКА 10%", chance: 20}];
 
     // --- CANVAS ANIMATION ---
     const canvas = document.getElementById('bg-canvas');
@@ -263,20 +313,23 @@
             products = val ? Object.keys(val).map(k => ({ id: k, ...val[k] })) : [];
             render();
         });
+        db.ref('settings/wheel').on('value', snap => {
+            if(snap.val()) wheelConfig = snap.val();
+        });
     }
 
     function render() {
         const cats = ['all', ...new Set(products.map(p => p.category))];
         document.getElementById('cats').innerHTML = cats.map(c => `
-            <div class="cat-link ${curCat === c ? 'active' : ''}" onclick="curCat='${c}';render()">${c === 'all' ? 'ВСЁ' : c}</div>
+            <div class="cat-link glass ${curCat === c ? 'active' : ''}" onclick="curCat='${c}';render()">${c === 'all' ? 'ВСЁ' : c}</div>
         `).join('');
         
         const filtered = curCat === 'all' ? products : products.filter(p => p.category === curCat);
         document.getElementById('productGrid').innerHTML = filtered.map(p => `
-            <div class="card">
+            <div class="card glass">
                 ${isAdmin ? `
                     <div class="admin-btns">
-                        <button class="btn-mini" style="background:var(--neon-green);" onclick="editProduct('${p.id}')"><i class="fas fa-pen"></i></button>
+                        <button class="btn-mini" style="background:var(--neon-green); color:#000;" onclick="editProduct('${p.id}')"><i class="fas fa-pen"></i></button>
                         <button class="btn-mini" style="background:#ff4444; color:#fff;" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
                     </div>
                 ` : ''}
@@ -288,7 +341,7 @@
                     <div class="card-price">${p.price} ₽</div>
                     ${p.variants && p.variants.length > 0 ? 
                         `<button class="btn-variants" onclick="showFlavors('${p.id}')">${p.variantButtonName || 'ВКУСЫ'}</button>` : 
-                        `<button class="btn-variants" style="background:var(--neon-green); color:#000;" onclick="addToCart('${p.id}', 'Стандарт')">В КОРЗИНУ</button>`
+                        `<button class="btn-variants" style="background:var(--neon-green); color:#000; border:none; text-shadow:none;" onclick="addToCart('${p.id}', 'Стандарт')">В КОРЗИНУ</button>`
                     }
                 </div>
             </div>`).join('');
@@ -309,11 +362,11 @@
         let t = 0;
         document.getElementById('cartItems').innerHTML = cart.map((item, i) => { 
             t += item.price; 
-            return `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #222;">
-                <div style="text-align: left;">${item.name} <br><small style="opacity:0.5">${item.flavor}</small></div>
+            return `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                <div style="text-align: left;">${item.name} <br><small style="opacity:0.6; color: var(--neon-green);">${item.flavor}</small></div>
                 <div style="display:flex; align-items:center; gap:15px;">
-                    <span>${item.price}₽</span>
-                    <i class="fas fa-trash" style="color:#ff4444" onclick="removeItem(${i})"></i>
+                    <span style="font-weight:900;">${item.price}₽</span>
+                    <i class="fas fa-trash" style="color:#ff4444; cursor:pointer;" onclick="removeItem(${i})"></i>
                 </div>
             </div>`; 
         }).join('');
@@ -323,59 +376,54 @@
     window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
     window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
 
-    window.sendToManager = () => { // Убрали async, чтобы не было микрозадержек
-    if (cart.length === 0) return;
+    window.sendToManager = () => { 
+        if (cart.length === 0) return;
+        let msg = `🛍 ЗАКАЗ SMOKIN174\n\n`;
+        cart.forEach((item, i) => {
+            msg += `${i + 1}. ${item.name} (${item.flavor}) — ${item.price} ₽\n`;
+        });
+        msg += `\n💰 ИТОГО: ${document.getElementById('cartTotal').innerText}`;
 
-    // 1. Формируем текст
-    let msg = `🛍 ЗАКАЗ\n`;
-    cart.forEach((item, i) => {
-        msg += `${i + 1}. ${item.name} (${item.flavor}) — ${item.price} ₽\n`;
-    });
-    msg += `💰 ИТОГО: ${document.getElementById('cartTotal').innerText}`;
-
-    // 2. Быстрое копирование (синхронное)
-    const textArea = document.createElement("textarea");
-    textArea.value = msg;
-    textArea.style.position = "fixed";
-    textArea.style.left = "-9999px";
-    textArea.style.top = "0";
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    
-    let copied = false;
-    try {
-        copied = document.execCommand('copy');
-    } catch (err) {
-        console.error('Ошибка копирования');
-    }
-    document.body.removeChild(textArea);
-
-    // 3. Мгновенный переход
-    const managerUser = "smokinshop174";
-    
-    // Показываем уведомление через нативный интерфейс Telegram
-    tg.showAlert(copied ? "✅ Заказ скопирован! Вставь его в чат с менеджером." : "Напиши менеджеру в чат", () => {
-        // Это откроет чат сразу после закрытия уведомления
-        tg.openTelegramLink(`https://t.me/${managerUser}`);
+        const managerUser = "smokinshop174";
+        tg.openTelegramLink(`https://t.me/${managerUser}?text=${encodeURIComponent(msg)}`);
         
-        // Очистка корзины
         cart = [];
         updateCartUI();
         closeModal('cartOverlay');
-    });
-};
+    };
 
     // --- ADMIN LOGIC ---
+    window.handleAdminClick = () => {
+        if(isAdmin) {
+            openModal('adminMenuOverlay');
+        } else {
+            openModal('loginOverlay');
+        }
+    };
+
     window.tryLogin = () => {
         if(document.getElementById('pass').value === 'smkn00') {
             isAdmin = true;
             document.getElementById('adminLock').classList.add('active');
-            document.getElementById('addBtn').style.display = 'flex';
+            document.getElementById('pass').value = '';
+            document.getElementById('addFab').style.display = 'flex'; // Показываем кнопку добавления
             closeModal('loginOverlay');
+            openModal('adminMenuOverlay');
             render();
             checkSpinStatus();
-        } else { alert('Неверно'); }
+        } else { 
+            tg.HapticFeedback.notificationOccurred('error');
+            alert('Неверный пароль'); 
+        }
+    };
+
+    window.logoutAdmin = () => {
+        isAdmin = false;
+        document.getElementById('adminLock').classList.remove('active');
+        document.getElementById('addFab').style.display = 'none'; // Скрываем кнопку добавления
+        closeModal('adminMenuOverlay');
+        render();
+        checkSpinStatus();
     };
 
     window.openAddModal = () => {
@@ -394,7 +442,7 @@
 
     function renderAdminVariants() {
         document.getElementById('adminVList').innerHTML = tempVariants.map((v, i) => `
-            <span style="background:#222; padding:5px 12px; border-radius:50px; font-size:0.7rem; border:1px solid var(--neon-green); display: flex; align-items: center; gap: 5px;">
+            <span style="background:rgba(0,0,0,0.5); padding:10px 18px; border-radius:50px; font-size:0.9rem; border:1px solid var(--neon-green); display: flex; align-items: center; gap: 10px;">
                 ${v} <i class="fas fa-times" onclick="tempVariants.splice(${i},1);renderAdminVariants()" style="color:#ff4444; cursor:pointer;"></i>
             </span>
         `).join('');
@@ -414,7 +462,12 @@
         openModal('adminOverlay');
     };
 
-    window.deleteProduct = (id) => { if(confirm('Удалить?')) db.ref('products/'+id).remove(); };
+    window.deleteProduct = (id) => { 
+        if(confirm('Точно удалить товар?')) {
+            db.ref('products/'+id).remove(); 
+            tg.HapticFeedback.notificationOccurred('success');
+        }
+    };
 
     document.getElementById('pForm').onsubmit = async (e) => {
         e.preventDefault();
@@ -430,6 +483,7 @@
         };
         id ? await db.ref('products/'+id).update(data) : await db.ref('products').push(data);
         closeModal('adminOverlay');
+        tg.HapticFeedback.notificationOccurred('success');
     };
 
     document.getElementById('fInp').onchange = (e) => {
@@ -442,19 +496,46 @@
         const p = products.find(x => x.id === id);
         document.getElementById('vTitle').innerText = p.variantButtonName || 'ВКУСЫ';
         document.getElementById('vList').innerHTML = (p.variants || []).map(v => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom:8px;">
-                <div>${v}</div>
-                <button onclick="addToCart('${p.id}', '${v}')" style="background:var(--neon-green); border:none; padding:8px 18px; border-radius:10px; font-weight:900; color:#000;">+</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.4); padding:15px; border-radius:15px; margin-bottom:10px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="font-weight: 900;">${v}</div>
+                <button onclick="addToCart('${p.id}', '${v}')" style="background:var(--neon-green); border:none; padding:10px 20px; border-radius:12px; font-weight:900; color:#000; box-shadow: 0 0 15px rgba(43,255,0,0.3);">В КОРЗИНУ</button>
             </div>`).join('');
         openModal('vOverlay');
+    };
+
+    // --- ROULETTE ADMIN LOGIC ---
+    window.openRouletteAdmin = () => {
+        renderRouletteAdminUI();
+        openModal('rouletteAdminOverlay');
+    };
+
+    function renderRouletteAdminUI() {
+        const list = document.getElementById('rouletteItemsList');
+        list.innerHTML = wheelConfig.map((item, i) => `
+            <div class="roulette-item-row">
+                <input type="text" class="inp" value="${item.name}" onchange="wheelConfig[${i}].name=this.value" placeholder="Название приза" style="flex: 2;">
+                <input type="number" class="inp" value="${item.chance}" onchange="wheelConfig[${i}].chance=Number(this.value)" placeholder="Шанс" style="flex: 1;">
+                <button class="btn-mini" style="background:#ff4444; color:#fff;" onclick="wheelConfig.splice(${i},1); renderRouletteAdminUI();"><i class="fas fa-trash"></i></button>
+            </div>
+        `).join('');
+    }
+
+    window.addRouletteItemUI = () => {
+        wheelConfig.push({name: "НОВЫЙ ПРИЗ", chance: 10});
+        renderRouletteAdminUI();
+    };
+
+    window.saveRouletteConfig = async () => {
+        await db.ref('settings/wheel').set(wheelConfig);
+        tg.HapticFeedback.notificationOccurred('success');
+        closeModal('rouletteAdminOverlay');
     };
 
     // --- WHEEL LOGIC ---
     function checkSpinStatus() {
         userSpinRef.on('value', (snap) => {
             const canSpin = snap.val();
-            const isAdminSpin = isAdmin;
-            if (isAdminSpin) {
+            if (isAdmin) {
                 document.getElementById('paymentButtons').style.display = 'none';
                 document.getElementById('spinBtn').style.display = 'block';
                 document.getElementById('spinStatusText').innerText = "АДМИН-ДОСТУП: БЕСПЛАТНО";
@@ -497,30 +578,43 @@
         const res = document.getElementById('spinResult');
         const btn = document.getElementById('spinBtn');
         btn.disabled = true; res.innerText = "КРУТИМ...";
+        
+        let rand = Math.random() * wheelConfig.reduce((sum, item) => sum + item.chance, 0);
+        let sum = 0;
+        let winValue = wheelConfig[0].name;
+        
+        for (let item of wheelConfig) {
+            sum += item.chance;
+            if (rand <= sum) { winValue = item.name; break; }
+        }
+
         const winIdx = 75; const itemH = 160;
-        const winValue = Math.random() > 0.8 ? "СКИДКА 10%" : "ПУСТО";
         track.children[winIdx].innerText = winValue;
+        
         track.style.transition = 'transform 5s cubic-bezier(0.1, 0, 0.1, 1)';
         track.style.transform = `translateY(-${winIdx * itemH}px)`;
+        
         setTimeout(() => {
-            res.innerText = winValue === "ПУСТО" ? "НЕ ПОВЕЗЛО 😢" : "ВЫИГРЫШ: " + winValue;
+            res.innerText = winValue.includes("ПУСТО") ? "НЕ ПОВЕЗЛО 😢" : "ВЫИГРЫШ: " + winValue;
             if(!isAdmin) userSpinRef.set(false);
             btn.disabled = false;
-            tg.HapticFeedback.notificationOccurred('warning');
+            tg.HapticFeedback.notificationOccurred(winValue.includes("ПУСТО") ? 'error' : 'success');
         }, 5200);
     };
 
     window.openWheel = () => {
         const track = document.getElementById('slotTrack');
         let h = '';
-        for(let i=0; i<90; i++) h += `<div class="slot-item">${["ПУСТО","GIFT","5%","ПУСТО","10%"][i%5]}</div>`;
+        for(let i=0; i<90; i++) {
+            let itemName = wheelConfig[i % wheelConfig.length]?.name || "ПУСТО";
+            h += `<div class="slot-item">${itemName}</div>`;
+        }
         track.innerHTML = h;
         track.style.transition = 'none'; track.style.transform = 'translateY(0)';
         document.getElementById('spinResult').innerText = '';
         openModal('wheelOverlay');
     };
 
-    // --- MODALS ---
     window.openModal = (id) => { 
         const el = document.getElementById(id);
         el.style.display = 'flex'; 
@@ -533,10 +627,8 @@
         setTimeout(() => el.style.display = 'none', 400); 
     };
 
-    // INIT
     load();
     checkSpinStatus();
 </script>
 </body>
 </html>
-
