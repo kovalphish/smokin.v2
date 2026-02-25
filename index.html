@@ -57,6 +57,7 @@
         .cat-container { display: flex; gap: 12px; padding: 0 20px; max-width: 1400px; margin: 0 auto; }
         .cat-link { 
             padding: 12px 26px; border-radius: 50px; font-weight: 900; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: var(--transition); white-space: nowrap;
+            border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); color: #fff;
         }
         .cat-link.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 0 0 20px rgba(43, 255, 0, 0.4); }
         
@@ -66,15 +67,18 @@
         
         .card { border-radius: 30px; overflow: hidden; display: flex; flex-direction: column; opacity: 0; transform: translateY(20px); animation: appear 0.6s forwards; transition: transform 0.3s; position: relative; }
         @keyframes appear { to { opacity: 1; transform: translateY(0); } }
+        .card:hover { transform: translateY(-5px); }
         .card-img-wrapper { width: 100%; height: 140px; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .card:hover .card-img { transform: scale(1.1); }
         .card-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
         .card-name { font-weight: 900; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; min-height: 2.2em; line-height: 1.2; }
         .card-price { font-weight: 900; font-size: 1.2rem; color: var(--neon-green); text-shadow: 0 0 10px rgba(43,255,0,0.3); }
         .btn-variants { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px; border-radius: 50px; font-weight: 900; font-size: 0.7rem; cursor: pointer; width: 100%; margin-top: 10px; text-transform: uppercase; transition: 0.3s; }
+        .btn-variants:hover { background: #fff; color: #000; }
         
         .tier-selector { display: flex; gap: 8px; margin-bottom: 15px; }
-        .tier-btn { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 15px; font-weight: 900; font-size: 0.7rem; color: #fff; cursor: pointer; }
+        .tier-btn { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 15px; font-weight: 900; font-size: 0.7rem; color: #fff; cursor: pointer; transition: 0.3s; }
         .tier-btn.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); }
 
         .slot-window { position: relative; width: 100%; height: 160px; background: rgba(0,0,0,0.8); border-radius: 25px; border: 1px solid rgba(255,255,255,0.2); overflow: hidden; margin: 20px 0; }
@@ -86,6 +90,7 @@
         .arrow-right { border-right: 20px solid var(--neon-green); margin-right: 5px; }
         
         .btn-full { background: var(--neon-green); color: #000; border: none; padding: 18px; border-radius: 50px; width: 100%; font-weight: 900; font-size: 0.9rem; text-transform: uppercase; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        .btn-full:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(43,255,0,0.4); }
         .btn-full:disabled { opacity: 0.5; filter: grayscale(1); }
         
         .cart-fab { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--neon-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 10px 40px rgba(43, 255, 0, 0.5); transform: scale(0); transition: var(--transition); cursor: pointer; color: #000; }
@@ -97,17 +102,19 @@
         .modal { border-radius: 40px; padding: 30px; width: 95%; max-width: 500px; transform: scale(0.9); transition: 0.4s; text-align: center; max-height: 90vh; overflow-y: auto; }
         .overlay.active .modal { transform: scale(1); }
 
-        /* Стили админки */
         .fullscreen-modal { width: 100%; height: 100%; max-width: 100% !important; max-height: 100vh !important; border-radius: 0 !important; padding: 20px !important; display: flex; flex-direction: column; background: #000 !important; text-align: left; }
-        .photo-uploader { height: 180px; background: rgba(255,255,255,0.03); border: 2px dashed rgba(255,255,255,0.1); border-radius: 25px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+        .photo-uploader { height: 180px; background: rgba(255,255,255,0.03); border: 2px dashed rgba(255,255,255,0.1); border-radius: 25px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; }
         #previewImg { position: absolute; width: 100%; height: 100%; object-fit: cover; }
-        .admin-input-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        
+        .admin-input-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; }
         .admin-input-card label { display: block; font-size: 0.65rem; text-transform: uppercase; color: var(--neon-green); margin-bottom: 8px; font-weight: 900; }
         .admin-input-card input { width: 100%; background: transparent; border: none; color: #fff; font-size: 1rem; font-weight: 600; outline: none; }
+        
         .flavor-tag { background: var(--neon-green); color: #000; padding: 8px 15px; border-radius: 12px; font-weight: 900; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 8px; margin-right: 8px; margin-bottom: 8px; }
         .inp { width: 100%; padding: 18px; border-radius: 20px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); color: #fff; margin-bottom: 12px; outline: none; }
         .admin-btns { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; gap: 8px; }
-        .btn-mini { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .btn-mini { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.2); color: #fff; }
+        
         .roulette-item-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; }
     </style>
 </head>
@@ -134,20 +141,25 @@
 <div class="overlay" id="wheelOverlay" onclick="closeModal('wheelOverlay')">
     <div class="modal glass" onclick="event.stopPropagation()">
         <h2 style="font-weight:900; text-transform:uppercase; margin-bottom:10px;">LUCKY SMOKIN</h2>
+        
         <div class="tier-selector">
             <button class="tier-btn active" id="t10" onclick="setTier(10)">10 ₽</button>
             <button class="tier-btn" id="t50" onclick="setTier(50)"> 50 ₽</button>
             <button class="tier-btn" id="t150" onclick="setTier(150)"> 150 ₽</button>
         </div>
+
         <p id="spinStatusText" style="font-size: 0.7rem; opacity: 0.7; margin-bottom: 10px;">ЗАГРУЗКА...</p>
+        
         <div class="slot-window">
             <div class="slot-indicators"><div class="arrow arrow-left"></div><div class="arrow arrow-right"></div></div>
             <div class="slot-track" id="slotTrack"></div>
         </div>
+
         <div id="paymentButtons">
             <button class="btn-full" id="tgPayBtn" style="background: #0088cc; color: #fff;" onclick="startStarsPay()">КУПИТЬ СПИН 10 ⭐</button>
             <button class="btn-full" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2);" onclick="paySBP()">ОПЛАТИТЬ СБП</button>
         </div>
+        
         <button class="btn-full" id="spinBtn" style="display: none;" onclick="runSpinAnimation()">КРУТИТЬ БЕСПЛАТНО</button>
         <div id="spinResult" style="margin-top:20px; font-weight:900; color: var(--neon-green); font-size: 1.2rem;"></div>
     </div>
@@ -167,6 +179,7 @@
     <i class="fas fa-shopping-bag fa-xl"></i>
     <div class="cart-count" id="cartCount">0</div>
 </div>
+
 <div class="overlay" id="cartOverlay" onclick="closeModal('cartOverlay')">
     <div class="modal glass" onclick="event.stopPropagation()">
         <h2 style="margin-bottom:20px; font-weight:900; color:var(--neon-green);">КОРЗИНА</h2>
@@ -219,6 +232,7 @@
 <div class="cart-fab" id="addFab" onclick="openAddModal()" style="left:30px; right:auto; background:#fff; color:#000; display:none;">
     <i class="fas fa-plus fa-xl"></i>
 </div>
+
 <div class="overlay" id="adminOverlay" onclick="closeModal('adminOverlay')">
     <div class="modal glass fullscreen-modal" onclick="event.stopPropagation()">
         <form id="pForm" style="display:flex; flex-direction:column; height:100%;">
@@ -228,11 +242,15 @@
                 <i class="fas fa-camera fa-2xl"></i>
                 <input type="file" id="fInp" accept="image/*" style="display:none;">
             </div>
+            
             <div class="admin-input-card" style="margin-top:15px;"><label>Название</label><input type="text" id="pName" required></div>
-            <div class="admin-input-card" style="margin-top:10px;"><label>Цена</label><input type="number" id="pPrice" required></div>
-            <div class="admin-input-card" style="margin-top:10px;"><label>Категория</label><input type="text" id="pCat" required></div>
-            <div id="adminVList" style="margin-top:15px;"></div>
-            <input type="text" id="vInp" class="inp" placeholder="Добавить вкус (через запятую)">
+            <div class="admin-input-card"><label>Цена</label><input type="number" id="pPrice" required></div>
+            <div class="admin-input-card"><label>Категория</label><input type="text" id="pCat" required></div>
+            <div class="admin-input-card"><label>Текст кнопки (Вкусы/Объем)</label><input type="text" id="pBtnName" placeholder="ВКУСЫ"></div>
+            
+            <div id="adminVList"></div>
+            <input type="text" id="vInp" class="inp" placeholder="Добавить вкус (нажми Enter)" onkeydown="if(event.key==='Enter'){event.preventDefault(); addV(this.value); this.value=''}">
+            
             <button type="submit" class="btn-full" style="margin-top:auto;">СОХРАНИТЬ</button>
         </form>
     </div>
@@ -256,11 +274,11 @@
     const userSpinRef = db.ref('users/' + user.id + '/can_spin');
     const userPendingRef = db.ref('users/' + user.id + '/payment_pending');
 
-    let products = [], cart = [], curCat = 'all', isAdmin = false;
+    let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
     let currentTier = 10;
     let wheelConfigs = { t10: [], t50: [], t150: [] };
 
-    // ФОН
+    // ФОНОВЫЕ ЧАСТИЦЫ
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -292,23 +310,24 @@
         const filtered = curCat === 'all' ? products : products.filter(p => p.category === curCat);
         document.getElementById('productGrid').innerHTML = filtered.map(p => `
             <div class="card glass">
-                ${isAdmin ? `<div class="admin-btns"><button class="btn-mini" onclick="editProduct('${p.id}')">✏️</button><button class="btn-mini" style="background:red;color:white;" onclick="deleteProduct('${p.id}')">✕</button></div>` : ''}
+                ${isAdmin ? `<div class="admin-btns"><button class="btn-mini" onclick="editProduct('${p.id}')">✏️</button><button class="btn-mini" style="background:red;" onclick="deleteProduct('${p.id}')">✕</button></div>` : ''}
                 <div class="card-img-wrapper"><img src="${p.imageData || ''}" class="card-img"></div>
                 <div class="card-info">
                     <div class="card-name">${p.name}</div>
                     <div class="card-price">${p.price} ₽</div>
-                    <button class="btn-variants" onclick="${p.variants ? `showFlavors('${p.id}')` : `addToCart('${p.id}', 'Стандарт')`}" style="${!p.variants ? 'background:var(--neon-green);color:#000;border:none;' : ''}">${p.variants ? 'ВКУСЫ' : 'В КОРЗИНУ'}</button>
+                    ${p.variants && p.variants.length > 0 ? 
+                        `<button class="btn-variants" onclick="showFlavors('${p.id}')">${p.variantButtonName || 'ВКУСЫ'}</button>` : 
+                        `<button class="btn-variants" style="background:var(--neon-green);color:#000;border:none;" onclick="addToCart('${p.id}', 'Стандарт')">В КОРЗИНУ</button>`
+                    }
                 </div>
             </div>`).join('');
     }
 
-    // ИСПРАВЛЕННАЯ ПРОВЕРКА СТАТУСА (теперь не пропадает при обновлении)
+    // ЛОГИКА ОПЛАТЫ И СТАТУСА
     function checkSpinStatus() {
         userSpinRef.on('value', (snap) => {
             const canSpin = snap.val();
-            
-            // Если спин выдан, удаляем флаг ожидания
-            if (canSpin) userPendingRef.set(null);
+            if (canSpin) userPendingRef.set(null); // Если админ одобрил, удаляем статус ожидания
 
             userPendingRef.on('value', (pSnap) => {
                 const isPending = pSnap.val();
@@ -336,11 +355,10 @@
         });
     }
 
-    // ОПЛАТА ЗВЕЗДАМИ (STARS)
     window.startStarsPay = () => {
-        // Отправляем запрос боту на создание счета
-        tg.sendData(JSON.stringify({action: "buy_spin", tier: currentTier, method: "stars"}));
-        alert("Запрос на оплату ⭐ отправлен боту!");
+        // Вызов оплаты звездами (через бота)
+        tg.sendData(JSON.stringify({action: "buy_spin", tier: currentTier}));
+        // Если бот умеет генерировать invoice, можно вызвать tg.openInvoice(url)
     };
 
     window.paySBP = () => {
@@ -351,7 +369,7 @@
     };
 
     window.confirmPayment = () => {
-        userPendingRef.set(true); // Сохраняем в Firebase
+        userPendingRef.set(true); // Запоминаем в Firebase статус ожидания
         db.ref('payment_requests/' + user.id).set({
             username: user.username || "Anon",
             amount: currentTier,
@@ -362,11 +380,20 @@
         closeModal('sbpOverlay');
     };
 
+    // РУЛЕТКА
+    window.setTier = (t) => {
+        currentTier = t;
+        document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('t'+t).classList.add('active');
+        document.getElementById('tgPayBtn').innerText = `КУПИТЬ СПИН ${t} ⭐`;
+        openWheel();
+    };
+
     window.runSpinAnimation = () => {
         const track = document.getElementById('slotTrack');
-        const config = wheelConfigs['t'+currentTier];
-        if(!config || config.length === 0) return alert("Настрой рулетку!");
-
+        const config = wheelConfigs['t'+currentTier] || [];
+        if(config.length === 0) return alert("Настрой рулетку!");
+        
         const winIdx = 40;
         const winItem = config[Math.floor(Math.random()*config.length)];
         track.children[winIdx].innerText = winItem.name;
@@ -377,18 +404,55 @@
         setTimeout(() => {
             document.getElementById('spinResult').innerText = "ПРИЗ: " + winItem.name;
             if(!isAdmin) userSpinRef.set(false);
+            tg.HapticFeedback.notificationOccurred('success');
         }, 4100);
     };
 
     window.openWheel = () => {
-        const config = wheelConfigs['t'+currentTier];
+        const config = wheelConfigs['t'+currentTier] || [];
         const track = document.getElementById('slotTrack');
         track.innerHTML = Array(60).fill(0).map((_,i) => `<div class="slot-item">${config[i%config.length]?.name || '...'}</div>`).join('');
         track.style.transition = 'none'; track.style.transform = 'translateY(0)';
+        document.getElementById('spinResult').innerText = '';
         openModal('wheelOverlay');
     };
 
-    // АДМИНКА ТОВАРОВ
+    // МАГАЗИН
+    window.showFlavors = (id) => {
+        const p = products.find(x => x.id === id);
+        document.getElementById('vTitle').innerText = p.variantButtonName || 'ВКУСЫ';
+        document.getElementById('vList').innerHTML = (p.variants || []).map(v => `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.4); padding:15px; border-radius:15px; margin-bottom:10px;">
+                <div style="font-weight: 900;">${v}</div>
+                <button onclick="addToCart('${p.id}', '${v}')" style="background:var(--neon-green); border:none; padding:10px 20px; border-radius:12px; font-weight:900;">В КОРЗИНУ</button>
+            </div>`).join('');
+        openModal('vOverlay');
+    };
+
+    window.addToCart = (id, flavor) => {
+        const p = products.find(x => x.id === id);
+        cart.push({ name: p.name, flavor: flavor, price: parseInt(p.price) });
+        updateCartUI();
+        closeModal('vOverlay');
+        tg.HapticFeedback.impactOccurred('medium');
+    };
+
+    function updateCartUI() {
+        document.getElementById('cartCount').innerText = cart.length;
+        document.getElementById('cartFab').classList.toggle('visible', cart.length > 0);
+        let t = 0;
+        document.getElementById('cartItems').innerHTML = cart.map((i, idx) => { t += i.price; return `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span>${i.name} (${i.flavor})</span><b>${i.price}₽</b></div>` }).join('');
+        document.getElementById('cartTotal').innerText = t + ' ₽';
+    }
+
+    window.sendToManager = () => {
+        const msg = `ЗАКАЗ:\n` + cart.map(i => `- ${i.name} (${i.flavor})`).join('\n');
+        tg.openTelegramLink(`https://t.me/smokinshop174?text=${encodeURIComponent(msg)}`);
+    };
+
+    // АДМИНКА
+    window.handleAdminClick = () => isAdmin ? openModal('adminMenuOverlay') : openModal('loginOverlay');
+    
     window.tryLogin = () => {
         if(document.getElementById('pass').value === 'smkn00') {
             isAdmin = true; render(); checkSpinStatus(); closeModal('loginOverlay');
@@ -396,17 +460,46 @@
             document.getElementById('adminLock').classList.add('active');
         }
     };
-    window.deleteProduct = (id) => confirm('Удалить?') && db.ref('products/'+id).remove();
+
+    window.logoutAdmin = () => { isAdmin=false; location.reload(); };
+
+    window.openAddModal = () => {
+        document.getElementById('pId').value = '';
+        document.getElementById('pForm').reset();
+        document.getElementById('previewImg').style.display = 'none';
+        tempVariants = []; renderV();
+        openModal('adminOverlay');
+    };
+
     window.editProduct = (id) => {
         const p = products.find(x => x.id === id);
         document.getElementById('pId').value = p.id;
         document.getElementById('pName').value = p.name;
         document.getElementById('pPrice').value = p.price;
         document.getElementById('pCat').value = p.category;
+        document.getElementById('pBtnName').value = p.variantButtonName || '';
         document.getElementById('pImg').value = p.imageData || '';
         if(p.imageData) { document.getElementById('previewImg').src = p.imageData; document.getElementById('previewImg').style.display='block'; }
+        tempVariants = p.variants || []; renderV();
         openModal('adminOverlay');
     };
+
+    window.deleteProduct = (id) => confirm('Удалить?') && db.ref('products/'+id).remove();
+
+    function addV(v) { if(!v)return; tempVariants.push(v); renderV(); }
+    function removeV(idx) { tempVariants.splice(idx, 1); renderV(); }
+    function renderV() { document.getElementById('adminVList').innerHTML = tempVariants.map((v, i) => `<div class="flavor-tag">${v} <i class="fas fa-times" onclick="removeV(${i})"></i></div>`).join(''); }
+
+    document.getElementById('fInp').onchange = (e) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            document.getElementById('pImg').value = reader.result;
+            document.getElementById('previewImg').src = reader.result;
+            document.getElementById('previewImg').style.display = 'block';
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    };
+
     document.getElementById('pForm').onsubmit = (e) => {
         e.preventDefault();
         const id = document.getElementById('pId').value;
@@ -414,21 +507,34 @@
             name: document.getElementById('pName').value,
             price: document.getElementById('pPrice').value,
             category: document.getElementById('pCat').value,
+            variantButtonName: document.getElementById('pBtnName').value,
             imageData: document.getElementById('pImg').value,
-            variants: document.getElementById('vInp').value.split(',').map(v => v.trim()).filter(v => v !== "")
+            variants: tempVariants
         };
         id ? db.ref('products/'+id).update(data) : db.ref('products').push(data);
         closeModal('adminOverlay');
     };
 
+    // АДМИНКА РУЛЕТКИ
+    let adminTier = 10;
+    window.setAdminTier = (t) => { adminTier = t; document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('active')); document.getElementById('at'+t).classList.add('active'); renderAdminRoulette(); };
+    window.openRouletteAdmin = () => { renderAdminRoulette(); openModal('rouletteAdminOverlay'); };
+    function renderAdminRoulette() {
+        const list = wheelConfigs['t'+adminTier] || [];
+        document.getElementById('rouletteItemsList').innerHTML = list.map((item, i) => `
+            <div class="roulette-item-row">
+                <input type="text" class="inp" value="${item.name}" onchange="updateRouletteItem(${i}, this.value)" style="margin:0; flex:1;">
+                <button class="btn-mini" style="background:red;" onclick="removeRouletteItem(${i})">✕</button>
+            </div>`).join('');
+    }
+    window.addRouletteItemUI = () => { wheelConfigs['t'+adminTier] = wheelConfigs['t'+adminTier] || []; wheelConfigs['t'+adminTier].push({name: 'Приз'}); renderAdminRoulette(); };
+    window.removeRouletteItem = (i) => { wheelConfigs['t'+adminTier].splice(i, 1); renderAdminRoulette(); };
+    window.updateRouletteItem = (i, val) => { wheelConfigs['t'+adminTier][i].name = val; };
+    window.saveRouletteConfig = () => db.ref('settings/wheel_v2').set(wheelConfigs).then(() => closeModal('rouletteAdminOverlay'));
+
+    // МОДАЛКИ
     window.openModal = (id) => { document.getElementById(id).style.display = 'flex'; setTimeout(() => document.getElementById(id).classList.add('active'), 10); };
     window.closeModal = (id) => { document.getElementById(id).classList.remove('active'); setTimeout(() => document.getElementById(id).style.display = 'none', 400); };
-    
-    // ВСПОМОГАТЕЛЬНОЕ
-    window.setTier = (t) => { currentTier = t; document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('active')); document.getElementById('t'+t).classList.add('active'); document.getElementById('tgPayBtn').innerText = `КУПИТЬ СПИН ${t} ⭐`; openWheel(); };
-    window.addToCart = (id, flavor) => { const p = products.find(x => x.id === id); cart.push({ name: p.name, flavor: flavor, price: parseInt(p.price) }); updateCartUI(); };
-    function updateCartUI() { document.getElementById('cartCount').innerText = cart.length; document.getElementById('cartFab').classList.toggle('visible', cart.length > 0); let t = 0; document.getElementById('cartItems').innerHTML = cart.map(i => { t += i.price; return `<div style="display:flex;justify-content:space-between;padding:10px 0;"><span>${i.name}</span><span>${i.price}₽</span></div>` }).join(''); document.getElementById('cartTotal').innerText = t + ' ₽'; }
-    window.sendToManager = () => tg.openTelegramLink(`https://t.me/smokinshop174?text=${encodeURIComponent('ЗАКАЗ:\n' + cart.map(i => `- ${i.name} (${i.flavor})`).join('\n'))}`);
 
     load(); checkSpinStatus();
 </script>
