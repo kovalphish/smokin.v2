@@ -33,9 +33,16 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
+        /* ИСПРАВЛЕННАЯ ШАПКА */
         header { 
-            position: sticky; top: 0; z-index: 1000; padding: 1.2rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            padding: 1.2rem 0;
+            background: rgba(0, 0, 0, 0.9); /* Сделано плотнее */
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: none !important; 
         }
         .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
         .logo-text { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
@@ -72,6 +79,11 @@
         .btn-variants { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px; border-radius: 50px; font-weight: 900; font-size: 0.7rem; cursor: pointer; width: 100%; margin-top: 10px; text-transform: uppercase; transition: 0.3s; }
         .btn-variants:hover { background: rgba(255,255,255,0.2); }
         
+        /* РУЛЕТКА */
+        .tier-selector { display: flex; gap: 8px; margin-bottom: 15px; }
+        .tier-btn { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 15px; font-weight: 900; font-size: 0.7rem; color: #fff; cursor: pointer; }
+        .tier-btn.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); }
+
         .slot-window { position: relative; width: 100%; height: 160px; background: rgba(0,0,0,0.8); border-radius: 25px; border: 1px solid rgba(255,255,255,0.2); overflow: hidden; margin: 20px 0; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }
         .slot-track { position: absolute; top: 0; left: 0; width: 100%; transition: none; }
         .slot-item { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #fff; text-transform: uppercase; text-align: center; padding: 0 10px; text-shadow: 0 0 15px rgba(255,255,255,0.5); }
@@ -95,31 +107,33 @@
         .overlay.active .modal { transform: scale(1); }
         .modal::-webkit-scrollbar { display: none; }
         
-        .fullscreen-modal { width: 100%; height: 100%; max-width: 100%; max-height: 100vh; border-radius: 0; padding: 40px 20px 20px 20px; display: flex; flex-direction: column; justify-content: flex-start; }
-        .fullscreen-modal h2 { font-size: 2rem; margin-bottom: 20px; }
-        .fullscreen-modal .btn-full { padding: 22px; font-size: 1.1rem; margin-top: 10px; border-radius: 20px; }
-
+        /* АДМИНКА */
+        .fullscreen-modal { width: 100%; height: 100%; max-width: 100% !important; max-height: 100vh !important; border-radius: 0 !important; padding: 20px !important; display: flex; flex-direction: column; background: #000 !important; text-align: left; }
+        .admin-editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .admin-grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .photo-uploader { grid-column: span 2; height: 180px; background: rgba(255,255,255,0.03); border: 2px dashed rgba(255,255,255,0.1); border-radius: 25px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; transition: var(--transition); }
+        .photo-uploader.has-img { border: 2px solid var(--neon-green); }
+        #previewImg { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        .admin-input-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .admin-input-card label { display: block; font-size: 0.65rem; text-transform: uppercase; color: var(--neon-green); margin-bottom: 8px; font-weight: 900; }
+        .admin-input-card input { width: 100%; background: transparent; border: none; color: #fff; font-size: 1rem; font-weight: 600; outline: none; }
+        .flavors-section { background: rgba(255,255,255,0.05); border-radius: 25px; padding: 20px; margin-bottom: 30px; }
+        .flavor-tag { background: var(--neon-green); color: #000; padding: 8px 15px; border-radius: 12px; font-weight: 900; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 8px; margin-right: 8px; margin-bottom: 8px; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+        .action-bar { margin-top: auto; display: grid; grid-template-columns: 1fr 2fr; gap: 10px; padding-bottom: 20px; }
+        
         .inp { width: 100%; padding: 18px; border-radius: 20px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); color: #fff; margin-bottom: 12px; outline: none; transition: 0.3s; }
         .inp:focus { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(43,255,0,0.2); }
         .admin-btns { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; gap: 8px; }
         .btn-mini { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         
         .roulette-item-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
-        .roulette-item-row input { margin-bottom: 0; padding: 12px; }
-
-        /* СТИЛИ КВАДРАТНЫХ БЛОКОВ АДМИНКИ */
-        .admin-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 15px; }
-        .admin-block { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1 / 1; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
-        .admin-block:focus-within { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(43,255,0,0.2); }
-        .admin-block-wide { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 20px; display: flex; flex-direction: column; margin-bottom: 15px; }
-        .inp-clean { width: 100%; background: transparent; border: none; color: #fff; text-align: center; font-size: 1rem; font-weight: 900; outline: none; margin-top: 10px; }
-        .inp-clean::placeholder { color: rgba(255,255,255,0.4); font-weight: 400; }
     </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
 
-<header class="glass">
+<header>
     <div class="header-content">
         <div class="logo-text">ПРАЙС</div>
         <div class="nav-right">
@@ -136,10 +150,16 @@
     <div class="grid" id="productGrid"></div>
 </main>
 
-<!-- WHEEL MODAL -->
 <div class="overlay" id="wheelOverlay" onclick="closeModal('wheelOverlay')">
     <div class="modal glass" onclick="event.stopPropagation()">
         <h2 style="font-weight:900; text-transform:uppercase; margin-bottom:10px; text-shadow: 0 0 15px rgba(255,255,255,0.5);">LUCKY SMOKIN</h2>
+        
+        <div class="tier-selector">
+            <button class="tier-btn active" id="t10" onclick="setTier(10)">10 ₽</button>
+            <button class="tier-btn" id="t50" onclick="setTier(50)"> 50 ₽</button>
+            <button class="tier-btn" id="t150" onclick="setTier(150)"> 150 ₽</button>
+        </div>
+
         <p id="spinStatusText" style="font-size: 0.7rem; opacity: 0.7; margin-bottom: 10px;">ЗАГРУЗКА...</p>
         <div class="slot-window">
             <div class="slot-indicators">
@@ -149,44 +169,41 @@
             <div class="slot-track" id="slotTrack"></div>
         </div>
         <div id="paymentButtons">
-            <button class="btn-full" style="background: #0088cc; color: #fff; margin-bottom: 10px; box-shadow: 0 5px 20px rgba(0,136,204,0.4);" onclick="startSpin()">КУПИТЬ СПИН 10 ⭐</button>
-            <button class="btn-full" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); box-shadow: none;" onclick="paySBP()">ОПЛАТИТЬ СБП (100 ₽)</button>
+            <button class="btn-full" id="tgPayBtn" style="background: #0088cc; color: #fff; margin-bottom: 10px;" onclick="startSpin()">КУПИТЬ СПИН 10 ⭐</button>
+            <button class="btn-full" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); box-shadow: none;" onclick="paySBP()">ОПЛАТИТЬ СБП</button>
         </div>
         <button class="btn-full" id="spinBtn" style="display: none;" onclick="runSpinAnimation()">КРУТИТЬ БЕСПЛАТНО</button>
         <div id="spinResult" style="margin-top:20px; font-weight:900; height: 1.2em; color: var(--neon-green); text-shadow: 0 0 10px rgba(43,255,0,0.5); font-size: 1.2rem;"></div>
     </div>
 </div>
 
-<!-- SBP MODAL -->
 <div class="overlay" id="sbpOverlay" onclick="closeModal('sbpOverlay')">
     <div class="modal glass" onclick="event.stopPropagation()">
         <h2 style="margin-bottom:15px; font-weight:900;">ОПЛАТА СБП</h2>
         <div id="qrContainer" style="background:#fff; padding:15px; border-radius:20px; display:inline-block; margin-bottom:15px;"></div>
-        <p style="font-size:0.8rem; opacity:0.8; margin-bottom:20px;">Отсканируйте QR код для оплаты 100 ₽</p>
+        <p id="sbpPriceLabel" style="font-size:0.9rem; font-weight:900; margin-bottom:20px;">ОТПРАВЬТЕ: 10 ₽</p>
         <button class="btn-full" onclick="confirmPayment()">Я ОПЛАТИЛ</button>
         <button class="btn-full" style="background:rgba(255,255,255,0.1); color:#fff; box-shadow:none;" onclick="closeModal('sbpOverlay')">НАЗАД</button>
     </div>
 </div>
 
-<!-- CART FAB & MODAL -->
 <div class="cart-fab" id="cartFab" onclick="openModal('cartOverlay')">
     <i class="fas fa-shopping-bag fa-xl"></i>
     <div class="cart-count" id="cartCount">0</div>
 </div>
 <div class="overlay" id="cartOverlay" onclick="closeModal('cartOverlay')">
     <div class="modal glass" onclick="event.stopPropagation()">
-        <h2 style="margin-bottom:20px; font-weight:900; text-transform:uppercase; color:var(--neon-green); text-shadow: 0 0 10px rgba(43,255,0,0.3);">КОРЗИНА</h2>
+        <h2 style="margin-bottom:20px; font-weight:900; text-transform:uppercase; color:var(--neon-green);">КОРЗИНА</h2>
         <div id="cartItems" style="max-height:40vh; overflow-y:auto; margin-bottom:20px;"></div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px;">
             <span style="opacity:0.8; font-weight: 900;">ИТОГО</span>
             <span style="font-weight:900; font-size:1.8rem; color: var(--neon-green);" id="cartTotal">0 ₽</span>
         </div>
         <button class="btn-full" onclick="sendToManager()">ОФОРМИТЬ В TG</button>
-        <button class="btn-full" style="background:rgba(255,59,48,0.2); color:#ff3b30; box-shadow:none; border: 1px solid rgba(255,59,48,0.3);" onclick="clearCart()">ОЧИСТИТЬ</button>
+        <button class="btn-full" style="background:rgba(255,59,48,0.2); color:#ff3b30; box-shadow:none;" onclick="clearCart()">ОЧИСТИТЬ</button>
     </div>
 </div>
 
-<!-- FLAVORS MODAL -->
 <div class="overlay" id="vOverlay" onclick="closeModal('vOverlay')">
     <div class="modal glass" onclick="event.stopPropagation()">
         <h2 id="vTitle" style="margin-bottom:25px; font-weight:900; text-transform:uppercase;">ВКУСЫ</h2>
@@ -195,7 +212,6 @@
     </div>
 </div>
 
-<!-- ADMIN LOGIN -->
 <div class="overlay" id="loginOverlay" onclick="closeModal('loginOverlay')">
     <div class="modal glass" onclick="event.stopPropagation()">
         <h2 style="margin-bottom:20px; font-weight:900;">АДМИН-ДОСТУП</h2>
@@ -204,7 +220,6 @@
     </div>
 </div>
 
-<!-- ADMIN MAIN MENU -->
 <div class="overlay" id="adminMenuOverlay" onclick="closeModal('adminMenuOverlay')">
     <div class="modal glass" onclick="event.stopPropagation()">
         <h2 style="margin-bottom:20px; font-weight:900; color: var(--neon-green);">АДМИН ПАНЕЛЬ</h2>
@@ -213,65 +228,67 @@
     </div>
 </div>
 
-<!-- ROULETTE ADMIN MODAL -->
 <div class="overlay" id="rouletteAdminOverlay" onclick="closeModal('rouletteAdminOverlay')">
     <div class="modal glass" onclick="event.stopPropagation()">
         <h2 style="margin-bottom:20px; font-weight:900;">НАСТРОЙКА РУЛЕТКИ</h2>
-        <p style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 15px;">Сумма шансов не обязательно 100%, алгоритм считает веса.</p>
+        <div class="tier-selector">
+            <button class="tier-btn active" id="at10" onclick="setAdminTier(10)">10 ₽</button>
+            <button class="tier-btn" id="at50" onclick="setAdminTier(50)">50 ₽</button>
+            <button class="tier-btn" id="at150" onclick="setAdminTier(150)">150 ₽</button>
+        </div>
         <div id="rouletteItemsList" style="max-height: 40vh; overflow-y: auto; margin-bottom: 15px;"></div>
         <button class="btn-full" style="background: rgba(255,255,255,0.1); color: #fff; box-shadow: none; margin-bottom: 10px;" onclick="addRouletteItemUI()">+ ДОБАВИТЬ ПРИЗ</button>
-        <button class="btn-full" onclick="saveRouletteConfig()">СОХРАНИТЬ НАСТРОЙКИ</button>
+        <button class="btn-full" onclick="saveRouletteConfig()">СОХРАНИТЬ ДЛЯ <span id="saveTierLabel">10</span> ₽</button>
     </div>
 </div>
 
-<!-- ADD PRODUCT FAB -->
 <div class="cart-fab" id="addFab" onclick="openAddModal()">
     <i class="fas fa-plus fa-xl"></i>
 </div>
 
-<!-- FULLSCREEN PRODUCT ADMIN MODAL (С КВАДРАТНЫМИ БЛОКАМИ) -->
 <div class="overlay" id="adminOverlay" onclick="closeModal('adminOverlay')">
-    <div class="modal glass fullscreen-modal" onclick="event.stopPropagation()" style="text-align: left;">
-        <h2 id="adminModalTitle" style="font-weight:900; text-align: center; color: var(--neon-green);">ТОВАР</h2>
-        <form id="pForm" style="display: flex; flex-direction: column; flex-grow: 1; overflow-y: auto; padding-bottom: 20px;">
+    <div class="modal glass fullscreen-modal" onclick="event.stopPropagation()">
+        <div class="admin-editor-header">
+            <h2 id="adminModalTitle" style="font-weight:900; text-transform:uppercase;">ТОВАР</h2>
+            <i class="fas fa-times fa-xl" onclick="closeModal('adminOverlay')" style="opacity: 0.5; cursor:pointer;"></i>
+        </div>
+        <form id="pForm" style="display:flex; flex-direction:column; height:100%;">
             <input type="hidden" id="pId">
-            
-            <!-- СЕТКА КВАДРАТНЫХ БЛОКОВ -->
-            <div class="admin-grid">
-                <div class="admin-block">
-                    <i class="fas fa-box" style="font-size: 2rem; color: var(--neon-green);"></i>
-                    <input type="text" id="pName" placeholder="Название" class="inp-clean" required>
+            <input type="hidden" id="pImg">
+            <div style="overflow-y: auto; padding-right: 5px;">
+                <div class="photo-uploader" id="photoLoader">
+                    <img id="previewImg" src="" style="display:none;">
+                    <i class="fas fa-camera fa-2xl" id="camIcon" style="margin-bottom:10px; opacity:0.5;"></i>
+                    <span id="photoStatus" style="font-weight:900; font-size:0.8rem; opacity:0.5;">ДОБАВИТЬ ФОТО</span>
+                    <input type="file" id="fInp" accept="image/*" style="position:absolute; width:100%; height:100%; opacity:0; cursor:pointer;">
                 </div>
-                <div class="admin-block">
-                    <i class="fas fa-tag" style="font-size: 2rem; color: var(--neon-green);"></i>
-                    <input type="number" id="pPrice" placeholder="Цена (₽)" class="inp-clean" required>
+                <div class="admin-grid-layout" style="margin-top:15px;">
+                    <div class="admin-input-card" style="grid-column: span 2;">
+                        <label>Название товара</label>
+                        <input type="text" id="pName" placeholder="Напр: Elf Bar 5000" required>
+                    </div>
+                    <div class="admin-input-card">
+                        <label>Цена (₽)</label>
+                        <input type="number" id="pPrice" placeholder="0" required>
+                    </div>
+                    <div class="admin-input-card">
+                        <label>Категория</label>
+                        <input type="text" id="pCat" placeholder="Одноразки" required>
+                    </div>
                 </div>
-                <div class="admin-block">
-                    <i class="fas fa-folder" style="font-size: 2rem; color: var(--neon-green);"></i>
-                    <input type="text" id="pCat" placeholder="Категория" class="inp-clean" required>
-                </div>
-                <div class="admin-block">
-                    <i id="imgIcon" class="fas fa-image" style="font-size: 2rem; color: var(--neon-green); margin-bottom: 10px;"></i>
-                    <span id="imgText" style="font-size: 0.8rem; font-weight: 900; color: #fff;">ФОТО</span>
-                    <input type="file" id="fInp" accept="image/*" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0; cursor: pointer;">
-                    <input type="hidden" id="pImg">
+                <div class="flavors-section">
+                    <label style="display:block; font-size:0.65rem; text-transform:uppercase; color:var(--neon-green); margin-bottom:15px; font-weight:900;">Варианты / Вкусы</label>
+                    <input type="text" id="pBtnName" class="inp" placeholder="Текст кнопки (ВКУСЫ)" style="margin-bottom:15px; background:rgba(255,255,255,0.05);">
+                    <div style="display:flex; gap:10px; margin-bottom:15px;">
+                        <input type="text" id="vInp" class="inp" placeholder="Вкус (можно через запятую)" style="margin-bottom:0; background:rgba(255,255,255,0.05);">
+                        <button type="button" onclick="addFlavorToList()" class="btn-full" style="margin-top:0; width:60px; border-radius:15px;">+</button>
+                    </div>
+                    <div id="adminVList"></div>
                 </div>
             </div>
-
-            <!-- ШИРОКИЙ БЛОК ДЛЯ ВКУСОВ -->
-            <div class="admin-block-wide">
-                <input type="text" id="pBtnName" placeholder="Текст кнопки (например: Вкусы)" class="inp-clean" style="margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
-                
-                <div style="display:flex; gap:10px; margin-bottom:15px;">
-                    <input type="text" id="vInp" class="inp-clean" placeholder="Добавить вкус" style="margin-top: 0; text-align: left; padding-left: 10px;">
-                    <button type="button" onclick="addFlavorToList()" class="btn-full" style="margin-top:0; padding:0 25px; width:auto; border-radius: 15px;">+</button>
-                </div>
-                <div id="adminVList" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
-            </div>
-            
-            <div style="margin-top: auto; padding-top: 10px;">
-                <button type="submit" class="btn-full">СОХРАНИТЬ ТОВАР</button>
+            <div class="action-bar">
                 <button type="button" class="btn-full" style="background:rgba(255,255,255,0.1); color:#fff; box-shadow:none;" onclick="closeModal('adminOverlay')">ОТМЕНА</button>
+                <button type="submit" class="btn-full">СОХРАНИТЬ</button>
             </div>
         </form>
     </div>
@@ -279,8 +296,7 @@
 
 <script>
     const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
+    tg.ready(); tg.expand();
 
     const firebaseConfig = {
         apiKey: "AIzaSyD3wDw2ZTTXn2gY467grDOVi9E5vcusilc",
@@ -291,12 +307,22 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const userId = tg.initDataUnsafe?.user?.id || "test_user";
-    const userSpinRef = db.ref('users/' + userId + '/can_spin');
+    
+    const user = tg.initDataUnsafe?.user || { id: "test", username: "guest" };
+    const userSpinRef = db.ref('users/' + user.id + '/can_spin');
     
     let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
-    let wheelConfig = [{name: "ПУСТО", chance: 80}, {name: "СКИДКА 10%", chance: 20}];
+    
+    // РУЛЕТКА ДАННЫЕ
+    let currentTier = 10;
+    let adminEditTier = 10;
+    let wheelConfigs = {
+        t10: [{name: "ПУСТО", chance: 80}, {name: "СКИДКА 10%", chance: 20}],
+        t50: [{name: "ПУСТО", chance: 50}, {name: "ПОД-СИСТЕМА", chance: 5}],
+        t150: [{name: "ПУСТО", chance: 30}, {name: "ОДНОРАЗКА", chance: 15}]
+    };
 
+    // ФОНОВАЯ АНИМАЦИЯ (ТВОЯ)
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -331,8 +357,8 @@
             products = val ? Object.keys(val).map(k => ({ id: k, ...val[k] })) : [];
             render();
         });
-        db.ref('settings/wheel').on('value', snap => {
-            if(snap.val()) wheelConfig = snap.val();
+        db.ref('settings/wheel_v2').on('value', snap => {
+            if(snap.val()) wheelConfigs = snap.val();
         });
     }
 
@@ -351,9 +377,7 @@
                         <button class="btn-mini" style="background:#ff4444; color:#fff;" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
                     </div>
                 ` : ''}
-                <div class="card-img-wrapper">
-                    <img src="${p.imageData || ''}" class="card-img" onerror="this.src='https://via.placeholder.com/400/111/fff?text=SMOKIN'">
-                </div>
+                <div class="card-img-wrapper"><img src="${p.imageData || ''}" class="card-img" onerror="this.src='https://via.placeholder.com/400/111/fff?text=SMOKIN'"></div>
                 <div class="card-info">
                     <div class="card-name">${p.name}</div>
                     <div class="card-price">${p.price} ₽</div>
@@ -393,214 +417,65 @@
     window.removeItem = (i) => { cart.splice(i,1); updateCartUI(); };
     window.clearCart = () => { cart=[]; updateCartUI(); closeModal('cartOverlay'); };
 
+    // ПРАВКА: IPHONE FIX (tg.openTelegramLink)
     window.sendToManager = () => { 
         if (cart.length === 0) return;
         let msg = `🛍 ЗАКАЗ SMOKIN174\n\n`;
-        cart.forEach((item, i) => {
-            msg += `${i + 1}. ${item.name} (${item.flavor}) — ${item.price} ₽\n`;
-        });
+        cart.forEach((item, i) => msg += `${i + 1}. ${item.name} (${item.flavor}) — ${item.price} ₽\n`);
         msg += `\n💰 ИТОГО: ${document.getElementById('cartTotal').innerText}`;
-
-        const managerUser = "smokinshop174";
-        tg.openTelegramLink(`https://t.me/${managerUser}?text=${encodeURIComponent(msg)}`);
-        
-        cart = [];
-        updateCartUI();
-        closeModal('cartOverlay');
+        tg.openTelegramLink(`https://t.me/smokinshop174?text=${encodeURIComponent(msg)}`);
+        cart = []; updateCartUI(); closeModal('cartOverlay');
     };
 
-    window.handleAdminClick = () => {
-        if(isAdmin) { openModal('adminMenuOverlay'); } else { openModal('loginOverlay'); }
-    };
-
+    // АДМИНКА ЛОГИКА
+    window.handleAdminClick = () => isAdmin ? openModal('adminMenuOverlay') : openModal('loginOverlay');
     window.tryLogin = () => {
         if(document.getElementById('pass').value === 'smkn00') {
             isAdmin = true;
             document.getElementById('adminLock').classList.add('active');
-            document.getElementById('pass').value = '';
             document.getElementById('addFab').style.display = 'flex';
             closeModal('loginOverlay');
-            openModal('adminMenuOverlay');
-            render();
-            checkSpinStatus();
-        } else { 
-            tg.HapticFeedback.notificationOccurred('error');
-            alert('Неверный пароль'); 
-        }
+            render(); checkSpinStatus();
+        } else alert('Неверный пароль');
     };
-
     window.logoutAdmin = () => {
         isAdmin = false;
         document.getElementById('adminLock').classList.remove('active');
         document.getElementById('addFab').style.display = 'none';
         closeModal('adminMenuOverlay');
-        render();
-        checkSpinStatus();
+        render(); checkSpinStatus();
     };
 
-    window.openAddModal = () => {
-        document.getElementById('pForm').reset();
-        document.getElementById('pId').value = '';
-        document.getElementById('pImg').value = '';
+    // РУЛЕТКА КОР ЛОГИКА
+    function setTier(t) {
+        currentTier = t;
+        document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('t'+t).classList.add('active');
         
-        // Сброс иконки фото
-        document.getElementById('imgIcon').className = 'fas fa-image';
-        document.getElementById('imgText').innerText = 'ФОТО';
+        // ОБНОВЛЕНИЕ ЦЕН (STARS + СБП)
+        document.getElementById('tgPayBtn').innerText = `КУПИТЬ СПИН ${t} ⭐`;
+        document.getElementById('sbpPriceLabel').innerText = `ОТПРАВЬТЕ: ${t} ₽`;
         
-        tempVariants = []; renderAdminVariants();
-        document.getElementById('adminModalTitle').innerText = "НОВЫЙ ТОВАР";
-        openModal('adminOverlay');
-    };
-
-    window.addFlavorToList = () => {
-        const val = document.getElementById('vInp').value.trim();
-        if(val) { tempVariants.push(val); document.getElementById('vInp').value = ''; renderAdminVariants(); }
-    };
-
-    function renderAdminVariants() {
-        document.getElementById('adminVList').innerHTML = tempVariants.map((v, i) => `
-            <span style="background:rgba(0,0,0,0.5); padding:10px 18px; border-radius:50px; font-size:0.9rem; border:1px solid var(--neon-green); display: flex; align-items: center; gap: 10px;">
-                ${v} <i class="fas fa-times" onclick="tempVariants.splice(${i},1);renderAdminVariants()" style="color:#ff4444; cursor:pointer;"></i>
-            </span>
-        `).join('');
+        openWheel(); 
     }
-
-    window.editProduct = (id) => {
-        const p = products.find(x => x.id === id);
-        document.getElementById('pId').value = p.id;
-        document.getElementById('pName').value = p.name;
-        document.getElementById('pPrice').value = p.price;
-        document.getElementById('pCat').value = p.category;
-        document.getElementById('pBtnName').value = p.variantButtonName || '';
-        document.getElementById('pImg').value = p.imageData || '';
-        
-        // Установка иконки фото если оно есть
-        if(p.imageData) {
-            document.getElementById('imgIcon').className = 'fas fa-check-circle';
-            document.getElementById('imgText').innerText = 'ЗАГРУЖЕНО';
-        } else {
-            document.getElementById('imgIcon').className = 'fas fa-image';
-            document.getElementById('imgText').innerText = 'ФОТО';
-        }
-
-        tempVariants = p.variants ? [...p.variants] : [];
-        renderAdminVariants();
-        document.getElementById('adminModalTitle').innerText = "ИЗМЕНИТЬ";
-        openModal('adminOverlay');
-    };
-
-    window.deleteProduct = (id) => { 
-        if(confirm('Точно удалить товар?')) {
-            db.ref('products/'+id).remove(); 
-            tg.HapticFeedback.notificationOccurred('success');
-        }
-    };
-
-    document.getElementById('pForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('pId').value;
-        const data = {
-            name: document.getElementById('pName').value,
-            price: document.getElementById('pPrice').value,
-            category: document.getElementById('pCat').value,
-            variantButtonName: document.getElementById('pBtnName').value || 'ВКУСЫ',
-            variants: tempVariants,
-            imageData: document.getElementById('pImg').value,
-            updatedAt: Date.now()
-        };
-        id ? await db.ref('products/'+id).update(data) : await db.ref('products').push(data);
-        closeModal('adminOverlay');
-        tg.HapticFeedback.notificationOccurred('success');
-    };
-
-    document.getElementById('fInp').onchange = (e) => {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            document.getElementById('pImg').value = ev.target.result;
-            document.getElementById('imgIcon').className = 'fas fa-check-circle';
-            document.getElementById('imgText').innerText = 'ЗАГРУЖЕНО';
-        };
-        if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
-    };
-
-    window.showFlavors = (id) => {
-        const p = products.find(x => x.id === id);
-        document.getElementById('vTitle').innerText = p.variantButtonName || 'ВКУСЫ';
-        document.getElementById('vList').innerHTML = (p.variants || []).map(v => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.4); padding:15px; border-radius:15px; margin-bottom:10px; border: 1px solid rgba(255,255,255,0.05);">
-                <div style="font-weight: 900;">${v}</div>
-                <button onclick="addToCart('${p.id}', '${v}')" style="background:var(--neon-green); border:none; padding:10px 20px; border-radius:12px; font-weight:900; color:#000; box-shadow: 0 0 15px rgba(43,255,0,0.3);">В КОРЗИНУ</button>
-            </div>`).join('');
-        openModal('vOverlay');
-    };
-
-    window.openRouletteAdmin = () => {
-        renderRouletteAdminUI();
-        openModal('rouletteAdminOverlay');
-    };
-
-    function renderRouletteAdminUI() {
-        const list = document.getElementById('rouletteItemsList');
-        list.innerHTML = wheelConfig.map((item, i) => `
-            <div class="roulette-item-row">
-                <input type="text" class="inp" value="${item.name}" onchange="wheelConfig[${i}].name=this.value" placeholder="Название приза" style="flex: 2;">
-                <input type="number" class="inp" value="${item.chance}" onchange="wheelConfig[${i}].chance=Number(this.value)" placeholder="Шанс" style="flex: 1;">
-                <button class="btn-mini" style="background:#ff4444; color:#fff;" onclick="wheelConfig.splice(${i},1); renderRouletteAdminUI();"><i class="fas fa-trash"></i></button>
-            </div>
-        `).join('');
-    }
-
-    window.addRouletteItemUI = () => {
-        wheelConfig.push({name: "НОВЫЙ ПРИЗ", chance: 10});
-        renderRouletteAdminUI();
-    };
-
-    window.saveRouletteConfig = async () => {
-        await db.ref('settings/wheel').set(wheelConfig);
-        tg.HapticFeedback.notificationOccurred('success');
-        closeModal('rouletteAdminOverlay');
-    };
 
     function checkSpinStatus() {
         userSpinRef.on('value', (snap) => {
             const canSpin = snap.val();
+            const btn = document.getElementById('spinBtn');
+            const pay = document.getElementById('paymentButtons');
+            const txt = document.getElementById('spinStatusText');
+
             if (isAdmin) {
-                document.getElementById('paymentButtons').style.display = 'none';
-                document.getElementById('spinBtn').style.display = 'block';
-                document.getElementById('spinStatusText').innerText = "АДМИН-ДОСТУП: БЕСПЛАТНО";
-                document.getElementById('spinStatusText').style.color = "var(--neon-green)";
+                pay.style.display = 'none'; btn.style.display = 'block';
+                txt.innerText = "АДМИН-ДОСТУП: БЕСПЛАТНО";
             } else {
-                document.getElementById('paymentButtons').style.display = canSpin ? 'none' : 'block';
-                document.getElementById('spinBtn').style.display = canSpin ? 'block' : 'none';
-                const txt = document.getElementById('spinStatusText');
-                txt.innerText = canSpin ? "ОПЛАЧЕНО! ЖМИ КРУТИТЬ" : "СПИН СТОИТ 10⭐ ИЛИ 100₽";
-                txt.style.color = canSpin ? "var(--neon-green)" : "rgba(255,255,255,0.5)";
+                pay.style.display = canSpin ? 'none' : 'block';
+                btn.style.display = canSpin ? 'block' : 'none';
+                txt.innerText = canSpin ? "ОПЛАЧЕНО! КРУТИ" : `СТАВКА: ${currentTier} ₽`;
             }
         });
     }
-
-    async function startSpin() {
-        const result = document.getElementById('spinResult');
-        result.innerText = "ГЕНЕРАЦИЯ ЧЕКА...";
-        try {
-            const resp = await fetch(`https://smokin-v2.vercel.app/api/getInvoice?userId=${userId}`);
-            const data = await resp.json();
-            if (data.link) tg.openInvoice(data.link, (status) => { if (status === 'paid') result.innerText = "УСПЕХ!"; });
-        } catch (e) { result.innerText = "ОШИБКА ОПЛАТЫ"; }
-    }
-
-    window.paySBP = () => {
-        const demoLink = "https://qr.nspk.ru/test_payment_link";
-        const qrImg = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(demoLink)}`;
-        document.getElementById('qrContainer').innerHTML = `<img src="${qrImg}" style="display:block;">`;
-        openModal('sbpOverlay');
-    };
-
-    window.confirmPayment = () => {
-        userSpinRef.set(true);
-        closeModal('sbpOverlay');
-        tg.showAlert("Запрос на проверку отправлен. Ожидайте.");
-    };
 
     window.runSpinAnimation = () => {
         const track = document.getElementById('slotTrack');
@@ -608,56 +483,223 @@
         const btn = document.getElementById('spinBtn');
         btn.disabled = true; res.innerText = "КРУТИМ...";
         
-        let rand = Math.random() * wheelConfig.reduce((sum, item) => sum + item.chance, 0);
-        let sum = 0;
-        let winValue = wheelConfig[0].name;
+        const config = wheelConfigs['t'+currentTier];
+        let rand = Math.random() * config.reduce((s, i) => s + i.chance, 0);
+        let sum = 0, winValue = config[0].name;
         
-        for (let item of wheelConfig) {
-            sum += item.chance;
-            if (rand <= sum) { winValue = item.name; break; }
-        }
+        for (let item of config) { sum += item.chance; if (rand <= sum) { winValue = item.name; break; } }
 
-        const winIdx = 75; const itemH = 160;
+        const winIdx = 75; 
         track.children[winIdx].innerText = winValue;
-        
         track.style.transition = 'transform 5s cubic-bezier(0.1, 0, 0.1, 1)';
-        track.style.transform = `translateY(-${winIdx * itemH}px)`;
+        track.style.transform = `translateY(-${winIdx * 160}px)`;
         
         setTimeout(() => {
             res.innerText = winValue.includes("ПУСТО") ? "НЕ ПОВЕЗЛО 😢" : "ВЫИГРЫШ: " + winValue;
+            logSpinResult(winValue); 
             if(!isAdmin) userSpinRef.set(false);
             btn.disabled = false;
             tg.HapticFeedback.notificationOccurred(winValue.includes("ПУСТО") ? 'error' : 'success');
         }, 5200);
     };
 
+    function logSpinResult(prize) {
+        db.ref('logs/spins').push({
+            user: user.username,
+            uid: user.id,
+            tier: currentTier,
+            win: prize,
+            date: new Date().toLocaleString()
+        });
+    }
+
     window.openWheel = () => {
         const track = document.getElementById('slotTrack');
+        const config = wheelConfigs['t'+currentTier];
         let h = '';
-        for(let i=0; i<90; i++) {
-            let itemName = wheelConfig[i % wheelConfig.length]?.name || "ПУСТО";
-            h += `<div class="slot-item">${itemName}</div>`;
-        }
+        for(let i=0; i<90; i++) h += `<div class="slot-item">${config[i % config.length].name}</div>`;
         track.innerHTML = h;
         track.style.transition = 'none'; track.style.transform = 'translateY(0)';
         document.getElementById('spinResult').innerText = '';
         openModal('wheelOverlay');
     };
 
-    window.openModal = (id) => { 
-        const el = document.getElementById(id);
-        el.style.display = 'flex'; 
-        setTimeout(() => el.classList.add('active'), 10); 
+    // АДМИНКА РУЛЕТКИ
+    function setAdminTier(t) {
+        adminEditTier = t;
+        document.querySelectorAll('#rouletteAdminOverlay .tier-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('at'+t).classList.add('active');
+        document.getElementById('saveTierLabel').innerText = t;
+        renderRouletteAdminUI();
+    }
+
+    window.openRouletteAdmin = () => { setAdminTier(10); openModal('rouletteAdminOverlay'); };
+
+    function renderRouletteAdminUI() {
+        const list = document.getElementById('rouletteItemsList');
+        const config = wheelConfigs['t'+adminEditTier];
+        list.innerHTML = config.map((item, i) => `
+            <div class="roulette-item-row">
+                <input type="text" class="inp" value="${item.name}" onchange="wheelConfigs['t'+adminEditTier][${i}].name=this.value" style="flex:2; margin:0;">
+                <input type="number" class="inp" value="${item.chance}" onchange="wheelConfigs['t'+adminEditTier][${i}].chance=Number(this.value)" style="flex:1; margin:0;">
+                <button class="btn-mini" style="background:#ff4444; color:#fff;" onclick="wheelConfigs['t'+adminEditTier].splice(${i},1); renderRouletteAdminUI();"><i class="fas fa-trash"></i></button>
+            </div>
+        `).join('');
+    }
+
+    window.addRouletteItemUI = () => {
+        wheelConfigs['t'+adminEditTier].push({name: "НОВЫЙ ПРИЗ", chance: 10});
+        renderRouletteAdminUI();
     };
 
-    window.closeModal = (id) => { 
-        const el = document.getElementById(id);
-        el.classList.remove('active'); 
-        setTimeout(() => el.style.display = 'none', 400); 
+    window.saveRouletteConfig = () => {
+        db.ref('settings/wheel_v2').set(wheelConfigs).then(() => {
+            tg.HapticFeedback.notificationOccurred('success');
+            closeModal('rouletteAdminOverlay');
+        });
     };
 
-    load();
-    checkSpinStatus();
+    // ОСТАЛЬНЫЕ ФУНКЦИИ (РЕДАКТОР ТОВАРОВ И Т.Д.)
+    window.addFlavorToList = () => {
+        const input = document.getElementById('vInp');
+        const val = input.value.trim();
+        if (val) {
+            tempVariants.push(...val.split(',').map(f => f.trim()).filter(f => f !== ""));
+            input.value = ''; renderAdminVariants();
+        }
+    };
+
+    function renderAdminVariants() {
+        document.getElementById('adminVList').innerHTML = tempVariants.map((v, i) => `
+            <span class="flavor-tag">${v} <i class="fas fa-times-circle" onclick="tempVariants.splice(${i},1);renderAdminVariants()"></i></span>
+        `).join('');
+    }
+
+    document.getElementById('fInp').onchange = (e) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            document.getElementById('pImg').value = ev.target.result;
+            document.getElementById('previewImg').src = ev.target.result;
+            document.getElementById('previewImg').style.display = 'block';
+            document.getElementById('photoLoader').classList.add('has-img');
+        };
+        if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
+    };
+
+    window.openAddModal = () => {
+        document.getElementById('pForm').reset();
+        document.getElementById('pId').value = '';
+        document.getElementById('pImg').value = '';
+        document.getElementById('previewImg').style.display = 'none';
+        tempVariants = []; renderAdminVariants();
+        openModal('adminOverlay');
+    };
+
+    window.editProduct = (id) => {
+        const p = products.find(x => x.id === id);
+        document.getElementById('pId').value = p.id;
+        document.getElementById('pName').value = p.name;
+        document.getElementById('pPrice').value = p.price;
+        document.getElementById('pCat').value = p.category;
+        document.getElementById('pImg').value = p.imageData || '';
+        if(p.imageData) { 
+            document.getElementById('previewImg').src = p.imageData; 
+            document.getElementById('previewImg').style.display = 'block';
+        }
+        tempVariants = p.variants ? [...p.variants] : [];
+        renderAdminVariants();
+        openModal('adminOverlay');
+    };
+
+    document.getElementById('pForm').onsubmit = (e) => {
+        e.preventDefault();
+        const id = document.getElementById('pId').value;
+        const data = {
+            name: document.getElementById('pName').value,
+            price: document.getElementById('pPrice').value,
+            category: document.getElementById('pCat').value,
+            variants: tempVariants,
+            imageData: document.getElementById('pImg').value
+        };
+        id ? db.ref('products/'+id).update(data) : db.ref('products').push(data);
+        closeModal('adminOverlay');
+    };
+
+    window.deleteProduct = (id) => confirm('Удалить?') && db.ref('products/'+id).remove();
+
+    window.showFlavors = (id) => {
+        const p = products.find(x => x.id === id);
+        document.getElementById('vTitle').innerText = p.variantButtonName || 'ВКУСЫ';
+        document.getElementById('vList').innerHTML = (p.variants || []).map(v => `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.4); padding:15px; border-radius:15px; margin-bottom:10px;">
+                <div style="font-weight: 900;">${v}</div>
+                <button onclick="addToCart('${p.id}', '${v}')" style="background:var(--neon-green); border:none; padding:10px 20px; border-radius:12px; font-weight:900;">В КОРЗИНУ</button>
+            </div>`).join('');
+        openModal('vOverlay');
+    };
+
+    window.paySBP = () => {
+        const qrImg = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://t.me/smokinshop174`;
+        document.getElementById('qrContainer').innerHTML = `<img src="${qrImg}">`;
+        // Сумма в СБП теперь подтягивается из currentTier
+        document.getElementById('sbpPriceLabel').innerText = `ОТПРАВЬТЕ: ${currentTier} ₽`;
+        openModal('sbpOverlay');
+    };
+
+        // 1. Когда пользователь нажал "Я оплатил"
+    window.confirmPayment = () => {
+        const amount = currentTier;
+        // Сохраняем заявку в базу, чтобы админ её увидел
+        db.ref('payment_requests/' + user.id).set({
+            username: user.username || "Аноним",
+            amount: amount,
+            status: 'pending',
+            time: new Date().toLocaleString()
+        });
+        
+        // Ставим пользователю статус "ожидание"
+        db.ref('users/' + user.id + '/payment_pending').set(true);
+        
+        alert('Заявка отправлена! Прокрут появится сразу после проверки (обычно 1-5 мин).');
+        closeModal('sbpOverlay');
+    };
+
+    // 2. Обновляем проверку статуса (чтобы кнопка менялась сама)
+    function checkSpinStatus() {
+        // Следим за разрешением на прокрут
+        userSpinRef.on('value', (snap) => {
+            const canSpin = snap.val();
+            const btn = document.getElementById('spinBtn');
+            const pay = document.getElementById('paymentButtons');
+            const txt = document.getElementById('spinStatusText');
+
+            // Проверяем, не ждет ли пользователь проверку
+            db.ref('users/' + user.id + '/payment_pending').on('value', (pendingSnap) => {
+                const isPending = pendingSnap.val();
+
+                if (isAdmin) {
+                    pay.style.display = 'none'; btn.style.display = 'block';
+                    txt.innerText = "АДМИН-ДОСТУП";
+                } else if (canSpin) {
+                    pay.style.display = 'none'; btn.style.display = 'block';
+                    txt.innerText = "ОПЛАЧЕНО! ЖМИ КНОПКУ";
+                    txt.style.color = "var(--neon-green)";
+                } else if (isPending) {
+                    pay.style.display = 'none'; btn.style.display = 'none';
+                    txt.innerText = "ОПЛАТА ПРОВЕРЯЕТСЯ АДМИНОМ...";
+                    txt.style.color = "orange";
+                } else {
+                    pay.style.display = 'block'; btn.style.display = 'none';
+                    txt.innerText = `СТАВКА: ${currentTier} ₽`;
+                    txt.style.color = "white";
+                }
+            });
+        });
+    }
+    window.openModal = (id) => { document.getElementById(id).style.display = 'flex'; setTimeout(() => document.getElementById(id).classList.add('active'), 10); };
+    window.closeModal = (id) => { document.getElementById(id).classList.remove('active'); setTimeout(() => document.getElementById(id).style.display = 'none', 400); };
+
+    load(); checkSpinStatus();
 </script>
 </body>
 </html>
