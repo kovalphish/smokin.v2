@@ -365,9 +365,28 @@
         enableClosingConfirmation: function(){},
         showConfirm: function(m, c){ if(confirm(m)) c(true); },
         openTelegramLink: function(u){ window.open(u, '_blank'); },
-        HapticFeedback: { impactOccurred: function(){}, notificationOccurred: function(){} }
+        HapticFeedback: { impactOccurred: function(){}, notificationOccurred: function(){} },
+        onEvent: function(){},
+        openInvoice: function(){}
     };
-    try { tg.ready(); tg.expand(); if(tg.enableClosingConfirmation) tg.enableClosingConfirmation(); } catch (e) {}
+    try { 
+        tg.ready(); 
+        tg.expand(); 
+        if(tg.enableClosingConfirmation) tg.enableClosingConfirmation(); 
+        
+        tg.onEvent('invoiceClosed', (event) => {
+            if (event.status === 'paid') {
+                console.log('Оплата звездами прошла успешно!');
+                userSpinRef.set(true).then(() => {
+                    runSpinAnimation();
+                });
+            } else if (event.status === 'failed') {
+                alert('Ошибка оплаты!');
+            } else {
+                console.log('Оплата отменена');
+            }
+        });
+    } catch (e) { console.error(e); }
 
     const firebaseConfig = {
         apiKey: "AIzaSyD3wDw2ZTTXn2gY467grDOVi9E5vcusilc",
@@ -459,7 +478,36 @@
         document.getElementById('addFab').style.display = isAdmin ? 'flex' : 'none';
     }
 
-    window.startStarsPay = () => tg.sendData(JSON.stringify({ action: "buy_spin", tier: currentTier }));
+    window.createStarInvoice = (price) => {
+        console.log(`Генерация инвойса на ${price} звезд...`);
+        // Имитация получения URL от бэкенда
+        const mockInvoiceUrl = "https://t.me/$mock_invoice_link"; 
+        
+        if (tg.openInvoice) {
+            try {
+                tg.openInvoice(mockInvoiceUrl);
+            } catch (e) {
+                console.warn("Ошибка openInvoice:", e);
+                fallbackMockPayment();
+            }
+        } else {
+            fallbackMockPayment();
+        }
+        
+        function fallbackMockPayment() {
+            console.log("Имитируем успешную оплату для теста...");
+            setTimeout(() => {
+                tg.HapticFeedback.notificationOccurred('success');
+                userSpinRef.set(true).then(() => {
+                    runSpinAnimation();
+                });
+            }, 1000);
+        }
+    };
+
+    window.startStarsPay = () => {
+        createStarInvoice(currentTier);
+    };
 
     window.setTier = (t) => {
         currentTier = t;
@@ -702,13 +750,32 @@
         renderAdminRoulette(); 
     };
     window.saveRouletteConfig = () => {
-        // Ensure all chance values are numbers before saving
-        Object.keys(wheelConfigs).forEach(tier => {
-            wheelConfigs[tier].forEach(item => {
-                item.chance = parseFloat(item.chance) || 0;
-            });
+        const rows = document.querySelectorAll('.roulette-item-row');
+        const newConfig = [];
+        
+        rows.forEach((row) => {
+            const name = row.querySelector('.roulette-name').value;
+            const chanceType = row.querySelector('select').value;
+            const chance = Number(row.querySelector('input[type="number"]').value) || 0;
+            
+            if (name.trim() !== '') {
+                newConfig.push({ name, chanceType, chance });
+            }
         });
-        db.ref('settings/wheel_v2').set(wheelConfigs).then(() => closeModal('rouletteAdminOverlay'));
+
+        if (newConfig.length > 0) {
+            wheelConfigs['t'+adminTier] = newConfig;
+            db.ref('settings/wheel_v2').set(wheelConfigs).then(() => {
+                console.log('Настройки рулетки успешно сохранены:', wheelConfigs);
+                alert('Настройки сохранены!');
+                closeModal('rouletteAdminOverlay');
+            }).catch(err => {
+                console.error('Ошибка сохранения:', err);
+                alert('Ошибка сохранения!');
+            });
+        } else {
+            alert('Добавьте хотя бы один приз!');
+        }
     };
 
     window.openRouletteHistory = () => {
