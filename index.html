@@ -147,12 +147,24 @@
         .btn-mini-del { background: rgba(255,59,48,0.25); color: #fff; }
         .btn-mini-del:hover { background: rgba(255,59,48,0.4); }
         
-        .flavor-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 15px; margin-bottom: 10px; gap: 10px; }
-        .flavor-name { font-weight: 900; text-align: left; flex-grow: 1; font-size: 0.9rem; line-height: 1.2; }
+        .roulette-item-row { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 15px; margin-bottom: 12px; position: relative; }
+        .roulette-item-row .inp { margin-bottom: 10px; padding: 12px; font-size: 0.9rem; }
+        .roulette-chance { display: flex; gap: 10px; align-items: center; }
+        .roulette-chance select, .roulette-chance input { flex: 1; padding: 12px; border-radius: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); color: #fff; outline: none; font-size: 0.9rem; }
+        .roulette-chance select option { background: #111; }
+        .roulette-item-row .btn-mini { position: absolute; top: 15px; right: 15px; }
+        .roulette-name-container { padding-right: 40px; }
+        
+        .flavor-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 15px; margin-bottom: 10px; }
+        .flavor-name { font-weight: 900; text-align: left; flex-grow: 1; font-size: 0.9rem; line-height: 1.2; margin-right: 10px; }
         .flavor-btn { background: var(--neon-green); border: none; padding: 10px 15px; border-radius: 12px; font-weight: 900; white-space: nowrap; flex-shrink: 0; color: #000; cursor: pointer; }
         
-        .modal::-webkit-scrollbar, #vList::-webkit-scrollbar, .admin-flavors-scroll::-webkit-scrollbar { display: none; }
-        .modal, #vList, .admin-flavors-scroll { scrollbar-width: none; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
+        * { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.2) transparent; }
 
         @media (max-width: 600px) {
             .modal { width: 95%; padding: 20px 15px; }
@@ -220,7 +232,16 @@
             <button class="btn-full" id="tgPayBtn" style="background: #0088cc; color: #fff;" onclick="startStarsPay()">КУПИТЬ СПИН 10 ⭐</button>
         </div>
         <button class="btn-full" id="spinBtn" style="display:none;" onclick="runSpinAnimation()">КРУТИТЬ</button>
+        <button class="btn-full" style="background: rgba(255,255,255,0.1); color: #fff; margin-top: 10px; font-size: 0.8rem;" onclick="openMyWins()">МОИ ВЫИГРЫШИ</button>
         <div id="spinResult" style="margin-top:20px; font-weight:900; color: var(--neon-green); font-size: 1.2rem;"></div>
+    </div>
+</div>
+
+<div class="overlay" id="myWinsOverlay" onclick="closeModal('myWinsOverlay')">
+    <div class="modal glass" onclick="event.stopPropagation()">
+        <button type="button" class="modal-close" onclick="closeModal('myWinsOverlay')" aria-label="Закрыть">×</button>
+        <h2 style="margin-bottom:16px; font-weight:900; color: var(--neon-green);">МОИ ВЫИГРЫШИ</h2>
+        <div id="myWinsList" style="max-height:60vh; overflow-y:auto; text-align:left; font-size:0.8rem;"></div>
     </div>
 </div>
 
@@ -233,6 +254,7 @@
     <div class="modal glass" onclick="event.stopPropagation()">
         <button type="button" class="modal-close" onclick="closeModal('cartOverlay')" aria-label="Закрыть">×</button>
         <h2 style="margin-bottom:20px; font-weight:900; color:var(--neon-green);">КОРЗИНА</h2>
+        <button class="btn-full" style="background: rgba(255,59,48,0.2); color: #ff3b30; margin-bottom: 15px; padding: 12px; font-size: 0.8rem;" onclick="clearCart()">ОЧИСТИТЬ ВСЁ</button>
         <div id="cartItems" style="max-height:40vh; overflow-y:auto; margin-bottom:20px;"></div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px;">
             <span style="font-weight: 900;">ИТОГО</span>
@@ -454,6 +476,9 @@
         track.style.transition = 'none';
         track.style.transform = 'translateY(0)';
         
+        // Force reflow
+        void track.offsetWidth;
+        
         setTimeout(() => {
             track.children[winIdx].innerText = winItem.name;
             track.style.transition = 'transform 4s cubic-bezier(0.1, 0, 0.1, 1)';
@@ -468,15 +493,73 @@
     };
 
     function pickWeightedRouletteItem(config) {
-        const weights = config.map(item => {
-            const val = parseFloat(item.chance);
-            return (item.chanceType === 'percent') ? (isNaN(val) || val <= 0 ? 1 : val) : (isNaN(val) || val <= 0 ? 1 : 100/val);
+        // Separate items by chance type
+        const percentItems = [];
+        const spinsItems = [];
+        
+        config.forEach(item => {
+            if (item.chanceType === 'spins') {
+                spinsItems.push(item);
+            } else {
+                percentItems.push(item);
+            }
         });
-        const sum = weights.reduce((a,b) => a+b, 0);
-        let r = Math.random() * sum;
-        for (let i = 0; i < config.length; i++) { if (r < weights[i]) return config[i]; r -= weights[i]; }
+
+        // 1. Check 'spins' (1 in N) items first
+        // We shuffle them to give equal priority if multiple have the same N
+        spinsItems.sort(() => Math.random() - 0.5);
+        
+        for (const item of spinsItems) {
+            const n = parseInt(item.chance);
+            if (!isNaN(n) && n > 0) {
+                // Generate a random number between 1 and N
+                const roll = Math.floor(Math.random() * n) + 1;
+                // If it hits 1, this prize is won
+                if (roll === 1) {
+                    return item;
+                }
+            }
+        }
+
+        // 2. If no 'spins' item was won, fallback to 'percent' items
+        if (percentItems.length > 0) {
+            const weights = percentItems.map(item => {
+                const val = parseFloat(item.chance);
+                return (isNaN(val) || val <= 0) ? 1 : val;
+            });
+            const sum = weights.reduce((a,b) => a+b, 0);
+            let r = Math.random() * sum;
+            for (let i = 0; i < percentItems.length; i++) { 
+                if (r < weights[i]) return percentItems[i]; 
+                r -= weights[i]; 
+            }
+            return percentItems[percentItems.length - 1];
+        }
+        
+        // 3. Fallback if something goes wrong
         return config[config.length - 1];
     }
+
+    window.openMyWins = () => {
+        const uid = user.id;
+        db.ref('roulette_history').orderByChild('userId').equalTo(uid).limitToLast(10).once('value', snap => {
+            const val = snap.val();
+            if (val) {
+                const wins = Object.values(val).reverse();
+                document.getElementById('myWinsList').innerHTML = wins.map(e => `
+                    <div style="padding:12px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div style="color: var(--neon-green); font-weight: 900; font-size: 1rem; margin-bottom: 6px;">${e.prize}</div>
+                        <div style="display: flex; justify-content: space-between; opacity: 0.6; font-size: 0.75rem;">
+                            <span>Ставка: ${e.tier}₽</span>
+                            <span>${new Date(e.time).toLocaleString()}</span>
+                        </div>
+                    </div>`).join('');
+            } else {
+                document.getElementById('myWinsList').innerHTML = '<div style="text-align:center; opacity:0.5; padding: 20px;">Вы еще ничего не выиграли</div>';
+            }
+        });
+        openModal('myWinsOverlay');
+    };
 
     window.openWheel = () => {
         const config = wheelConfigs['t'+currentTier] || [];
@@ -508,13 +591,28 @@
         document.getElementById('cartCount').innerText = cart.length;
         document.getElementById('cartFab').classList.toggle('visible', cart.length > 0);
         let t = 0;
-        document.getElementById('cartItems').innerHTML = cart.map(i => { t += i.price; return `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span>${i.name} (${i.flavor})</span><b>${i.price}₽</b></div>` }).join('');
+        document.getElementById('cartItems').innerHTML = cart.map(i => { t += i.price; return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);gap:10px;"><span style="flex-grow:1;text-align:left;line-height:1.2;">${i.name} (${i.flavor})</span><b style="flex-shrink:0;white-space:nowrap;">${i.price}₽</b></div>` }).join('');
         document.getElementById('cartTotal').innerText = t + ' ₽';
     }
 
     window.sendToManager = () => {
+        if(cart.length === 0) return;
         const msg = `ЗАКАЗ:\n` + cart.map(i => `- ${i.name} (${i.flavor})`).join('\n');
-        window.Telegram.WebApp.openTelegramLink(`https://t.me/smokinshop174?text=${encodeURIComponent(msg)}`);
+        tg.openTelegramLink(`https://t.me/smokinshop174?text=${encodeURIComponent(msg)}`);
+        cart = [];
+        updateCartUI();
+        closeModal('cartOverlay');
+    };
+
+    window.clearCart = () => {
+        if (cart.length === 0) return;
+        if (confirm('Вы уверены, что хотите очистить корзину?')) {
+            cart = [];
+            updateCartUI();
+            if (cart.length === 0) {
+                closeModal('cartOverlay');
+            }
+        }
     };
 
     window.handleAdminClick = () => isAdmin ? openModal('adminMenuOverlay') : openModal('loginOverlay');
@@ -581,21 +679,37 @@
         const list = wheelConfigs['t'+adminTier] || [];
         document.getElementById('rouletteItemsList').innerHTML = list.map((item, i) => `
             <div class="roulette-item-row">
-                <input type="text" class="inp roulette-name" value="${item.name}" onchange="updateRouletteItem(${i}, 'name', this.value)">
+                <div class="roulette-name-container">
+                    <input type="text" class="inp roulette-name" value="${item.name}" onchange="updateRouletteItem(${i}, 'name', this.value)" placeholder="Название приза">
+                </div>
                 <div class="roulette-chance">
                     <select onchange="updateRouletteItem(${i}, 'chanceType', this.value)">
-                        <option value="percent" ${item.chanceType==='percent'?'selected':''}>%</option>
+                        <option value="percent" ${item.chanceType==='percent'?'selected':''}>Шанс (%)</option>
                         <option value="spins" ${item.chanceType==='spins'?'selected':''}>1 из N</option>
                     </select>
-                    <input type="number" value="${item.chance}" onchange="updateRouletteItem(${i}, 'chance', this.value)">
+                    <input type="number" value="${item.chance}" onchange="updateRouletteItem(${i}, 'chance', this.value)" placeholder="Число">
                 </div>
-                <button class="btn-mini" style="background:red;" onclick="removeRouletteItem(${i})">✕</button>
+                <button class="btn-mini btn-mini-del" onclick="removeRouletteItem(${i})"><i class="fas fa-times"></i></button>
             </div>`).join('');
     }
-    window.addRouletteItemUI = () => { wheelConfigs['t'+adminTier] = wheelConfigs['t'+adminTier] || []; wheelConfigs['t'+adminTier].push({ name: 'Приз', chanceType: 'percent', chance: 10 }); renderAdminRoulette(); };
+    window.addRouletteItemUI = () => { wheelConfigs['t'+adminTier] = wheelConfigs['t'+adminTier] || []; wheelConfigs['t'+adminTier].push({ name: 'Новый приз', chanceType: 'percent', chance: 10 }); renderAdminRoulette(); };
     window.removeRouletteItem = (i) => { wheelConfigs['t'+adminTier].splice(i, 1); renderAdminRoulette(); };
-    window.updateRouletteItem = (i, f, v) => { wheelConfigs['t'+adminTier][i][f] = v; renderAdminRoulette(); };
-    window.saveRouletteConfig = () => db.ref('settings/wheel_v2').set(wheelConfigs).then(() => closeModal('rouletteAdminOverlay'));
+    window.updateRouletteItem = (i, f, v) => { 
+        if (f === 'chance') {
+            v = parseFloat(v) || 0;
+        }
+        wheelConfigs['t'+adminTier][i][f] = v; 
+        renderAdminRoulette(); 
+    };
+    window.saveRouletteConfig = () => {
+        // Ensure all chance values are numbers before saving
+        Object.keys(wheelConfigs).forEach(tier => {
+            wheelConfigs[tier].forEach(item => {
+                item.chance = parseFloat(item.chance) || 0;
+            });
+        });
+        db.ref('settings/wheel_v2').set(wheelConfigs).then(() => closeModal('rouletteAdminOverlay'));
+    };
 
     window.openRouletteHistory = () => {
         db.ref('roulette_history').limitToLast(100).once('value', snap => {
