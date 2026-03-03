@@ -450,15 +450,21 @@
         const track = document.getElementById('slotTrack'), config = wheelConfigs['t'+currentTier] || [];
         if(config.length === 0) return alert("Настрой рулетку!");
         const winIdx = 40, winItem = pickWeightedRouletteItem(config);
-        track.children[winIdx].innerText = winItem.name;
-        track.style.transition = 'transform 4s cubic-bezier(0.1, 0, 0.1, 1)';
-        track.style.transform = `translateY(-${winIdx * 160}px)`;
+        
+        track.style.transition = 'none';
+        track.style.transform = 'translateY(0)';
+        
         setTimeout(() => {
-            document.getElementById('spinResult').innerText = "ПРИЗ: " + winItem.name;
-            tg.HapticFeedback.notificationOccurred('success');
-            db.ref('roulette_history').push({ userId: user.id, username: user.username || 'Anon', tier: currentTier, prize: winItem.name, time: new Date().toISOString() });
-            if (!isAdmin) { userSpinRef.set(false); checkSpinStatus(); }
-        }, 4100);
+            track.children[winIdx].innerText = winItem.name;
+            track.style.transition = 'transform 4s cubic-bezier(0.1, 0, 0.1, 1)';
+            track.style.transform = `translateY(-${winIdx * 160}px)`;
+            setTimeout(() => {
+                document.getElementById('spinResult').innerText = "ПРИЗ: " + winItem.name;
+                tg.HapticFeedback.notificationOccurred('success');
+                db.ref('roulette_history').push({ userId: user.id, username: user.username || 'Anon', tier: currentTier, prize: winItem.name, time: new Date().toISOString() });
+                if (!isAdmin) { userSpinRef.set(false); checkSpinStatus(); }
+            }, 4100);
+        }, 50);
     };
 
     function pickWeightedRouletteItem(config) {
@@ -508,7 +514,7 @@
 
     window.sendToManager = () => {
         const msg = `ЗАКАЗ:\n` + cart.map(i => `- ${i.name} (${i.flavor})`).join('\n');
-        tg.openTelegramLink(`https://t.me/smokinshop174?text=${encodeURIComponent(msg)}`);
+        window.Telegram.WebApp.openTelegramLink(`https://t.me/smokinshop174?text=${encodeURIComponent(msg)}`);
     };
 
     window.handleAdminClick = () => isAdmin ? openModal('adminMenuOverlay') : openModal('loginOverlay');
