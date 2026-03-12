@@ -692,7 +692,7 @@
 
     window.sendToManager = () => {
         if(cart.length === 0) return;
-        const msg = `ЗАКАЗ:\n` + cart.map(i => `- ${i.name} (${i.flavor})`).join('\n');
+        const msg = `Здравствуйте! В наличии ли товар?\n` + cart.map(i => `- ${i.name} (${i.flavor})`).join('\n');
         tg.openTelegramLink(`https://t.me/smokinshop174?text=${encodeURIComponent(msg)}`);
         cart = [];
         updateCartUI();
@@ -923,3 +923,4 @@
 </script>
 </body>
 </html>
+
