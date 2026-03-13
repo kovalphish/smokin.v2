@@ -434,9 +434,30 @@
         update() { this.y -= this.speedY; if (this.y < -10) this.reset(); }
         draw() { ctx.fillStyle = `rgba(43, 255, 0, ${this.alpha})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
     }
-    function initParticles() { for(let i=0; i<50; i++) particles.push(new Particle()); }
-    function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(animate); }
-    window.addEventListener('resize', resize); resize(); initParticles(); animate();
+    function initParticles() { 
+        const isLowPower = window.innerWidth < 500 || navigator.hardwareConcurrency === 2;
+        const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const count = prefersReduced ? 0 : (isLowPower ? 20 : 40);
+        particles = [];
+        for (let i = 0; i < count; i++) particles.push(new Particle());
+    }
+    let animId;
+    function animate() { 
+        if (document.hidden) return;
+        ctx.clearRect(0,0,canvas.width,canvas.height); 
+        particles.forEach(p=>{p.update();p.draw();}); 
+        animId = requestAnimationFrame(animate); 
+    }
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && !animId) {
+            animate();
+        } else if (document.hidden && animId) {
+            cancelAnimationFrame(animId);
+            animId = null;
+        }
+    });
+    window.addEventListener('resize', () => { resize(); initParticles(); });
+    resize(); initParticles(); animate();
 
     window.onscroll = () => { document.getElementById('scrollTop').style.display = window.scrollY > 300 ? 'flex' : 'none'; };
 
@@ -532,7 +553,17 @@
             if (!data.link) throw new Error("Сервер не вернул ссылку");
 
             if (tg.openInvoice) {
-                tg.openInvoice(data.link);
+                // Дополнительная обработка статуса через callback (для части клиентов)
+                tg.openInvoice(data.link, (status) => {
+                    console.log('invoice status (callback):', status);
+                    if (status === 'paid') {
+                        userSpinRef.set(true).then(() => {
+                            runSpinAnimation();
+                        });
+                    } else if (status === 'failed') {
+                        alert('Ошибка оплаты!');
+                    }
+                });
             } else {
                 throw new Error("Оплата недоступна — откройте в Telegram");
             }
@@ -818,7 +849,8 @@
                 closeModal('rouletteAdminOverlay');
             }).catch(err => {
                 console.error('Ошибка сохранения:', err);
-                alert('Ошибка сохранения!');
+                const msg = err && (err.message || err.code || err.toString());
+                alert('Ошибка сохранения: ' + (msg || 'см. консоль браузера'));
             });
         } else {
             alert('Добавьте хотя бы один приз!');

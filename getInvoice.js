@@ -11,28 +11,23 @@ module.exports = async (req, res) => {
         return res.status(200).end();
     }
 
-    const { userId, tier } = req.query;
+    const { userId } = req.query;
     const BOT_TOKEN = "8470694002:AAFht8GbM5QJEItnociSjtOgaYf0jQEstIo";
 
-    // 2. ЗАЩИТА: проверяем, что userId валидный (число)
-    const uid = parseInt(userId, 10);
-    if (!userId || isNaN(uid) || userId === "test_user") {
+    // 2. ЗАЩИТА ОТ ОШИБКИ: проверяем, что userId это число
+    if (!userId || userId === "test_user") {
         return res.status(400).json({ error: "Откройте приложение через бота в Telegram" });
     }
-
-    // Сумма в Stars: 10, 50 или 150
-    const validTiers = [10, 50, 150];
-    const starsAmount = validTiers.includes(parseInt(tier, 10)) ? parseInt(tier, 10) : 10;
 
     try {
         const url = `https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`;
         const payload = {
             title: "1 Попытка",
-            description: "Прокрут рулетки Lucky Smokin (" + starsAmount + " ⭐)",
+            description: "Прокрут рулетки Lucky Smokin",
             payload: userId.toString(),
             provider_token: "", 
             currency: "XTR",
-            prices: [{ label: "Spin", amount: starsAmount }]
+            prices: [{ label: "Spin", amount: 10 }]
         };
 
         const response = await axios.post(url, payload);
