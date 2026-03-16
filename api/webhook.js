@@ -3,14 +3,12 @@ const axios = require('axios');
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const TG_API = BOT_TOKEN ? `https://api.telegram.org/bot${BOT_TOKEN}` : null;
 
-const FIREBASE_DB_URL = process.env.FIREBASE_DB_URL; // https://xxx-default-rtdb.firebaseio.com
-const FIREBASE_DB_SECRET = process.env.FIREBASE_DB_SECRET; // database secret (или заменить на Admin SDK)
+const FIREBASE_DB_URL = process.env.FIREBASE_DB_URL || 'https://alexsmok-1dc1c-default-rtdb.firebaseio.com';
 
 function firebaseWriteUrl(path) {
-    const base = (FIREBASE_DB_URL || '').replace(/\/+$/, '');
+    const base = FIREBASE_DB_URL.replace(/\/+$/, '');
     const p = String(path || '').replace(/^\/+/, '');
-    const u = `${base}/${p}.json`;
-    return FIREBASE_DB_SECRET ? `${u}?auth=${encodeURIComponent(FIREBASE_DB_SECRET)}` : u;
+    return `${base}/${p}.json`;
 }
 
 module.exports = async (req, res) => {
@@ -43,9 +41,6 @@ module.exports = async (req, res) => {
         const userId = update.message.chat.id; // ID того, кто оплатил
         if (!FIREBASE_DB_URL) {
             console.error('FIREBASE_DB_URL не задан, не могу записать can_spin');
-        }
-        if (!FIREBASE_DB_SECRET) {
-            console.error('FIREBASE_DB_SECRET не задан — возможен PERMISSION_DENIED при записи');
         }
         const firebaseURL = firebaseWriteUrl(`users/${userId}/can_spin`);
 

@@ -883,7 +883,12 @@
                 })
             }).then(async (r) => {
                 const data = await r.json().catch(() => ({}));
-                if (!r.ok || data.error) throw new Error(data.error || `HTTP ${r.status}`);
+                if (!r.ok || data.error) {
+                    const errMsg = typeof data.error === 'string'
+                        ? data.error
+                        : JSON.stringify(data.error || {});
+                    throw new Error(errMsg || `HTTP ${r.status}`);
+                }
                 console.log('Настройки рулетки успешно сохранены:', wheelConfigs);
                 alert('Настройки сохранены!');
                 closeModal('rouletteAdminOverlay');
