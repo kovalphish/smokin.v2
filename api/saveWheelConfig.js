@@ -24,17 +24,26 @@ module.exports = async (req, res) => {
         return res.status(400).json({ error: 'wheelConfigs is required' });
     }
 
-    // минимальная валидация формы
-    for (const k of ['t10', 't50', 't150']) {
-        const v = wheelConfigs[k];
-        if (!Array.isArray(v)) return res.status(400).json({ error: `wheelConfigs.${k} должен быть массивом` });
-        for (const item of v) {
-            if (!item || typeof item.name !== 'string') return res.status(400).json({ error: `Некорректный item в ${k}` });
+    // мягкая валидация: гарантируем, что t10/t50/t150 существуют и являются массивами
+    const tiers = ['t10', 't50', 't150'];
+    const normalized = {};
+    for (const k of tiers) {
+        const raw = wheelConfigs[k];
+        if (!Array.isArray(raw)) {
+            normalized[k] = [];
+        } else {
+            normalized[k] = raw
+                .filter(Boolean)
+                .map(item => ({
+                    name: String(item.name || '').trim() || 'Приз',
+                    chanceType: item.chanceType === 'spins' ? 'spins' : 'percent',
+                    chance: Number(item.chance) || 0,
+                }));
         }
     }
 
     try {
-        await axios.put(firebaseWriteUrl('settings/wheel_v2'), wheelConfigs);
+        await axios.put(firebaseWriteUrl('settings/wheel_v2'), normalized);
         return res.status(200).json({ ok: true });
     } catch (e) {
         return res.status(500).json({ error: e.response?.data || e.message || 'Save failed' });
