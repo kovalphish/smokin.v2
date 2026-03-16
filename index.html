@@ -437,6 +437,7 @@
     let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
     let currentTier = 10, wheelConfigs = { t10: [], t50: [], t150: [] };
     let paymentInProgress = false, spinInProgress = false;
+    let adminApiKey = localStorage.getItem('adminApiKey') || '';
 
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
@@ -766,7 +767,16 @@
     };
 
     window.handleAdminClick = () => isAdmin ? openModal('adminMenuOverlay') : openModal('loginOverlay');
-    window.tryLogin = () => { if(document.getElementById('pass').value === 'smkn00') { isAdmin = true; render(); checkSpinStatus(); closeModal('loginOverlay'); document.getElementById('adminLock').classList.add('active'); } };
+    window.tryLogin = () => {
+        const v = document.getElementById('pass').value;
+        if (v === 'smkn00') {
+            isAdmin = true;
+            render();
+            checkSpinStatus();
+            closeModal('loginOverlay');
+            document.getElementById('adminLock').classList.add('active');
+        }
+    };
     window.logoutAdmin = () => { isAdmin=false; location.reload(); };
 
     window.openAddModal = () => {
@@ -869,11 +879,16 @@
             wheelConfigs['t'+adminTier] = newConfig;
 
             // Пишем через serverless API, чтобы не упираться в Firebase Rules на клиенте
+            if (!adminApiKey) {
+                adminApiKey = prompt('Введите ADMIN_KEY (из Vercel → Settings → Environment Variables)') || '';
+                if (adminApiKey) localStorage.setItem('adminApiKey', adminApiKey);
+            }
+
             fetch(`${API_BASE}/api/saveWheelConfig`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    adminKey: document.getElementById('pass').value || '',
+                    adminKey: adminApiKey,
                     wheelConfigs
                 })
             }).then(async (r) => {
@@ -885,6 +900,11 @@
             }).catch(err => {
                 console.error('Ошибка сохранения:', err);
                 const msg = err && (err.message || err.code || err.toString());
+                if (String(msg || '').toLowerCase().includes('forbidden')) {
+                    // ключ неверный — попросим заново
+                    localStorage.removeItem('adminApiKey');
+                    adminApiKey = '';
+                }
                 alert('Ошибка сохранения: ' + (msg || 'см. консоль браузера'));
             });
         } else {
