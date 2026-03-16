@@ -46,10 +46,7 @@
             top: 0; 
             z-index: 1000; 
             padding: 1.2rem 0;
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(18px) saturate(140%);
-            -webkit-backdrop-filter: blur(18px) saturate(140%);
-            border-bottom: 1px solid rgba(255,255,255,0.10);
+            background: transparent;
         }
         .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
         .header-pill {
@@ -437,7 +434,6 @@
     let products = [], cart = [], curCat = 'all', isAdmin = false, tempVariants = [];
     let currentTier = 10, wheelConfigs = { t10: [], t50: [], t150: [] };
     let paymentInProgress = false, spinInProgress = false;
-    let adminApiKey = localStorage.getItem('adminApiKey') || '';
 
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
@@ -878,17 +874,11 @@
         if (newConfig.length > 0) {
             wheelConfigs['t'+adminTier] = newConfig;
 
-            // Пишем через serverless API, чтобы не упираться в Firebase Rules на клиенте
-            if (!adminApiKey) {
-                adminApiKey = prompt('Введите ADMIN_KEY (из Vercel → Settings → Environment Variables)') || '';
-                if (adminApiKey) localStorage.setItem('adminApiKey', adminApiKey);
-            }
-
+            // Пишем через serverless API, но без лишних ключей — доступ в админку как раньше по smkn00
             fetch(`${API_BASE}/api/saveWheelConfig`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    adminKey: adminApiKey,
                     wheelConfigs
                 })
             }).then(async (r) => {
@@ -900,11 +890,6 @@
             }).catch(err => {
                 console.error('Ошибка сохранения:', err);
                 const msg = err && (err.message || err.code || err.toString());
-                if (String(msg || '').toLowerCase().includes('forbidden')) {
-                    // ключ неверный — попросим заново
-                    localStorage.removeItem('adminApiKey');
-                    adminApiKey = '';
-                }
                 alert('Ошибка сохранения: ' + (msg || 'см. консоль браузера'));
             });
         } else {
