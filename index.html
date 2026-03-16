@@ -46,11 +46,23 @@
             top: 0; 
             z-index: 1000; 
             padding: 1.2rem 0;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(18px) saturate(140%);
+            -webkit-backdrop-filter: blur(18px) saturate(140%);
+            border-bottom: 1px solid rgba(255,255,255,0.10);
         }
         .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .header-pill {
+            max-width: 1400px;
+            margin: 10px auto 0;
+            padding: 12px 16px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03));
+            border: 1px solid rgba(255,255,255,0.14);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+            backdrop-filter: blur(18px) saturate(140%);
+            -webkit-backdrop-filter: blur(18px) saturate(140%);
+        }
         .logo-text { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
         .nav-right { display: flex; align-items: center; gap: 15px; }
         .btn-channel { background: #fff; color: #000; padding: 10px 25px; border-radius: 50px; font-weight: 900; font-size: 0.85rem; text-decoration: none; text-transform: uppercase; transition: 0.3s; }
@@ -217,6 +229,7 @@
 </div>
 
 <header>
+    <div class="header-pill">
     <div class="header-content">
         <div class="logo-text">ПРАЙС</div>
         <div class="nav-right">
@@ -224,6 +237,7 @@
             <a href="https://t.me/smokin174" target="_blank" class="btn-channel">КАНАЛ</a>
             <i class="fas fa-fingerprint fa-2xl admin-icon" id="adminLock" onclick="handleAdminClick()"></i>
         </div>
+    </div>
     </div>
 </header>
 
@@ -437,13 +451,23 @@
     function initParticles() { 
         const isLowPower = window.innerWidth < 500 || navigator.hardwareConcurrency === 2;
         const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const count = prefersReduced ? 0 : (isLowPower ? 20 : 40);
+        const count = prefersReduced ? 0 : (isLowPower ? 14 : 28);
         particles = [];
         for (let i = 0; i < count; i++) particles.push(new Particle());
     }
     let animId;
+    let lastFrameTs = 0;
     function animate() { 
         if (document.hidden) return;
+        const now = performance.now();
+        // Ограничиваем FPS на слабых/в фоне (без "урезания" интерфейса)
+        const isLowPower = window.innerWidth < 500 || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+        const minDelta = isLowPower ? 1000 / 30 : 1000 / 60;
+        if (now - lastFrameTs < minDelta) {
+            animId = requestAnimationFrame(animate);
+            return;
+        }
+        lastFrameTs = now;
         ctx.clearRect(0,0,canvas.width,canvas.height); 
         particles.forEach(p=>{p.update();p.draw();}); 
         animId = requestAnimationFrame(animate); 
@@ -843,7 +867,18 @@
 
         if (newConfig.length > 0) {
             wheelConfigs['t'+adminTier] = newConfig;
-            db.ref('settings/wheel_v2').set(wheelConfigs).then(() => {
+
+            // Пишем через serverless API, чтобы не упираться в Firebase Rules на клиенте
+            fetch(`${API_BASE}/api/saveWheelConfig`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    adminKey: document.getElementById('pass').value || '',
+                    wheelConfigs
+                })
+            }).then(async (r) => {
+                const data = await r.json().catch(() => ({}));
+                if (!r.ok || data.error) throw new Error(data.error || `HTTP ${r.status}`);
                 console.log('Настройки рулетки успешно сохранены:', wheelConfigs);
                 alert('Настройки сохранены!');
                 closeModal('rouletteAdminOverlay');
